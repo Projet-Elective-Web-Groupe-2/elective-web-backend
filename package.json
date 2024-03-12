@@ -1,0 +1,30 @@
+{
+  "name": "elective-web-backend",
+  "version": "1.0.0",
+  "description": "Partie backend du projet \"Élective Web\"",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend.git"
+  },
+  "keywords": [
+    "Node.js",
+    "MongoDB",
+    "Docker",
+    "Express",
+    "Mongoose"
+  ],
+  "author": "AMARA A., BOSACKI P., GAURE W., GRENOUILLET T., JOURNEL N.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/issues"
+  },
+  "homepage": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend#readme",
+  "dependencies": {
+    "express": "^4.18.3",
+    "mongoose": "^8.2.1"
+  }
+}
