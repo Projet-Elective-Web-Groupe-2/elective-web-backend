@@ -26,6 +26,6 @@ services:
   
 networks:
   frontend_backend:
-    driver: bridge
-  backend_database:
     external: true
+  backend_database:
+    driver: bridge
