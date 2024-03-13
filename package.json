@@ -4,6 +4,7 @@
   "description": "Partie backend du projet \"Élective Web\"",
   "main": "app.js",
   "scripts": {
+    "start": "node ./app/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

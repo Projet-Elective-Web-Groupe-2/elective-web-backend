@@ -1,6 +1,7 @@
-import express, { json, urlencoded } from 'express';
-import { connect } from 'mongoose';
-import routes from './routers';
+const express = require('express');
+const { json, urlencoded } = require('express');
+const { connect } = require('mongoose');
+const routes = require('./routers');
 
 const app = express();
 
@@ -14,4 +15,4 @@ connect('mongodb://localhost/myapp', { useNewUrlParser: true });
 // On set up le router
 app.use('/', routes);
 
-export default app;
+module.exports = app;
