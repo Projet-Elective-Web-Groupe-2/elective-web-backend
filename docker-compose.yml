@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    environment:
+      MONGODB_URI: "mongodb://db:27017/mydatabase"
+    stdin_open: true
+    tty: true
+    networks:
+      - frontend_backend
+      - backend_database
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./volumes/mongodb:/data/db
+    networks:
+      - backend_database
+  
+networks:
+  frontend_backend:
+    driver: bridge
+  backend_database:
+    external: true

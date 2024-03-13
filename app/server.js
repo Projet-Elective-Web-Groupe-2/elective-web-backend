@@ -1,5 +1,5 @@
-import { listen } from './app';
-import { server } from './config';
+const { listen } = require('./app');
+const { server } = require('./config');
 
 const port = server.port || 3000;
 
