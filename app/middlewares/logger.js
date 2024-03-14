@@ -1,12 +1,10 @@
 // Middleware de logging des requêtes
-
 function logger(req, res, next) {
     // On récupère la date actuelle pour calculer le temps de réponse
     const start = Date.now();
-    // Écouteur d'évènement : dès que la réponse est envoyée au client, alors on fait...
+    // On écoute l'évènement "dès que la réponse est envoyée au client"
     res.on('finish', () => {
-      const duration = Date.now() - start;
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${res.statusCode} (${duration} ms)`);
+      console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url} - ${res.statusCode} (${Date.now() - start} ms)`);
     });
     next();
 }
