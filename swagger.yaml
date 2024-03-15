@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info: 
+  version: 1.0.0
+  title: Testing Open Api Spec
+  description: > 
+    I am learning Open API Specification. This is industry standard specification technique for any web service
+  termsOfService: https://example.com/terms
+  contact: 
+    name: Bipon Biswas
+    url: https://example.com
+    email: support@gmail.com
+  license: 
+      name: Apache 2.0
+      url: http://apache.com
+servers: 
+  - url: http://localhost:4000/api/v1
+    description: dev server
+  - url: http://example.com/api/v1
+    description: prod server
+paths:
+  /health:
+    get:
+      tags: [Health]
+      description: this endpoint will test the health of the api
+      responses: 
+        '200':
+          description: it will return a success message
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  message:
+                    type: string
+                    example: ok
+        '500': 
+          description: The Server is down
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                    example: server is down
