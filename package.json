@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./app/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,12 @@
   "homepage": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend#readme",
   "dependencies": {
     "express": "^4.18.3",
-    "mongoose": "^8.2.1"
+    "mongoose": "^8.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
