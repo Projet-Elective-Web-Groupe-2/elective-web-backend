@@ -2,7 +2,7 @@
  * Le fichier principal du serveur.
  * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
  * @version 1.0.
- */
+*/
 
 // Importation des fonctions
 const express = require('express');
@@ -23,7 +23,6 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 .catch((error) => {
     console.error("Error while connecting to the database: ", error);
 });
-
 
 // On set up les middlewares
 app.use(express.json());
