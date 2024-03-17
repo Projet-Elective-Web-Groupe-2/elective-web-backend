@@ -1,15 +1,19 @@
-// Divers imports
+/**
+ * Le fichier principal du serveur.
+ * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
+ * @version 1.0.
+ */
+
+// Importation des fonctions
 const express = require('express');
 const mongoose = require('mongoose');
+
 // TODO : À décommenter une fois le routeur créé
 // const routes = require('./routers');
 const logger = require('./middlewares/logger');
 
-
-// On créé l'application avec Express
+// Initialisation de l'application avec Express
 const app = express();
-const port = process.env.PORT || 3000;
-
 
 // On connecte le serveur à la base de données
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true})
@@ -47,7 +51,8 @@ app.get('/test-connexion-db', function(req, res) {
 });
 /* ------------------------------------------------ */
 
-// On ouvre le port
+// Ouverture du port
+const port = process.env.PORT || 3000;
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);
 });
