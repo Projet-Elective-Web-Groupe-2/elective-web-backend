@@ -4,9 +4,10 @@
  * @version 1.0.
 */
 
-// Importation des fonctions
+// Importation des dépendances
 const express = require('express');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 // TODO : À décommenter une fois le routeur créé
 // const routes = require('./routers');

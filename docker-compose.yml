@@ -8,7 +8,7 @@ services:
     depends_on:
       - database
     environment:
-      MONGODB_URI: "mongodb://database:27017/bdd"
+      MONGODB_URI: ${MONGODB_URI}
     stdin_open: true
     tty: true
     networks:
