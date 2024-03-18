@@ -7,7 +7,6 @@
 const mongoose = require('mongoose');
 const userSchema = require("./userSchema");
 
-// Définition du schéma d'un client
 const clientSchema = new mongoose.Schema({
     // Le parrain du client
     referredBy: {

@@ -7,7 +7,6 @@
 const mongoose = require('mongoose');
 const userSchema = require("./userSchema");
 
-// Définition du schéma pour un restaurateur
 const restaurateurSchema = new mongoose.Schema({
     // Le parrain du restaurateur
     referredBy: {

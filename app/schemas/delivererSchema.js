@@ -7,7 +7,6 @@
 const mongoose = require('mongoose');
 const userSchema = require("./userSchema");
 
-// Définition du schéma pour un livreur
 const delivererSchema = new mongoose.Schema({
     // Le parrain du livreur
     referredBy: {

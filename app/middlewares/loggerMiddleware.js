@@ -11,9 +11,8 @@
  * @param {Function} next Le prochain middleware
 */
 function logger(req, res, next) {
-  // On récupère la date actuelle pour calculer le temps de réponse
   const start = Date.now();
-  // Dès que la réponse est envoyée au client, on affiche les logs dans la console
+
   res.on('finish', () => {
     console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url} - ${res.statusCode} (${Date.now() - start} ms)`);
   });
