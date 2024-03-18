@@ -5,7 +5,7 @@
 */
 
 const mongoose = require('mongoose');
-const restaurateurSchema = require("../schemas/restaurateur").restaurateurSchema;
+const restaurateurSchema = require("../schemas/restaurateurSchema");
 
 // Définition du modèle pour un restaurateur basé sur le schéma associé
 const restaurateurModel = mongoose.model("Restaurateur", restaurateurSchema);

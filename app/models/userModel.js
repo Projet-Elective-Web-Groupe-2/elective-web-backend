@@ -5,7 +5,7 @@
 */
 
 const mongoose = require('mongoose');
-const userSchema = require("../schemas/user").userSchema;
+const userSchema = require("../schemas/userSchema");
 
 // Définition du modèle pour un utilisateur basé sur le schéma associé
 const userModel = mongoose.model("User", userSchema);

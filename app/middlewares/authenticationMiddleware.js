@@ -12,7 +12,7 @@ const jwt = require('jsonwebtoken');
  * @param {Object} res La réponse HTTP
  * @param {Function} next Le prochain middleware
 */
-function authentication(req, res, next) {
+function verifyToken(req, res, next) {
     // On récupère le token depuis les headers de la requête
     const token = req.headers.authorization.split(' ')[1];
     // Si le token n'est pas renseigné, on renvoie une erreur
@@ -29,4 +29,4 @@ function authentication(req, res, next) {
     });
 }
 
-module.exports = authentication;
+module.exports = verifyToken;

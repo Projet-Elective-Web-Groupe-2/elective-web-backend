@@ -8,8 +8,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const logger = require('./middlewares/logger');
-const authentication = require('./middlewares/authentication');
+const logger = require('./middlewares/loggerMiddleware');
+const authentication = require('./middlewares/authenticationMiddleware');
 
 // Initialisation de l'application avec Express
 const app = express();

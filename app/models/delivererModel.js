@@ -5,7 +5,7 @@
 */
 
 const mongoose = require('mongoose');
-const delivererSchema = require("../schemas/deliverer").delivererSchema;
+const delivererSchema = require("../schemas/delivererSchema");
 
 // Définition du modèle pour un livreur basé sur le schéma associé
 const delivererModel = mongoose.model("Deliverer", delivererSchema);

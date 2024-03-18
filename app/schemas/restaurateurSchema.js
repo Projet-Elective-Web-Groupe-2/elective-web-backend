@@ -5,7 +5,7 @@
 */
 
 const mongoose = require('mongoose');
-const userSchema = require("./user").userSchema;
+const userSchema = require("./userSchema");
 
 // Définition du schéma pour un restaurateur
 const restaurateurSchema = new mongoose.Schema({
