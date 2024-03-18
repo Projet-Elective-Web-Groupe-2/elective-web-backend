@@ -1,5 +1,5 @@
 /**
- * Le fichier contenant les routes d'authentification.
+ * Le routeur pour l'authentification.
  * @author GAURE Warren
  * @version 1.0
 */
