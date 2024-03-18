@@ -1,20 +1,24 @@
 /**
  * Le fichier principal du serveur.
  * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
- * @version 1.0.
+ * @version 1.0
 */
 
 // Importation des dépendances
 const express = require('express');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-
-// TODO : À décommenter une fois le routeur créé
-// const routes = require('./routers');
+const cors = require('cors');
 const logger = require('./middlewares/logger');
+const authentication = require('./middlewares/authentication');
 
 // Initialisation de l'application avec Express
 const app = express();
+
+// Chargement des variables d'environnement
+require("dotenv").config();
+
+// Port du serveur
+const port = process.env.PORT || 3000;
 
 // On connecte le serveur à la base de données
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true})
@@ -25,16 +29,15 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     console.error("Error while connecting to the database: ", error);
 });
 
-// On set up les middlewares
+// Ajout des middlewares au serveur
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(logger);
+app.use(authentication);
 
-// On set up le router
-// TODO : À décommenter une fois le routeur créé
-// app.use('/', routes);
-
-/* ----- À SUPPRIMER UNE FOIS LE ROUTEUR FAIT ----- */
+/* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
 app.get('/test', function(req, res) {
     res.send("Hello World !");
@@ -43,18 +46,15 @@ app.get('/test', function(req, res) {
 // Route de test de la connexion à la base de données
 app.get('/test-connexion-db', function(req, res) {
     if (mongoose.connection.readyState == 1) {
-        res.send("Connected to the database.");
+        res.send("Connected to the database");
     }
     else {
-        res.status(500).send("Error while connecting to the database.");
+        res.status(500).send("Error while connecting to the database");
     }
 });
 /* ------------------------------------------------ */
 
 // Ouverture du port
-const port = process.env.PORT || 3000;
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);
 });
-
-module.exports = app;
