@@ -8,8 +8,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
-const swaggerDoc = require("yamljs").load(__dirname + '/../swagger.yaml');
+const YAML = require('yamljs')
+const swaggerDoc = YAML.load('./swagger.yaml')
 // Importation des middlewares
+const cors = require('cors'); // Import the CORS middleware
 const logger = require('./middlewares/logger');
 
 require("dotenv").config()
@@ -27,10 +29,21 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 });
 
 // Ajout des composants à l'application
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
+
+app.get('/health', (_req, res) => {
+    res.status(200).json({
+        health: 'Ok'
+    })
+})
+
+app.listen(4000, ()=> {
+    console.log('Server is listening on port 4000')
+} )
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
