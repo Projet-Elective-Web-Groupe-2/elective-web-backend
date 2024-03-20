@@ -8,17 +8,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
-const swaggerDoc = require("yamljs").load('./swagger.yaml')
-
+const swaggerDoc = require("yamljs").load(__dirname + '/../swagger.yaml');
 // Importation des middlewares
 const logger = require('./middlewares/logger');
 
+require("dotenv").config()
 const app = express();
 
 const port = process.env.PORT || 3000;
 
 // Connexion à la base de données MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
     console.log("Connected to the database");
 })
