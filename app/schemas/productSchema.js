@@ -6,7 +6,7 @@
 
 const mongoose = require('mongoose');
 
-// Définition du schéma pour un produit (article).
+// Définition du schéma pour un produit.
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
