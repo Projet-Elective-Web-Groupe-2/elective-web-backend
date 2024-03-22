@@ -13,6 +13,11 @@ const restaurantSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    image: {
+        type: String,
+        unique: false,
+        required: false,
+    },
     ownerID: {
         type: Number,
         unique: false,
