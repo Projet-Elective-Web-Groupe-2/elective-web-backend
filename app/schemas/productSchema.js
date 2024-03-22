@@ -1,13 +1,13 @@
 /**
- * Le schéma représentant un menu.
+ * Le schéma représentant un produit (article).
  * @author GAURE Warren
  * @version 1.0
 */
 
 const mongoose = require('mongoose');
 
-// Définition du schéma pour une livraison.
-const menuSchema = new mongoose.Schema({
+// Définition du schéma pour un produit (article).
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         unique: false,
@@ -16,19 +16,18 @@ const menuSchema = new mongoose.Schema({
     image: {
         type: String,
         unique: false,
-        required: false,
+        required: true
     },
-    products : [{ 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+    description: {
+        type: String,
         unique: false,
         required: true
-    }],
-    totalPrice: {
+    },
+    price: {
         type: Number,
         unique: false,
         required: true
-    }
+    },
 });
 
-module.exports = menuSchema;
+module.exports = productSchema;

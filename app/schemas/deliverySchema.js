@@ -11,22 +11,22 @@ const deliverySchema = new mongoose.Schema({
     delivererID: {
         type: Number,
         unique: false,
-        required: true,
+        required: true
     },
     address: {
         type: String,
         unique: false,
-        required: true,
+        required: true
     },
     date: {
         type: Date,
         unique: false,
-        required: true,
+        required: true
     },
     status: {
         type: Boolean,
         unique: false,
-        required: true,
+        required: true
     }
 });
 
