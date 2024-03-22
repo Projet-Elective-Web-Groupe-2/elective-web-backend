@@ -7,6 +7,6 @@
 const deliverySchema = require('../schemas/deliverySchema');
 
 // Définition du modèle pour une livraison.
-const deliveryModel = mongoose.model('delivery', deliverySchema);
+const deliveryModel = mongoose.model('Delivery', deliverySchema);
 
 module.exports = deliveryModel;
