@@ -21,7 +21,8 @@ const deliverySchema = new mongoose.Schema({
     date: {
         type: Date,
         unique: false,
-        required: true
+        required: true,
+        default: Date.now()
     },
     status: {
         type: Boolean,

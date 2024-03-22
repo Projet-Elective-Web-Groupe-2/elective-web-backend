@@ -27,6 +27,7 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         unique: false,
         required: true,
+        default: Date.now()
     },
     status: {
         type: Boolean,
