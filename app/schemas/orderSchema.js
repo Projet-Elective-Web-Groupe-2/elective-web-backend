@@ -24,12 +24,12 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     date: {
-        type: String,
+        type: Date,
         unique: false,
         required: true,
     },
     status: {
-        type: String,
+        type: Boolean,
         unique: false,
         required: true,
     },
@@ -44,7 +44,12 @@ const orderSchema = new mongoose.Schema({
         ref: 'Product',
         unique: false,
         required: false
-    }]
+    }],
+    totalPrice: {
+        type: Number,
+        unique: false,
+        required: true,
+    }
 });
 
 module.exports = orderSchema;
