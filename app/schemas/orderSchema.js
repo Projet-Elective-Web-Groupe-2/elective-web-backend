@@ -1,42 +1,37 @@
 /**
- * Le schéma représentant un restaurant.
+ * Le schéma représentant une commande.
  * @author GAURE Warren
  * @version 1.0
 */
 
 const mongoose = require('mongoose');
 
-// Définition du schéma pour un restaurant.
-const restaurantSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        unique: true,
+// Définition du schéma pour une commande.
+const orderSchema = new mongoose.Schema({
+    clientID: {
+        type: Number,
+        unique: false,
         required: true
     },
-    ownerID: {
-        type: Number,
+    restaurantID: {
+        type: String,
         unique: false,
         required: true
     },
     address: {
         type: String,
-        unique: true,
-        required: true
+        unique: false,
+        required: true,
     },
-    description: {
+    date: {
         type: String,
         unique: false,
-        required: false
+        required: true,
     },
     status: {
-        type: Boolean,
-        unique: false,
-        required: true
-    },
-    openingHours: {
         type: String,
         unique: false,
-        required: true
+        required: true,
     },
     menus : [{ 
         type: mongoose.Schema.Types.ObjectId,
@@ -52,4 +47,4 @@ const restaurantSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = restaurantSchema;
+module.exports = orderSchema;

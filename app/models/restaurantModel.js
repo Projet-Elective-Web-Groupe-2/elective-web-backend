@@ -6,6 +6,7 @@
 
 const restaurantSchema = require('../schemas/restaurantSchema');
 
+// Définition du modèle pour un restaurant.
 const restaurantModel = mongoose.model('Restaurant', restaurantSchema);
 
 module.exports = restaurantModel;
