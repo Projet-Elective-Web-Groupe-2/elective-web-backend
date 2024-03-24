@@ -49,14 +49,12 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     referredBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: Number,
         unique: true,
         required: false
     },
     referrerOf: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: Number,
         unique: true,
         required: false
     },
