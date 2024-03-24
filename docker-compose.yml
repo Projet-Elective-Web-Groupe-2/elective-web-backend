@@ -6,7 +6,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - database
+      - mongoDB
+      - mySQL
     environment:
       MONGODB_URI: ${MONGODB_URI}
     stdin_open: true
@@ -15,8 +16,8 @@ services:
       - frontend_backend
       - backend_database
 
-  database:
-    image: mongo
+  mongoDB:
+    image: mongo:latest
     ports:
       - "27017:27017"
     volumes:
@@ -24,6 +25,20 @@ services:
     networks:
       - backend_database
   
+  mySQL:
+    image: mysql:latest
+    ports:
+      - "3336:3336"
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - backend_database
+
 networks:
   frontend_backend:
     external: true
