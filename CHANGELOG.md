@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.3...v2.0.4) (2024-03-25)
+
+
+### Bug Fixes
+
+* **test:** tried to change tag version ([7b9cdae](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/7b9cdaebae75d2c5a781e2e4fe080be8dd402fc4))
+
 ## [2.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.1.0...v2.0.0) (2024-03-25)
 
 
