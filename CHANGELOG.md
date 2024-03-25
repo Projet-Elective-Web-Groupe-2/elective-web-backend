@@ -1,3 +1,14 @@
+## [2.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.1.0...v2.0.0) (2024-03-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **automatisation:** Add breaking change
+
+### Features
+
+* **automatisation:** Add breaking change ([f78e1cf](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f78e1cffa9ddaf3e3ed118423aba234fde3b1469))
+
 ## [1.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.0.1...v1.1.0) (2024-03-25)
 
 
