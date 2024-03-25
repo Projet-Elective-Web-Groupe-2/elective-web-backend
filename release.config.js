@@ -12,9 +12,9 @@ module.exports = {
   preset: 'conventionalcommits',
   release: {
     branches: [
-      { name: 'main', prerelease: true },
-      { name: 'feat/NewDeploySemanticRelease', prerelease: true },
-      { name: 'feat/BranchCherryPick', prerelease: true },
+      { name: 'main', prerelease: false }, // Modifier prerelease en false
+      { name: 'feat/NewDeploySemanticRelease', prerelease: false }, // Modifier prerelease en false
+      { name: 'feat/BranchCherryPick', prerelease: false }, // Modifier prerelease en false
     ],
   },
-};
+}  
