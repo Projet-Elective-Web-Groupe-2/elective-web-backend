@@ -1,5 +1,5 @@
 module.exports = {
-  branches: ['main', 'feat/NewDeploySemanticRelease'], // Ajoutez la branche de fonctionnalité à surveiller pour les nouvelles versions
+  branches: ['main', 'feat/NewDeploySemanticRelease', 'feat/BranchCherryPick'], // Ajoutez la branche de fonctionnalité à surveiller pour les nouvelles versions
   plugins: [
     '@semantic-release/commit-analyzer', // Analyse les messages de commit pour déterminer le type de version
     '@semantic-release/release-notes-generator', // Génère automatiquement les notes de publication
@@ -14,6 +14,7 @@ module.exports = {
     branches: [
       { name: 'main', prerelease: true },
       { name: 'feat/NewDeploySemanticRelease', prerelease: true },
+      { name: 'feat/BranchCherryPick', prerelease: true },
     ],
   },
 };
