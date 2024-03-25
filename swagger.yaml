@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info: 
   version: 1.0.0
-  title: CESI EATS SWAGGER API test
+  title: CESI EATS SWAGGER API
   description: > 
     Projet Elective WEB FISA A4 INFO
 servers: 
