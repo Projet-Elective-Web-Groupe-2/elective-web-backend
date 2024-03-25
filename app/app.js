@@ -23,10 +23,10 @@ const port = process.env.PORT || 3000;
 // Connexion à la base de données MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
-    console.log("Connected to the database");
+    console.log("Connected to the MongoDB database.");
 })
 .catch((error) => {
-    console.error("Error while connecting to the database : ", error);
+    console.error("Error while connecting to the MongoDB database : ", error);
 });
 
 // Ajout des composants à l'application

@@ -13,22 +13,22 @@ services:
     stdin_open: true
     tty: true
     networks:
-      - frontend_backend
-      - backend_database
+      - frontend
+      - databases
 
   mongoDB:
-    image: mongo:latest
+    image: mongo
     ports:
       - "27017:27017"
     volumes:
       - ./volumes/mongodb:/data/database
     networks:
-      - backend_database
+      - databases
   
   mySQL:
-    image: mysql:latest
+    image: mysql
     ports:
-      - "3336:3336"
+      - "3306:3306"
     volumes:
       - ./volumes/mysql:/var/lib/mysql
     environment:
@@ -37,10 +37,10 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
-      - backend_database
+      - databases
 
 networks:
-  frontend_backend:
+  frontend:
     external: true
-  backend_database:
+  databases:
     driver: bridge

@@ -25,7 +25,7 @@ function initializeDatabase() {
     console.log("Connected to the MySQL database");
   })
   .catch((error) => {
-    console.error("Error while connecting to the MySQL database");
+    console.error("Error while connecting to the MySQL database", error.message);
   });
 
   return sequelize;
