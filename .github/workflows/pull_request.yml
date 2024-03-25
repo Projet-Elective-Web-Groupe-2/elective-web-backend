@@ -3,9 +3,31 @@ name: Pull Request
 on: [ pull_request ]
 
 jobs:
+  
+  config:
+    name: 🛠 🔨 Setup Version
+    runs-on: ubuntu-latest
+    outputs:
+      APP_VERSION: ${{ steps.config.outputs.APP_VERSION }}
+      APP_NAME: ${{ steps.config.outputs.APP_NAME }}
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup version
+        id: config
+        run: |-
+          APP_NAME=$(node -p "require('./package.json').name")
+          APP_VERSION=$(node -p "require('./package.json').version")
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "app_name = $APP_NAME"
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "app_version = $APP_VERSION"
+
   docker:
     runs-on: ubuntu-latest
     name: 🐋 ☁️ Build Application
+    needs: [ config ]
     steps:
       -
         name: Set up QEMU
@@ -24,4 +46,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-back:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
