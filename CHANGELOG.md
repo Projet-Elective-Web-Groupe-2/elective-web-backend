@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.0...v2.0.1) (2024-03-25)
+
+
+### Bug Fixes
+
+* **commentaire:** fixed description swagger ([6d1ad0b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6d1ad0b168c0076dd8266fc1d717cc82a2c4c363))
+
 ## [2.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.1.0...v2.0.0) (2024-03-25)
 
 
