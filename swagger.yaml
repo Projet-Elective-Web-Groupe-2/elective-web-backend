@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
   description: > 
-    Projet Elective WEB FISA A4 INFO 2023
+    Projet Elective WEB FISA A4 INFO
 servers: 
   - url: http://localhost:4000
     description: dev server
