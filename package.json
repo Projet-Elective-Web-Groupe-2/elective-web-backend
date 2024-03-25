@@ -39,10 +39,10 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
     "eslint": "^8.57.0",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.1.0",
     "semantic-release": "^16.0.0"
-}
-
+  }
 }
