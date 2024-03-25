@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.0.1...v1.1.0) (2024-03-25)
+
+
+### Features
+
+* **automatisation:** test auto release ([1d479a6](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/1d479a6c08f6f9c40b3a8e49b3c7c41da8cbcf2f))
+
 ## [1.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.0.0...v1.0.1) (2024-03-25)
 
 
