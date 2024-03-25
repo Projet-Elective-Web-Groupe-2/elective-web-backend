@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.1...v2.0.2) (2024-03-25)
+
+
+### Bug Fixes
+
+* **automatisation:** Changed semantic release version ([995d38f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/995d38face8739ece410f626e176b8e1f07491ae))
+
 ## [2.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.0...v2.0.1) (2024-03-25)
 
 
