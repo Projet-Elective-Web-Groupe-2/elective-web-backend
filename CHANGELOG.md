@@ -1,24 +1,3 @@
-## [2.0.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.2...v2.0.3) (2024-03-25)
-
-
-### Bug Fixes
-
-* **test:** tried to reset tag number to start project ([dc5678e](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/dc5678eb5a461b457a5d3ac508f530be0a19a8ab))
-
-## [2.0.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.1...v2.0.2) (2024-03-25)
-
-
-### Bug Fixes
-
-* **automatisation:** Changed semantic release version ([995d38f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/995d38face8739ece410f626e176b8e1f07491ae))
-
-## [2.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.0...v2.0.1) (2024-03-25)
-
-
-### Bug Fixes
-
-* **commentaire:** fixed description swagger ([6d1ad0b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6d1ad0b168c0076dd8266fc1d717cc82a2c4c363))
-
 ## [2.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v1.1.0...v2.0.0) (2024-03-25)
 
 
