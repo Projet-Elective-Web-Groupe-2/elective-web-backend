@@ -1,3 +1,15 @@
+## [2.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.4...v2.1.0) (2024-03-26)
+
+
+### Features
+
+* **Automatisation:** Added branch Semantic-Release to config ([7ebbf5c](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/7ebbf5c54f3f2846a668234c80412ba324b347e9))
+
+
+### Bug Fixes
+
+* **Automatisation:** fix branch ([1b1452a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/1b1452abf06a45280508a10e2b3e778c08d87ac7))
+
 ## [2.0.4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.3...v2.0.4) (2024-03-25)
 
 
