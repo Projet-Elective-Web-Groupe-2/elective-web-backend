@@ -1,6 +1,6 @@
 {
   "name": "elective-web-backend",
-  "version": "2.1.0",
+  "version": "0.0.0-development",
   "description": "Partie backend du projet \"Élective Web\"",
   "main": "app.js",
   "scripts": {
