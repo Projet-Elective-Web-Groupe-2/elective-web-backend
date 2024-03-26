@@ -1,6 +1,9 @@
 name: Release npm package
 
-on: [ pull_request ]
+on:
+  push:
+    branches:
+      - develop
 
 jobs:
   release:
