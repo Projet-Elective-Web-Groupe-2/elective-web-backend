@@ -1,6 +1,6 @@
 /**
  * Le fichier principal de l'application.
- * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
+ * @author GAURE Warren, JOURNEL Nicolas
  * @version 1.0
 */
 
@@ -8,15 +8,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
-const YAML = require('yamljs')
-const swaggerDoc = YAML.load('./swagger.yaml')
+const YAML = require('yamljs');
+const swaggerDoc = YAML.load('./swagger.yaml');
+
 // Importation des middlewares
-const cors = require('cors'); // Import the CORS middleware
+const cors = require('cors');
 const logger = require('./middlewares/logger');
 
-require("dotenv").config()
-const app = express();
+// Chargement des variables d'environnement
+require("dotenv").config();
 
+const app = express();
 const port = process.env.PORT || 3000;
 
 // Connexion à la base de données MongoDB
@@ -29,21 +31,11 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 });
 
 // Ajout des composants à l'application
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
-app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
-
-app.get('/health', (_req, res) => {
-    res.status(200).json({
-        health: 'Ok'
-    })
-})
-
-app.listen(4000, ()=> {
-    console.log('Server is listening on port 4000')
-} )
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
