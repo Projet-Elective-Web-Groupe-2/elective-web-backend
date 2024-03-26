@@ -14,7 +14,7 @@ const swaggerDoc = YAML.load('./swagger.yaml')
 const cors = require('cors'); // Import the CORS middleware
 const logger = require('./middlewares/logger');
 
-require("dotenv").config()
+require('dotenv').config();
 const app = express();
 
 const port = process.env.PORT || 3000;
