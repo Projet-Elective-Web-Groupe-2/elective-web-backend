@@ -7,7 +7,7 @@
     "start": "node ./app/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./app/app.js",
-    "semantic-release": "require('dotenv').config(); semantic-release --no-ci"
+    "semantic-release": "npx semantic-release --no-ci"
   },
   "repository": {
     "type": "git",
