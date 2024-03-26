@@ -13,7 +13,7 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 
 // Importation des middlewares
 const cors = require('cors');
-const logger = require('./middlewares/logger');
+const logger = require('./middlewares/loggerMiddleware');
 
 // Chargement des variables d'environnement
 require("dotenv").config();
