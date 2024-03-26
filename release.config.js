@@ -1,21 +1,21 @@
 module.exports = {
-  branches: ['main', 'develop', 'feat/SemanticReleaseTesting'], // Ajoutez la branche de fonctionnalité à surveiller pour les nouvelles versions
+  branches: ['main', 'develop', 'feat/SemanticReleaseTesting'],
   plugins: [
-    '@semantic-release/commit-analyzer', // Analyse les messages de commit pour déterminer le type de version
-    '@semantic-release/release-notes-generator', // Génère automatiquement les notes de publication
-    '@semantic-release/changelog', // Génère automatiquement le journal des modifications
+    '@semantic-release/commit-analyzer',
+    '@semantic-release/release-notes-generator',
+    '@semantic-release/changelog',
     '@semantic-release/npm',
+    '@semantic-release/github', // Ajout du plugin GitHub
     ['@semantic-release/git', {
-      assets: ['package.json', 'CHANGELOG.md'], // Fichiers à inclure dans les commits de version
+      assets: ['package.json', 'CHANGELOG.md'],
     }],
   ],
-  // Définir une plage de versions autorisées
   preset: 'conventionalcommits',
   release: {
     branches: [
-      { name: 'main', prerelease: false }, // Modifier prerelease en false
-      { name: 'develop', prerelease: false }, // Modifier prerelease en false
-      { name: 'feat/SemanticReleaseTesting', prerelease: false }, // Modifier prerelease en false
+      { name: 'main', prerelease: false },
+      { name: 'develop', prerelease: false },
+      { name: 'feat/SemanticReleaseTesting', prerelease: false },
     ],
   },
-}  
+}
