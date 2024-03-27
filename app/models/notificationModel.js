@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const mongoose = require('mongoose');
 const notificationSchema = require('../schemas/notificationSchema');
 
 // Définition du modèle pour une notification.

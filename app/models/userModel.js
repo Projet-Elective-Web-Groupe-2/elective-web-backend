@@ -4,6 +4,7 @@
  * @version 1.0
  */
 
+const mongoose = require('mongoose');
 const userSchema = require('../schemas/userSchema');
 
 // Définition du modèle pour un utilisateur.

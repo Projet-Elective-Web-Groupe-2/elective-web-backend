@@ -4,11 +4,7 @@
  * @version 1.0
 */
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require("../models/userModel");
 const authenticationService = require('../services/authenticationService');
-
 
 const login = async (req, res) => {
     // Vérification de la présence du body dans la requête

@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const mongoose = require('mongoose');
 const menuSchema = require('../schemas/menuSchema');
 
 // Définition du modèle pour une livraison.

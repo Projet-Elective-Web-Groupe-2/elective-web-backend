@@ -54,7 +54,7 @@ app.get('/test', function(req, res) {
 });
 
 // Route de test de la connexion à la base de données
-app.get('/test-connexion-db', function(req, res) {
+app.get('/test-mongo', function(req, res) {
     if (mongoose.connection.readyState == 1) {
         res.send("Connected to the database");
     }

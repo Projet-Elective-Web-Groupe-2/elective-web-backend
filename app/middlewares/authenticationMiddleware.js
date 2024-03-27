@@ -1,7 +1,7 @@
 /**
  * Middleware de gestion de l'authentification.
  * @author GAURE Warren
- * @version 1.1
+ * @version 2.0
 */
 
 const jwt = require('jsonwebtoken');
@@ -13,9 +13,19 @@ const jwt = require('jsonwebtoken');
  * @param {Function} next Le prochain middleware.
 */
 function verifyToken(req, res, next) {
-    // Exclusion des routes de login et d'inscription
-    if (req.path.includes('/auth/login') || req.path.includes('/auth/register')) {
-        next();
+    // Exclusion de certaines routes
+    const authorizedRoutes = [
+        '/auth/login',
+        '/auth/register',
+        '/test',
+        '/test-mongo',
+        '/docs',
+        '/healthcheck',
+        '/metrics'
+    ];
+
+    if (authorizedRoutes.some(route => route === req.path)) {
+        return next();
     }
 
     const token = req.headers.authorization.split(' ')[1];
