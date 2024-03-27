@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema({
     },
     userType: {
         type: String,
+        enum: [
+            "CLIENT",
+            "RESTAURATEUR",
+            "LIVREUR",
+            "DEVELOPPEUR TIERS"
+        ],
         unique: false,
         required: true
     },
