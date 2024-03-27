@@ -1,3 +1,15 @@
+## [2.3.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.2.0...v2.3.0) (2024-03-27)
+
+
+### Features
+
+* **data:** isSuspended false by default ([65b02c3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/65b02c3775d2c82b57e3dc789ec096fab917eb39))
+
+
+### Bug Fixes
+
+* **data:** changed a few things ([c9550fe](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c9550fe6b0471f73ff5dc48b258930e6dabd3311))
+
 ## [2.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.1.0...v2.2.0) (2024-03-26)
 
 
