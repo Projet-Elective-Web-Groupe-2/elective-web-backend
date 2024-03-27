@@ -24,6 +24,10 @@ const login = async (req, res) => {
         // Appel au service d'authentification pour vérifier l'existence de l'utilisateur dans la base de données
         const existingUser = await authenticationService.findUserByEmail(email);
 
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+
         // Appel au service d'authentification pour vérifier le mot de passe
         const isPasswordCorrect = await authenticationService.comparePassword(existingUser.password, password);
         
@@ -65,7 +69,6 @@ const register = async (req, res) => {
     }
 
     const email = req.body["email"];
-    // La variable changera de valeur
     const password = req.body["password"];
     const userType = req.body["userType"];
     const phoneNumber = req.body["phoneNumber"];
@@ -118,6 +121,10 @@ const register = async (req, res) => {
                 throw new Error("Invalid user type");
             }
         }
+        
+        const token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+        
+        return res.status(200).json({ token });
     }
     catch(error) {
         if (error.message === "User already exists") {
@@ -134,10 +141,6 @@ const register = async (req, res) => {
             res.status(500).json({ error: "Registration failed" });
         }
     }
-
-    const token = authenticationService.generateJWT(newUser.userID, newUser.userType);
-
-    return res.status(200).json({ token });
 };
 
 module.exports = {

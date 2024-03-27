@@ -17,6 +17,7 @@ function verifyToken(req, res, next) {
     const authorizedRoutes = [
         '/auth/login',
         '/auth/register',
+        '/auth/logout',
         '/test',
         '/test-mongo',
         '/docs',

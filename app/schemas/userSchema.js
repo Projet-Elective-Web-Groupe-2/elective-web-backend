@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema({
     isSuspended: {
         type: Boolean,
         unique: false,
-        required: true
+        required: true,
     }
 });
 

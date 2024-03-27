@@ -31,6 +31,7 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
             userType: userType,
             address: address,
             referralCode: (Math.random() + 1).toString(36).substring(2),
+            isSuspended: false
         });
 
         await newUser.save();
@@ -58,6 +59,7 @@ const createRestaurateur = async (email, password, userType, phoneNumber) => {
             password: password,
             phoneNumber: phoneNumber,
             userType: userType,
+            isSuspended: false
         });
 
         await newUser.save();
@@ -86,6 +88,7 @@ const createDeveloper = async (email, password, userType, phoneNumber) => {
             password: password,
             phoneNumber: phoneNumber,
             userType: userType,
+            isSuspended: false
         });
 
         await newUser.save();
@@ -105,9 +108,7 @@ const createDeveloper = async (email, password, userType, phoneNumber) => {
 const findUserByEmail = async (email) => {
     try {
         const user = await User.findOne({ email });
-        if (!user) {
-            throw new Error("User not found");
-        }
+
         return user;
     }
     catch (error) {
@@ -149,7 +150,7 @@ const comparePassword = async (password, passwordToVerify) => {
  * @returns {token} Le JSON Web Token.
 */
 const generateJWT = (userID, userType) => {
-    const token = jwt.sign({ id : userID, type : userType }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id : userID, type : userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
     return token;
 };
 
