@@ -53,8 +53,8 @@ app.get('/test-mongo', function(req, res) {
 });
 
 // Route de test de la connexion à la base de données MySQL
-app.get('/test-mysql', function(req, res) {
-    const sequelize = initializeDatabase();
+app.get('/sql', function(req, res) {
+    initializeDatabase();
 });
 
 // Route de healthcheck
