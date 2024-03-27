@@ -7,13 +7,18 @@
 // Importation des modules
 const express = require('express');
 const mongoose = require('mongoose');
+const mongoSanitize = require('express-mongo-sanitize');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDoc = YAML.load('./swagger.yaml');
 
 // Importation des middlewares
 const cors = require('cors');
-const logger = require('./middlewares/loggerMiddleware');
+const loggerMiddleware = require('./middlewares/loggerMiddleware');
+const authenticationMiddleware = require('./middlewares/authenticationMiddleware');
+
+// Importation des routes
+const authenticationRouter = require('./routers/authenticationRouter');
 
 // Chargement des variables d'environnement
 require("dotenv").config();
@@ -34,8 +39,13 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(logger);
+app.use(mongoSanitize());
+app.use(loggerMiddleware);
+app.use(authenticationMiddleware);
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+
+// Ajout des routes à l'application
+app.use('/auth', authenticationRouter);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
