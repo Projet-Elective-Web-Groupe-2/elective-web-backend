@@ -21,7 +21,8 @@ function verifyToken(req, res, next) {
         '/test-mongo',
         '/docs',
         '/healthcheck',
-        '/metrics'
+        '/metrics',
+        '/favicon.ico'
     ];
 
     if (authorizedRoutes.some(route => route === req.path)) {
