@@ -1,12 +1,12 @@
 version: '3'
 
 services:
-  backend:
+  authentication:
     build: .
     ports:
       - "3000:3000"
     depends_on:
-      - database
+      - mongoDB
       - traefik
     environment:
       MONGODB_URI: ${MONGODB_URI}
@@ -15,17 +15,17 @@ services:
     labels:
      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
     networks:
-      - frontend_backend
-      - backend_database
+      - frontend
+      - databases
 
-  database:
+  mongoDB:
     image: mongo
     ports:
       - "27017:27017"
     volumes:
       - ./volumes/mongodb:/data/database
     networks:
-      - backend_database
+      - databases
     depends_on:
       - traefik
     labels:
@@ -41,7 +41,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   
 networks:
-  frontend_backend:
+  frontend:
     external: true
-  backend_database:
+  databases:
     driver: bridge

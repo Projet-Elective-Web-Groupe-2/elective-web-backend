@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const mongoose = require('mongoose');
 const productSchema = require('../schemas/productSchema');
 
 // Définition du modèle pour un produit.

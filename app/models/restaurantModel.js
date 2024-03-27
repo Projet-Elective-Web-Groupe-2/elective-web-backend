@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const mongoose = require('mongoose');
 const restaurantSchema = require('../schemas/restaurantSchema');
 
 // Définition du modèle pour un restaurant.

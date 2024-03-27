@@ -4,6 +4,7 @@
  * @version 1.0 
 */
 
+const mongoose = require('mongoose');
 const orderSchema = require('../schemas/orderSchema');
 
 // Définition du modèle pour une commande.

@@ -1,22 +1,29 @@
 /**
  * Le fichier principal de l'application.
- * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
+ * @author GAURE Warren, JOURNEL Nicolas
  * @version 1.0
 */
 
 // Importation des modules
 const express = require('express');
 const mongoose = require('mongoose');
+const mongoSanitize = require('express-mongo-sanitize');
 const swaggerUI = require('swagger-ui-express');
-const YAML = require('yamljs')
-const swaggerDoc = YAML.load('./swagger.yaml')
+const YAML = require('yamljs');
+const swaggerDoc = YAML.load('./swagger.yaml');
+
 // Importation des middlewares
-const cors = require('cors'); // Import the CORS middleware
-const logger = require('./middlewares/logger');
+const cors = require('cors');
+const loggerMiddleware = require('./middlewares/loggerMiddleware');
+const authenticationMiddleware = require('./middlewares/authenticationMiddleware');
 
-require("dotenv").config()
+// Importation des routes
+const authenticationRouter = require('./routers/authenticationRouter');
+
+// Chargement des variables d'environnement
+require("dotenv").config();
+
 const app = express();
-
 const port = process.env.PORT || 3000;
 
 // Connexion à la base de données MongoDB
@@ -29,21 +36,16 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 });
 
 // Ajout des composants à l'application
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(logger);
-app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
+app.use(mongoSanitize());
+app.use(loggerMiddleware);
+app.use(authenticationMiddleware);
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
-app.get('/health', (_req, res) => {
-    res.status(200).json({
-        health: 'Ok'
-    })
-})
-
-app.listen(4000, ()=> {
-    console.log('Server is listening on port 4000')
-} )
+// Ajout des routes à l'application
+app.use('/auth', authenticationRouter);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
@@ -52,7 +54,7 @@ app.get('/test', function(req, res) {
 });
 
 // Route de test de la connexion à la base de données
-app.get('/test-connexion-db', function(req, res) {
+app.get('/test-mongo', function(req, res) {
     if (mongoose.connection.readyState == 1) {
         res.send("Connected to the database");
     }
