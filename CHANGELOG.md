@@ -1,3 +1,27 @@
+## [3.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.4.0...v3.0.0) (2024-03-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* first microservice done
+
+### Features
+
+* **authentication:** authentication service file done ([4ac2326](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/4ac2326a2fd9fa2f03cac4949eaa8133b8329eb4))
+* **authentication:** finished router, controller and service ([6ea3ed2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6ea3ed261c2986b57cf262e34d0bebafbcfae514))
+* **authentication:** Routes implementation + injection prevention ([d548d51](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d548d516f6d3896c4c33d679efa01eb07dbcd1ba))
+* first microservice done ([5bc051c](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5bc051cd858c5a71bb4f2f23afd975350d95e1ed))
+* **jwt:** added authentication middleware ([3e5332a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/3e5332a8b614474b1da260df1113674e66e3ea42))
+
+
+### Bug Fixes
+
+* added an authorized route in the middleware ([0611833](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/0611833f28d62c80bd9c680f96553657ef972994))
+* **authentication:** Removed test.txt ([2c08efd](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2c08efd9e91988e916d8c662e3bd4a25d69f58db))
+* fixed A LOT of stuff ([1e3f938](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/1e3f9388ee951f8d4f45c90ebcd2fa1abaf10f5d))
+* Merges in docker-compose ([07d48b5](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/07d48b52cb295df043fcc0a90947362765490758))
+* userType now an enum of Strings ([5a95a63](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5a95a63fdb3aed90c5e224b667b736ecfb37f00b))
+
 ## [2.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.3.0...v2.4.0) (2024-03-27)
 
 
