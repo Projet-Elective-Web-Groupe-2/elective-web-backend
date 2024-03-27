@@ -25,7 +25,7 @@ services:
     volumes:
       - ./volumes/mongodb:/data/database
     networks:
-      - backend_database
+      - databases
     depends_on:
       - traefik
     labels:
