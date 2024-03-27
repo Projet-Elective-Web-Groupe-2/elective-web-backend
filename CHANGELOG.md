@@ -1,3 +1,10 @@
+## [2.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.3.0...v2.4.0) (2024-03-27)
+
+
+### Features
+
+* added Traefik to docker compose ([92561cb](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/92561cb235f0b0ded5a9599d9afc37778274958e))
+
 ## [2.3.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.2.0...v2.3.0) (2024-03-27)
 
 
