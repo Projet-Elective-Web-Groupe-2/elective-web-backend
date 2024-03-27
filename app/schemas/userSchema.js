@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     lastName: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     email: {
         type: String,
@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     referredBy: {
         type: Number,
@@ -66,7 +66,8 @@ const userSchema = new mongoose.Schema({
     isSuspended: {
         type: Boolean,
         unique: false,
-        required: true
+        required: true,
+        default: false
     }
 });
 
