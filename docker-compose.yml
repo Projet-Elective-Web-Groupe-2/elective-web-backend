@@ -7,10 +7,13 @@ services:
       - "3000:3000"
     depends_on:
       - database
+      - traefik
     environment:
       MONGODB_URI: ${MONGODB_URI}
     stdin_open: true
     tty: true
+    labels:
+     - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
     networks:
       - frontend_backend
       - backend_database
@@ -23,6 +26,19 @@ services:
       - ./volumes/mongodb:/data/database
     networks:
       - backend_database
+    depends_on:
+      - traefik
+    labels:
+     - "traefik.http.routers.mongo.rule=Host(`mongo.localhost`)"
+
+  traefik:
+    image: traefik:v3.0
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   
 networks:
   frontend_backend:
