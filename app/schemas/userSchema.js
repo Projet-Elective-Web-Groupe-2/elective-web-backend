@@ -73,6 +73,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         unique: false,
         required: true,
+        default: false
     }
 });
 
