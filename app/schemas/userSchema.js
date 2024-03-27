@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     lastName: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     email: {
         type: String,
@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String,
         unique: false,
-        required: true
+        required: false
     },
     referredBy: {
         type: Number,

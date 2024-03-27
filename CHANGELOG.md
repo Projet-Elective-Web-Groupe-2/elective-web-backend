@@ -1,3 +1,37 @@
+## [2.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.1.0...v2.2.0) (2024-03-26)
+
+
+### Features
+
+* added SemRel action ([bedf1c4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/bedf1c4f6429f3865b662cb59f32b7affe454056))
+
+
+### Bug Fixes
+
+* added new user to bypass protected branch ([e143e77](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/e143e7759685901a74f68699e768677ea2414587))
+* added npm ci ([4f14850](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/4f14850c73e9f3b2b236d17227d5585795205f69))
+* added secret gh ([39a33aa](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/39a33aaf3dd32c73924bf8f3cf749fad1cc30ddf))
+* **Automatisation:** test final version ([3376cec](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/3376cec3f21737f2d2bc569724223031bf0df71a))
+* cleaned develop ([7c82c3d](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/7c82c3d753e9f2b902cb4b5021e39268cf76db32))
+* Fixed actions ([5651f2a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5651f2a686649b00f0dae1cef1024edbba77460e))
+* fixed release SemREl ([e2c5684](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/e2c56841fb47b725941836535f31284a50f46643))
+* fixed SemRel ([c30bd18](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c30bd18529d34505a303fe5bd057ed0b98e0d4bf))
+* fixed steps in workflow ([0c0cd5f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/0c0cd5fa3733cc9e2afc70b080b23c855112edd0))
+* fixed workflow permissions ([761b68f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/761b68f5f15cdde190962f02d07ddc0d13668222))
+* Github Action ([ec68031](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/ec68031f8a52f3b66abf585cc9950151058e3b35))
+
+## [2.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.4...v2.1.0) (2024-03-26)
+
+
+### Features
+
+* **Automatisation:** Added branch Semantic-Release to config ([7ebbf5c](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/7ebbf5c54f3f2846a668234c80412ba324b347e9))
+
+
+### Bug Fixes
+
+* **Automatisation:** fix branch ([1b1452a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/1b1452abf06a45280508a10e2b3e778c08d87ac7))
+
 ## [2.0.4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.0.3...v2.0.4) (2024-03-25)
 
 

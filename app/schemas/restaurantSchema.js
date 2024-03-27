@@ -20,7 +20,7 @@ const restaurantSchema = new mongoose.Schema({
     },
     ownerID: {
         type: Number,
-        unique: false,
+        unique: true,
         required: true
     },
     address: {
@@ -38,11 +38,6 @@ const restaurantSchema = new mongoose.Schema({
         unique: false,
         required: true
     },
-    openingHours: {
-        type: String,
-        unique: false,
-        required: true
-    },
     menus : [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Menu',
@@ -52,6 +47,12 @@ const restaurantSchema = new mongoose.Schema({
     products : [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
+        unique: false,
+        required: false
+    }],
+    orders : [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
         unique: false,
         required: false
     }]
