@@ -1,12 +1,4 @@
-/**
- * Le schéma représentant un restaurant.
- * @author GAURE Warren
- * @version 1.0
-*/
-
 const mongoose = require('mongoose');
-
-// Définition du schéma pour un restaurant.
 const restaurantSchema = new mongoose.Schema({
     name: {
         type: String,
