@@ -9,7 +9,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs')
-const restaurantController = require('./controllers/RestauController'); 
 const swaggerDoc = YAML.load('./swagger.yaml')
 // Importation des middlewares
 const cors = require('cors'); // Import the CORS middleware
@@ -65,7 +64,6 @@ app.get('/test-connexion-db', function(req, res) {
 // Route de healthcheck
 app.get('/healthcheck', (_req, res) => {
     res.status(200).json({ health: 'OK' })
-    app.post('/restaurants', restaurantController.createRestaurant);
 });
 /* -------------------------------------------------- */
 

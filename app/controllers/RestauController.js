@@ -14,7 +14,6 @@ exports.createRestaurant = async (req, res) => {
             ownerID: req.body.ownerID,
             description: req.body.description,
             status: req.body.status,
-            openingHours: req.body.openingHours,
         });
 
         const savedRestaurant = await newRestaurant.save();
