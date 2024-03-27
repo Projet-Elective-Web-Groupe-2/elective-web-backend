@@ -1,6 +1,6 @@
 /**
  * Le fichier principal de l'application.
- * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas
+ * @author GAURE Warren, GRENOUILLET Théo, JOURNEL Nicolas, AMARA Ahmed
  * @version 1.0
 */
 
