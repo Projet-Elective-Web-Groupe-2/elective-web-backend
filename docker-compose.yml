@@ -6,32 +6,16 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mongoDB
+      - database
     environment:
-      MONGODB_URI: ${MONGODB_URI} 
+      MONGODB_URI: ${MONGODB_URI}
     stdin_open: true
     tty: true
     networks:
       - frontend_backend
       - backend_database
 
-  mysql_database:  
-    image: mysql:5.7
-    environment:
-      MYSQL_DATABASE: 'electiveWeb'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'admin'
-      MYSQL_ROOT_PASSWORD: 'admin'
-    ports:
-      - "3306:3306"
-      depends_on:
-      -mysql_database
-    volumes:
-      - ./volumes/mysql:/var/lib/mysql
-    networks:
-      - backend_database
-
-  mongo_database: 
+  database:
     image: mongo
     ports:
       - "27017:27017"
@@ -39,7 +23,7 @@ services:
       - ./volumes/mongodb:/data/database
     networks:
       - backend_database
-
+  
 networks:
   frontend_backend:
     external: true

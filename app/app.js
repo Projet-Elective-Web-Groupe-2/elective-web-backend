@@ -33,7 +33,9 @@ app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
-app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
+app.use('/restaurants', restaurantRoutes);
+
 
 app.get('/health', (_req, res) => {
     res.status(200).json({
