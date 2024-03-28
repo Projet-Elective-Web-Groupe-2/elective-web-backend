@@ -1,32 +1,19 @@
 /**
  * Le fichier principal de l'application.
- * @author GAURE Warren, JOURNEL Nicolas
+ * @author GAURE Warren, JOURNEL Nicolas, AMARA Ahmed
  * @version 1.0
 */
 
-// Importation des modules
-const express = require('express');
 const mongoose = require('mongoose');
 const mongoSanitize = require('express-mongo-sanitize');
-const swaggerUI = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDoc = YAML.load('./swagger.yaml');
 
-// Importation des middlewares
-const cors = require('cors');
-const loggerMiddleware = require('../shared/middlewares/loggerMiddleware');
-const authenticationMiddleware = require('../shared/middlewares/authenticationMiddleware');
-
-// Importation des routes
-const authenticationRouter = require('./routers/authenticationRouter');
-
-// Chargement des variables d'environnement
 require("dotenv").config();
 
-const app = express();
+const app = require('../shared/appConfig');
 const port = process.env.PORT || 3000;
 
-// Connexion à la base de données MongoDB
+const authenticationRouter = require('./routers/authenticationRouter');
+
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
     console.log("Connected to the database");
@@ -35,16 +22,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     console.error("Error while connecting to the database : ", error);
 });
 
-// Ajout des composants à l'application
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
-app.use(loggerMiddleware);
-app.use(authenticationMiddleware);
-app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
-// Ajout des routes à l'application
+app.use(mongoSanitize());
+
 app.use('/auth', authenticationRouter);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
