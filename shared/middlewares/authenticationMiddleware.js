@@ -1,7 +1,7 @@
 /**
  * Middleware de gestion de l'authentification.
  * @author GAURE Warren
- * @version 2.1
+ * @version 1.0
 */
 
 const jwt = require('jsonwebtoken');

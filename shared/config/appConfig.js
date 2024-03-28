@@ -9,7 +9,7 @@ const cors = require('cors');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDoc = YAML.load('./swagger.yaml');
-const loggerMiddleware = require('./middlewares/loggerMiddleware');
+const loggerMiddleware = require('../middlewares/loggerMiddleware');
 
 const app = express();
 
