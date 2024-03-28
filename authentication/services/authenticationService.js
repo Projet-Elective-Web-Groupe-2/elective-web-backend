@@ -6,7 +6,7 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
+const User = require('../../shared/models/userModel');
 
 /**
  * Fonction permettant de créér un client ou un livreur dans la base de données.

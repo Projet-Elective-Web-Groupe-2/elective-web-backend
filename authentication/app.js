@@ -14,8 +14,8 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 
 // Importation des middlewares
 const cors = require('cors');
-const loggerMiddleware = require('./middlewares/loggerMiddleware');
-const authenticationMiddleware = require('./middlewares/authenticationMiddleware');
+const loggerMiddleware = require('../shared/middlewares/loggerMiddleware');
+const authenticationMiddleware = require('../shared/middlewares/authenticationMiddleware');
 
 // Importation des routes
 const authenticationRouter = require('./routers/authenticationRouter');
