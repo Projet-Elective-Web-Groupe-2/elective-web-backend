@@ -1,5 +1,5 @@
 /**
- * Le fichier principal de l'application.
+ * Le fichier principal du microservice d'authentification.
  * @author GAURE Warren, JOURNEL Nicolas, AMARA Ahmed
  * @version 1.0
 */
@@ -10,46 +10,40 @@ const mongoSanitize = require('express-mongo-sanitize');
 require("dotenv").config();
 
 const app = require('../shared/appConfig');
-const port = process.env.PORT || 3000;
-
 const authenticationRouter = require('./routers/authenticationRouter');
+const port = process.env.AUTH_PORT || 3000;
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
-    console.log("Connected to the database");
+    console.log("Connected to MongoDB");
 })
 .catch((error) => {
-    console.error("Error while connecting to the database : ", error);
+    console.error("Error while connecting to MongoDB : ", error);
 });
-
 
 app.use(mongoSanitize());
 
 app.use('/auth', authenticationRouter);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
-// Route de test
-app.get('/test', function(req, res) {
+app.get('/hello', function(req, res) {
     res.send("Hello World !");
 });
 
-// Route de test de la connexion à la base de données
-app.get('/test-mongo', function(req, res) {
+app.get('/mongo', function(req, res) {
     if (mongoose.connection.readyState == 1) {
-        res.send("Connected to the database");
+        res.send("Connected to MongoDB");
     }
     else {
-        res.status(500).send("Error while connecting to the database");
+        res.status(500).send("Error while connecting to MongoDB");
     }
 });
 
-// Route de healthcheck
 app.get('/healthcheck', (_req, res) => {
     res.status(200).json({ health: 'OK' })
 });
 /* -------------------------------------------------- */
 
-// Ouverture du port
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);
 });
