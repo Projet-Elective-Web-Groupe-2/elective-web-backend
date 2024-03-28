@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-order",
   "version": "0.0.0-development",
-  "description": "Microservice des commandes du projeet \"Élective Logiciel\"",	
+  "description": "Microservice des commandes du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

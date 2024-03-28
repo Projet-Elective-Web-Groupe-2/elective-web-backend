@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-delivery",
   "version": "0.0.0-development",
-  "description": "Microservice des livraisons du projeet \"Élective Logiciel\"",	
+  "description": "Microservice des livraisons du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

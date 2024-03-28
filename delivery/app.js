@@ -1,5 +1,5 @@
 /**
- * Le fichier principal du microservice des menus.
+ * Le fichier principal du microservice des livraisons.
  * @author GAURE Warren
  * @version 1.0
 */
@@ -18,7 +18,7 @@ require("dotenv").config();
 
 const app = express();
 
-const port = process.env.MENU_PORT || 3003;
+const port = process.env.DELIVERY_PORT || 3006;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

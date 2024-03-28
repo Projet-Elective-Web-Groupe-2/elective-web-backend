@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-users",
   "version": "0.0.0-development",
-  "description": "Microservice des utilisateurs du projeet \"Élective Logiciel\"",	
+  "description": "Microservice des utilisateurs du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

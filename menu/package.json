@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-menu",
   "version": "0.0.0-development",
-  "description": "Microservice des menus du projeet \"Élective Logiciel\"",	
+  "description": "Microservice des menus du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-monitoring",
   "version": "0.0.0-development",
-  "description": "Microservice de monitoring du projeet \"Élective Logiciel\"",	
+  "description": "Microservice de monitoring du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

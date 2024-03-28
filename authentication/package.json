@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-authentication",
   "version": "0.0.0-development",
-  "description": "Microservice d'authentification du projeet \"Élective Logiciel\"",	
+  "description": "Microservice d'authentification du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",

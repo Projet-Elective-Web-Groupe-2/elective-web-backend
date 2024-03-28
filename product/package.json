@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-product",
   "version": "0.0.0-development",
-  "description": "Microservice des articles du projeet \"Élective Logiciel\"",	
+  "description": "Microservice des articles du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
