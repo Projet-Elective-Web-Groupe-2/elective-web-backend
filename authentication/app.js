@@ -9,7 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 require("dotenv").config();
 
-const app = require('../shared/config/appConfig');
+const app = require('./config/appConfig');
 const authenticationRouter = require('./app/routers/authenticationRouter');
 const port = process.env.AUTH_PORT || 3000;
 
