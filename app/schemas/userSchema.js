@@ -44,7 +44,9 @@ const userSchema = new mongoose.Schema({
             "CLIENT",
             "RESTAURATEUR",
             "LIVREUR",
-            "DEVELOPPEUR TIERS"
+            "DEVELOPPEUR TIERS",
+            "SERVICE COMMERCIAL",
+            "SERVICE TECHNIQUE"
         ],
         unique: false,
         required: true

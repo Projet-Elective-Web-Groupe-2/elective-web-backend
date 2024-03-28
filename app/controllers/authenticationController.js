@@ -145,13 +145,40 @@ const register = async (req, res) => {
 };
 
 const getMetrics = async (req, res) => {
-    // 
     const token = req.headers.authorization.split(' ')[1];
+    
+    const { userID, userType } = utils.decodeJWT(token);
 
+    try {
+        if (!userID || !userType) {
+            throw new Error("Invalid token");
+        }
+        
+        if (userType != "SERVICE TECHNIQUE") {
+            throw new Error("Invalid user type");
+        }
+
+        const metrics = authenticationService.getMetrics(userID);
+
+        return res.status(200).json({ metrics });
+    }
+    catch (error) {
+        if (error.message === "Invalid token") {
+            res.status(401).json({ error: "Invalid token" });
+        }
+        else if (error.message === "Invalid user type") {
+            res.status(403).json({ error: "Forbidden" });
+        }
+        else {
+            console.error("Unexpected error while getting metrics : ", error);
+            res.status(500).json({ error: "Metrics collecting failed" });
+        }
+    }
 };
 
 module.exports = {
     login,
     logout,
-    register
+    register,
+    getMetrics
 };
