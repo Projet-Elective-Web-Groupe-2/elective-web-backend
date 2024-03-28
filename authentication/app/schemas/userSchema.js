@@ -59,12 +59,14 @@ const userSchema = new mongoose.Schema({
     referredBy: {
         type: Number,
         unique: true,
-        required: false
+        required: false,
+        sparse: true
     },
     referrerOf: {
         type: Number,
         unique: true,
-        required: false
+        required: false,
+        sparse: true
     },
     referralCode: {
         type: String,
