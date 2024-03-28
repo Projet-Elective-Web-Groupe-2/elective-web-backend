@@ -18,7 +18,7 @@ exports.createRestaurant = async (req, res) => {
 
         const savedRestaurant = await newRestaurant.save();
 
-        res.status(201);
+        res.status(201).send(savedRestaurant); // ajouté temporellement pour le debogage 
     } catch (err) {
         res.sendStatus(400); 
     }

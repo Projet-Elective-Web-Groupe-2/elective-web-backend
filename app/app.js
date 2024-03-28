@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs')
 const swaggerDoc = YAML.load('./swagger.yaml')
+const restaurantRoutes = require('./routes/restaurantRoutes');
 // Importation des middlewares
 const cors = require('cors'); // Import the CORS middleware
 const logger = require('./middlewares/logger');
@@ -43,7 +44,7 @@ app.get('/health', (_req, res) => {
     })
 })
 
-app.listen(4000, ()=> {
+/*app.listen(4000, ()=> {
     console.log('Server is listening on port 4000')
 } )
 
