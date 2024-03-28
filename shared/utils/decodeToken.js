@@ -1,5 +1,5 @@
 /**
- * Le fichier contenant des méthodes utiles pour l'application.
+ * Le fichier contenant la méthode pour décoder un token.
  * @author GAURE Warren
  * @version 1.0
 */
