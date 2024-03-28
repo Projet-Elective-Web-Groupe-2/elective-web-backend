@@ -5,6 +5,7 @@
 */
 
 const authenticationService = require('../services/authenticationService');
+const utils = require('../utils/utils');
 
 const login = async (req, res) => {
     // Vérification de la présence du body dans la requête
@@ -141,6 +142,12 @@ const register = async (req, res) => {
             res.status(500).json({ error: "Registration failed" });
         }
     }
+};
+
+const getMetrics = async (req, res) => {
+    // 
+    const token = req.headers.authorization.split(' ')[1];
+
 };
 
 module.exports = {

@@ -15,9 +15,6 @@ const jwt = require('jsonwebtoken');
 function verifyToken(req, res, next) {
     // Exclusion de certaines routes
     const authorizedRoutes = [
-        '/auth/login',
-        '/auth/register',
-        '/auth/logout',
         '/test',
         '/test-mongo',
         '/docs',
