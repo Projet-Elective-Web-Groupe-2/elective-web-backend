@@ -10,7 +10,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 require("dotenv").config();
 
 const app = require('../shared/appConfig');
-const authenticationRouter = require('./routers/authenticationRouter');
+const authenticationRouter = require('./app/routers/authenticationRouter');
 const port = process.env.AUTH_PORT || 3000;
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

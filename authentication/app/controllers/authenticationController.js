@@ -7,12 +7,10 @@
 const authenticationService = require('../services/authenticationService');
 
 const login = async (req, res) => {
-    // Vérification de la présence du body dans la requête
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
     }
 
-    // Vérification de la présence des informations obligatoires dans le corps de la requête
     const email = req.body["email"];
     const password = req.body["password"];
 
@@ -21,17 +19,14 @@ const login = async (req, res) => {
     }
 
     try {
-        // Appel au service d'authentification pour vérifier l'existence de l'utilisateur dans la base de données
         const existingUser = await authenticationService.findUserByEmail(email);
 
         if (!existingUser) {
             throw new Error("User not found");
         }
 
-        // Appel au service d'authentification pour vérifier le mot de passe
         const isPasswordCorrect = await authenticationService.comparePassword(existingUser.password, password);
         
-        // Appel au service d'authentification pour générer le token
         const token = authenticationService.generateJWT(existingUser.userID, existingUser.userType);
 
         return res.status(200).json({ token });
@@ -52,7 +47,6 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
     try {
-        // Suppression du token
         res.clearCookie("token");
 
         res.status(200).json({ message: "Logout successful" });
@@ -78,7 +72,6 @@ const register = async (req, res) => {
     }
 
     try {
-        // Vérification de l'existence de l'utilisateur dans la base de données
         const existingUser = await authenticationService.findUserByEmail(email);
     
         if (existingUser) {
