@@ -11,6 +11,6 @@ const authenticationController = require('../controllers/authenticationControlle
 routeur.post('/login', authenticationController.login);
 routeur.post('/logout', authenticationController.logout);
 routeur.post('/register', authenticationController.register);
-//routeur.post('/refreshToken', authenticationController.refreshToken);
+routeur.get('/metrics', authenticationController.getMetrics);
 
 module.exports = routeur;
