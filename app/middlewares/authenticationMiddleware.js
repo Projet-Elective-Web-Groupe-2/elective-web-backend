@@ -15,11 +15,13 @@ const jwt = require('jsonwebtoken');
 function verifyToken(req, res, next) {
     // Exclusion de certaines routes
     const authorizedRoutes = [
+        '/auth/login',
+        '/auth/register',
+        '/',
         '/test',
         '/test-mongo',
-        '/docs',
+        '/docs/',
         '/healthcheck',
-        '/metrics',
         '/favicon.ico'
     ];
 

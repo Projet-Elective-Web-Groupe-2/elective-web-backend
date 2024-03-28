@@ -41,14 +41,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 app.use(loggerMiddleware);
+app.use(authenticationMiddleware);
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
-// Ajout des routes d'authentification à l'application
+// Ajout des routes
 app.use('/auth', authenticationRouter);
-
-// Ajout du middleware d'authentification
-// C'est fait après les routes d'authentification pour éviter de vérifier un token qui n'a pas encore été généré
-app.use(authenticationMiddleware);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 // Route de test
