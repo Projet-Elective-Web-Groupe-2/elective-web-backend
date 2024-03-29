@@ -39,8 +39,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Docker Compose Action
-        uses: adambirds/docker-compose-action@v1.3.0
+      - 
+        name: Docker Compose Action
+        uses: hoverkraft-tech/compose-action@v1.0.0
         with: 
           compose-file: "../../docker-compose.yml"
           down-flags: "--volumes" 
