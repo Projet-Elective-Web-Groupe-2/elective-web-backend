@@ -49,6 +49,7 @@ jobs:
           context: .
           file: ../docker-compose.yml
           push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
         env:
           DOCKER_BUILDKIT: 1
       -
