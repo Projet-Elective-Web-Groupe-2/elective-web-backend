@@ -6,6 +6,7 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const os = require('os');
 const User = require('../models/userModel');
 
 /**
@@ -154,6 +155,36 @@ const generateJWT = (userID, userType) => {
     return token;
 };
 
+/**
+ * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
+ * - CPU usage (usage du CPU)
+ * - Total memory (mémoire totale)
+ * - Free memory (mémoire inutilisée)
+ * - Used memory (mémoire utilisée)
+ * - Elapsed time (temps de réponse)
+ * @returns {object} Un objet contenant les métriques de performance de l'application.
+*/
+const getPerformanceMetrics = () => {
+    const startTime = Date.now();
+
+    const cpuUsage = os.cpuUsage();
+    
+    const totalMemory = os.totalmem();
+    const freeMemory = os.freemem();
+    const usedMemory = os.totalmem() - os.freemem();
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    return {
+        cpuUsage: cpuUsage,
+        totalMemory: totalMemory,
+        freeMemory: freeMemory,
+        usedMemory: usedMemory,
+        elapsedTime: elapsedTime
+    }
+}
+
 module.exports = {
     createClientOrDeliverer,
     createRestaurateur,
@@ -161,5 +192,6 @@ module.exports = {
     findUserByEmail,
     encryptPassword,
     comparePassword,
-    generateJWT
+    generateJWT,
+    getPerformanceMetrics
 };
