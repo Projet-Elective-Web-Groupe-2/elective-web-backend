@@ -27,8 +27,8 @@ jobs:
         run: |-
             APP_NAME=$(node -p "require('./authentication/package.json').name")
             APP_VERSION=$(node -p "require('./authentication/package.json').version")
-            echo "app_name=$APP_NAME" >> $GITHUB_ENV
-            echo "app_version=$APP_VERSION" >> $GITHUB_ENV
+            echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+            echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
 
   docker:
     runs-on: ubuntu-latest
