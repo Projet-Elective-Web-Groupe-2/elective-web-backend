@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Check directory content
-        run: ls -l authentication
+        run: ls
       - 
         name: Build and push
         run: docker build -f authentication/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} .
