@@ -28,7 +28,9 @@ jobs:
             APP_NAME=$(node -p "require('./authentication/package.json').name")
             APP_VERSION=$(node -p "require('./authentication/package.json').version")
             echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+            echo "app_name = $APP_NAME"
             echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+            echo "app_version = $APP_VERSION"
 
   docker:
     runs-on: ubuntu-latest
@@ -49,7 +51,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Check directory content
-        run: ls
+        run: ls ../
       - 
         name: Build and push
         run: docker build -f authentication/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} .
