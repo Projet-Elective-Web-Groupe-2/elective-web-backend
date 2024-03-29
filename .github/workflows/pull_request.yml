@@ -43,7 +43,21 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
+        uses: docker-compose build
+        env:
+          DOCKER_BUILDKIT: 1
+      -
+        name: Tag images
+        run: |
+          docker tag ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
+          docker push ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
+      -
+        name: Push images to Docker Hub
+        run: docker-compose push
+      -
+        name: Tag images as latest
+        run: |
+          docker tag ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
+          docker push ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
