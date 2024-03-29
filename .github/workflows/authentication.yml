@@ -25,7 +25,7 @@ jobs:
             name: Checkout
             uses: actions/checkout@v3
             with:
-                path: authentication
+                path: .
         -
             name: Check directory content 2
             run: ls ./
@@ -48,6 +48,11 @@ jobs:
     name: 🐋 ☁️ Build Authentication Service
     needs: [config]
     steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v3
+            with:
+                path: .
         -
             name: Check directory content 1
             run: ls ./
