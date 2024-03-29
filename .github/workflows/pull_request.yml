@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ../docker-compose.yml
+          file: ../../docker-compose.yml
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
         env:
