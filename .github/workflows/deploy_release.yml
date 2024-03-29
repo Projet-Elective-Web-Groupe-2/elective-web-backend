@@ -45,6 +45,8 @@ jobs:
       -
         name: Build and push
         run: docker-compose -f ../../docker-compose.yml build
+        working-directory: ../../
       -
         name: Push images to Docker Hub
         run: docker-compose -f ../../docker-compose.yml push
+        working-directory: ../../
