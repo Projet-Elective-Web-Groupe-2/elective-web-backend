@@ -15,11 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Docker Compose Action
-        uses: adambirds/docker-compose-action@v1.3.0
-        with: 
-          compose-file: "../../docker-compose.yml"
-          down-flags: "--volumes" 
       - name: Setup version
         id: config
         run: |-
@@ -47,6 +42,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Docker Compose Action
+        uses: adambirds/docker-compose-action@v1.3.0
+        with: 
+          compose-file: "../../docker-compose.yml"
+          down-flags: "--volumes" 
       -
         name: Build and push
         run: docker-compose -f ./docker-compose.yml build
