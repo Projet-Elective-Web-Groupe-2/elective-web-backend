@@ -45,7 +45,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker-compose build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ../docker-compose.yml
+          push: true
         env:
           DOCKER_BUILDKIT: 1
       -
