@@ -1,11 +1,11 @@
 name: deploy dev
+
 on:
   push:
     branches:
       - develop
 
 jobs:
-
   config:
     name: 🛠 🔨 Setup Version
     runs-on: ubuntu-latest
@@ -13,7 +13,6 @@ jobs:
       APP_VERSION: ${{ steps.config.outputs.APP_VERSION }}
       APP_NAME: ${{ steps.config.outputs.APP_NAME }}
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup version
@@ -52,14 +51,6 @@ jobs:
           push: true
         env:
           DOCKER_BUILDKIT: 1
-      -
-        name: Tag images
-        run: |
-          docker tag ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
-          docker push ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
-      -
-        name: Push images to Docker Hub
-        run: docker-compose push
       -
         name: Tag images as latest
         run: |
