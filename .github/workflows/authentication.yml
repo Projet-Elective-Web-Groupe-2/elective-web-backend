@@ -58,7 +58,7 @@ jobs:
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
         - 
             name: Build image
-            run: docker build -f authentication/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ./authentication
+            run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ./authentication
             env:
                 DOCKER_BUILDKIT: 1
         - 
