@@ -39,17 +39,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Docker Compose Action
-        uses: hoverkraft-tech/compose-action@v1.0.0
-        with: 
-          compose-file: "../../docker-compose.yml"
-          down-flags: "--volumes" 
       -
         name: Build and push
-        run: docker-compose -f ./docker-compose.yml build
-        working-directory: ../../
+        uses: docker/build-push-action@v2
+        with:
+          context: ../../
+          file: docker-compose.yml
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
+        env:
+          DOCKER_BUILDKIT: 1
       -
-        name: Push images to Docker Hub
-        run: docker-compose -f ./docker-compose.yml push
-        working-directory: ../../
+        name: Tag images as latest
+        run: |
+          docker tag ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
+          docker push ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
