@@ -1,3 +1,15 @@
+## [3.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v3.0.0...v3.0.1) (2024-03-29)
+
+
+### Bug Fixes
+
+* app folder renamed to authentication ([8f426e4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8f426e41927615c6ea4126a15e237d0dee0dec9d))
+* applied a few modifications regarding file path ([7e682fe](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/7e682fe6b1cc33b87dd869708b456d22531b4ed5))
+* moved middlewares to shared folder ([117bb48](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/117bb4882c9f4c6af1338475c997b83aad7dcd4f))
+* moved models and schemas folders to shared folder ([89dbbce](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/89dbbce642276ef3f95f5ae9d3f025f262d386ff))
+* moved utils folder in shared ([8558685](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/855868533cee5e1cf9cb62b8173bc26535ca4154))
+* my will to live please ([ece088b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/ece088ba1b2661c73b90c78355b373dac600b800))
+
 ## [3.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v2.4.0...v3.0.0) (2024-03-27)
 
 
