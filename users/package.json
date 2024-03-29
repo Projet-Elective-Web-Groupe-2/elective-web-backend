@@ -1,12 +1,12 @@
 {
-  "name": "elective-web-backend",
+  "name": "elective-web-backend-users",
   "version": "0.0.0-development",
-  "description": "Partie backend du projet \"Élective Logiciel\"",
+  "description": "Microservice des utilisateurs du projet \"Élective Logiciel\"",	
   "main": "app.js",
   "scripts": {
-    "start": "node ./app/app.js",
+    "start": "node ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./app/app.js",
+    "dev": "nodemon ./app.js",
     "semantic-release": "npx semantic-release --no-ci"
   },
   "repository": {
@@ -22,17 +22,18 @@
   },
   "homepage": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-mongo-sanitize": "^2.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^12.0.0",
-    "@semantic-release/exec": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^10.0.2",
-    "@semantic-release/npm": "^12.0.0",
-    "@semantic-release/release-notes-generator": "^13.0.0",
-    "conventional-changelog-conventionalcommits": "^7.0.2",
-    "nodemon": "^3.1.0",
-    "semantic-release": "^23.0.6"
+    "nodemon": "^3.1.0"
   }
-}
+}  

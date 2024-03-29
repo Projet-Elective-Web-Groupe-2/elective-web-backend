@@ -1,0 +1,62 @@
+name: Authentication Service Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  config:
+    name: 🛠 🔨 Setup Version
+    runs-on: ubuntu-latest
+    outputs:
+      APP_VERSION: ${{ steps.config.outputs.APP_VERSION }}
+      APP_NAME: ${{ steps.config.outputs.APP_NAME }}
+    steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v3
+        - 
+            name: Setup version
+            id: config
+            run: |-
+                APP_NAME=$(node -p "require('./authentication/package.json').name")
+                APP_VERSION=$(node -p "require('./authentication/package.json').version")
+                echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+                echo "app_name = $APP_NAME"
+                echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+                echo "app_version = $APP_VERSION"
+
+  docker:
+    runs-on: ubuntu-latest
+    name: 🐋 ☁️ Build Authentication Service
+    needs: [config]
+    steps:
+        - 
+            name: Checkout
+            uses: actions/checkout@v3
+        - 
+            name: Set up QEMU
+            uses: docker/setup-qemu-action@v3
+        -
+            name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v3
+        - 
+            name: Login to Docker Hub
+            uses: docker/login-action@v3
+            with:
+                username: ${{ secrets.DOCKERHUB_USERNAME }}
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
+        - 
+            name: Build image
+            run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ./authentication
+            env:
+                DOCKER_BUILDKIT: 1
+        - 
+            name: Push image to Docker Hub
+            run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}

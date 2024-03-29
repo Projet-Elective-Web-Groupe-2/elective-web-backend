@@ -2,14 +2,17 @@ version: '3'
 
 services:
   authentication:
-    build: .
+    build:
+      context: ./authentication
     ports:
       - "3000:3000"
     depends_on:
       - mongoDB
       - traefik
-    environment:
-      MONGODB_URI: ${MONGODB_URI}
+#    environment:
+#      MONGODB_URI: ${MONGODB_URI}
+    env_file:
+      - .env
     stdin_open: true
     tty: true
     labels:
@@ -45,3 +48,6 @@ networks:
     external: true
   databases:
     driver: bridge
+
+volumes:
+  mongodb:
