@@ -24,6 +24,8 @@ jobs:
         - 
             name: Checkout
             uses: actions/checkout@v3
+            with:
+                path: authentication
         -
             name: Check directory content 2
             run: ls ./
@@ -72,7 +74,7 @@ jobs:
             run: ls ./
         - 
             name: Build image
-            run: docker build -f authentication/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} .
+            run: docker build -f authentication/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ./authentication
             env:
                 DOCKER_BUILDKIT: 1
         - 
