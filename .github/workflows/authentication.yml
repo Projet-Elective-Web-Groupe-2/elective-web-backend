@@ -21,8 +21,6 @@ jobs:
         - 
             name: Checkout
             uses: actions/checkout@v3
-            with:
-                path: ./authentication
         - 
             name: Setup version
             id: config
@@ -42,11 +40,6 @@ jobs:
         - 
             name: Checkout
             uses: actions/checkout@v3
-            with:
-                path: ./authentication
-        -
-            name: Check directory content 1
-            run: ls
         - 
             name: Set up QEMU
             uses: docker/setup-qemu-action@v3
@@ -59,9 +52,6 @@ jobs:
             with:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
-        -
-            name: Check directory content 2
-            run: ls
         - 
             name: Build image
             run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ./authentication
