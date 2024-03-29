@@ -10,9 +10,11 @@ jobs:
       APP_VERSION: ${{ steps.config.outputs.APP_VERSION }}
       APP_NAME: ${{ steps.config.outputs.APP_NAME }}
     steps:
-      - name: Checkout
+      - 
+        name: Checkout
         uses: actions/checkout@v3
-      - name: Setup version
+      - 
+        name: Setup version
         id: config
         run: |-
           APP_NAME=$(node -p "require('./package.json').name")
@@ -41,18 +43,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
-          context: ../../
-          file: docker-compose.yml
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }}
-        env:
-          DOCKER_BUILDKIT: 1
-      -
-        name: Tag images as latest
-        run: |
-          docker tag ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:${{ needs.config.outputs.APP_VERSION }} ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
-          docker push ${DOCKER_USERNAME}/${{ needs.config.outputs.APP_NAME }}:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
