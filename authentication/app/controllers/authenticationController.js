@@ -85,9 +85,7 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "LIVREUR":
-            // Retirer ce case
-            case "SERVICE TECHNIQUE": {
+            case "LIVREUR": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -141,27 +139,19 @@ const register = async (req, res) => {
 
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    
-    const { userID, userType } = decodeJWT(token);
+    const userType = decodeJWT(token).type;
 
     try {
-        if (!userID || !userType) {
-            throw new Error("Invalid token");
-        }
-        
         if (userType != "SERVICE TECHNIQUE") {
             throw new Error("Invalid user type");
         }
 
-        const metrics = authenticationService.getMetrics(userID);
+        const metrics = await authenticationService.getPerformanceMetrics();
 
         return res.status(200).json({ metrics });
     }
     catch (error) {
-        if (error.message === "Invalid token") {
-            res.status(401).json({ error: "Invalid token" });
-        }
-        else if (error.message === "Invalid user type") {
+        if (error.message === "Invalid user type") {
             res.status(403).json({ error: "Forbidden" });
         }
         else {

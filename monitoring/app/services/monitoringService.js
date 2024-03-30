@@ -17,12 +17,10 @@ const axios = require('axios');
  * - Elapsed time (temps de réponse)
  * @returns {object} Un objet contenant les métriques de performance de l'application.
 */
-const getPerformanceMetrics = () => {
+const getPerformanceMetrics = async () => {
     const startTime = Date.now();
 
-    const cpuUsage = osUtils.cpuUsage((cpuUsage) => {
-        return cpuUsage * 100;
-    });
+    const cpuUsage = await getCpuUsage();
     
     const totalMemory = os.totalmem();
     const freeMemory = os.freemem();
@@ -31,13 +29,27 @@ const getPerformanceMetrics = () => {
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
 
-    return {
+    const metrics =  {
         cpuUsage: `${cpuUsage}%`,
         totalMemory: `${(totalMemory / (1024 * 1024)).toFixed(2)} Mo`,
         freeMemory: `${(freeMemory / (1024 * 1024)).toFixed(2)} Mo`,
         usedMemory: `${(usedMemory / (1024 * 1024)).toFixed(2)} Mo`,
         elapsedTime: `${elapsedTime} ms`
     }
+
+    return metrics;
+};
+
+/**
+ * Fonction permettant de retourner le taux d'utilisation du CPU.
+ * @returns Le taux d'utilisation du CPU.
+*/
+function getCpuUsage() {
+    return new Promise((resolve) => {
+        osUtils.cpuUsage((usage) => {
+            resolve((usage * 100).toFixed(2));
+        });
+    });
 };
 
 /**
