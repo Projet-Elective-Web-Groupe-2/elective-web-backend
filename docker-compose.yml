@@ -42,7 +42,22 @@ services:
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  
+
+  # Ajout du service restaurant
+  restaurant:
+    build:
+      context: ./restaurant 
+    ports:
+      - "3002:3002" 
+    depends_on:
+      - mongoDB
+    env_file:
+      - .env 
+    networks:
+      - databases
+    labels:
+      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
+
 networks:
   frontend:
     external: true
