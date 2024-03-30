@@ -1,12 +1,4 @@
-/**
- * Le schéma représentant un restaurant.
- * @author GAURE Warren
- * @version 1.0
-*/
-
 const mongoose = require('mongoose');
-
-// Définition du schéma pour un restaurant.
 const restaurantSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -21,12 +13,12 @@ const restaurantSchema = new mongoose.Schema({
     ownerID: {
         type: Number,
         unique: true,
-        required: true
+        required: false
     },
     address: {
         type: String,
         unique: true,
-        required: true
+        required: false
     },
     description: {
         type: String,
@@ -36,7 +28,7 @@ const restaurantSchema = new mongoose.Schema({
     status: {
         type: Boolean,
         unique: false,
-        required: true
+        required: false
     },
     menus : [{ 
         type: mongoose.Schema.Types.ObjectId,
