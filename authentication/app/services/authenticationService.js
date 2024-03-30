@@ -1,5 +1,5 @@
 /**
- * Le service contenant les requêtes liées à l'authentification.
+ * Le fichier contenant les requêtes liées à l'authentification.
  * @author GAURE Warren
  * @version 1.0
 */

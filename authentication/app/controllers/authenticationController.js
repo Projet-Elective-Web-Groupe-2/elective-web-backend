@@ -137,7 +137,7 @@ const register = async (req, res) => {
     }
 };
 
-const getMetrics = async (req, res) => {
+const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     
     const { userID, userType } = decodeJWT(token);
@@ -173,5 +173,5 @@ module.exports = {
     login,
     logout,
     register,
-    getMetrics
+    metrics
 };

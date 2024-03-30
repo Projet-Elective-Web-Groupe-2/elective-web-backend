@@ -22,7 +22,6 @@ const port = process.env.MONITORING_PORT || 3007;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
 app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
