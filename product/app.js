@@ -1,5 +1,5 @@
 /**
- * Le fichier principal du microservice des restaurants.
+ * Le fichier principal du microservice des product.
  * @author GAURE Warren, Amara Ahmed
  * @version 1.0
 */
