@@ -6,11 +6,12 @@
 
 const express = require('express');
 const cors = require('cors');
-
+const mongoSanitize = require('express-mongo-sanitize');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDoc = YAML.load('./swagger.yaml');
-const restaurantRoutes = require('../restaurant/app/routers/restaurantRouter');
+const mongoSanitize = require('express-mongo-sanitize');
+const restaurantRoutes = require('./app/routers/restaurantRouter');
 
 
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');

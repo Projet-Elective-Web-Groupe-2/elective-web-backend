@@ -13,8 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "AMARA A., GAURE W., JOURNEL N.",
   "license": "ISC",
   "bugs": {
@@ -22,6 +21,7 @@
   },
   "homepage": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend#readme",
   "dependencies": {
+    "express-mongo-sanitize": "^2.2.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
