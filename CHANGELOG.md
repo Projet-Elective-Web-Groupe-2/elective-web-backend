@@ -1,3 +1,19 @@
+## [4.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v3.0.1...v4.0.0) (2024-03-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* monitoring microservice done
+
+### Features
+
+* monitoring microservice done ([5ddd013](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5ddd0132001699766284c565cc2d8e70d4c3a3f2))
+
+
+### Bug Fixes
+
+* pipeline sequential execution ([d9e0396](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d9e03968f4c605f168854eafedf0b364b244d3bd))
+
 ## [3.0.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v3.0.0...v3.0.1) (2024-03-29)
 
 
