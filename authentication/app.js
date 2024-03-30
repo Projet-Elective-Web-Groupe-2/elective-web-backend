@@ -55,10 +55,6 @@ app.get('/mongo', function(req, res) {
         res.status(500).send("Error while connecting to MongoDB");
     }
 });
-
-app.get('/healthcheck', (_req, res) => {
-    res.status(200).json({ health: 'OK' })
-});
 /* -------------------------------------------------- */
 
 app.listen(port, function() {
