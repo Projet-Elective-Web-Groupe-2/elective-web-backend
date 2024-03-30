@@ -7,6 +7,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const os = require('os');
+const osUtils = require('os-utils');
 const User = require('../models/userModel');
 
 /**
@@ -167,23 +168,25 @@ const generateJWT = (userID, userType) => {
 const getPerformanceMetrics = () => {
     const startTime = Date.now();
 
-    const cpuUsage = os.cpuUsage();
+    const cpuUsage = osUtils.cpuUsage((cpuUsage) => {
+        return cpuUsage * 100;
+    });
     
     const totalMemory = os.totalmem();
     const freeMemory = os.freemem();
-    const usedMemory = os.totalmem() - os.freemem();
+    const usedMemory = totalMemory - freeMemory;
 
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
 
     return {
-        cpuUsage: cpuUsage,
-        totalMemory: totalMemory,
-        freeMemory: freeMemory,
-        usedMemory: usedMemory,
-        elapsedTime: elapsedTime
+        cpuUsage: `${cpuUsage}%`,
+        totalMemory: `${(totalMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        freeMemory: `${(freeMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        usedMemory: `${(usedMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        elapsedTime: `${elapsedTime} ms`
     }
-}
+};
 
 module.exports = {
     createClientOrDeliverer,

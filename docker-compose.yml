@@ -4,13 +4,12 @@ services:
   authentication:
     build:
       context: ./authentication
+    hostname: authentication-service
     ports:
       - "3000:3000"
     depends_on:
       - mongoDB
       - traefik
-#    environment:
-#      MONGODB_URI: ${MONGODB_URI}
     env_file:
       - .env
     stdin_open: true
@@ -18,12 +17,14 @@ services:
     labels:
      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
     networks:
-      - frontend
-      - databases
+      - microservices_network
+      - mongodb_network  # À supprimer une fois MySQL installé et fonctionnel
+#      - mysql_network
   
   monitoring:
     build:
       context: ./monitoring
+    hostname: monitoring-service
     ports:
       - "3007:3007"
     depends_on:
@@ -35,6 +36,9 @@ services:
     tty: true
     labels:
      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
 
   mongoDB:
     image: mongo
@@ -42,12 +46,13 @@ services:
       - "27017:27017"
     volumes:
       - ./volumes/mongodb:/data/database
-    networks:
-      - databases
     depends_on:
       - traefik
     labels:
      - "traefik.http.routers.mongo.rule=Host(`mongo.localhost`)"
+    networks:
+      - mongodb_network
+      - microservices_network
 
   traefik:
     image: traefik:v3.0
@@ -57,13 +62,16 @@ services:
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - microservices_network
   
 networks:
-  frontend:
-    external: true
-  databases:
+  microservices_network:
     driver: bridge
+  mongodb_network:
+    driver: bridge
+#  mysql_network:
+#    driver: bridge
 
 volumes:
   mongodb:
-  docker.sock:

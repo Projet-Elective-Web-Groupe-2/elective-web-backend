@@ -12,7 +12,7 @@ const getMetrics = async (req, res) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = decodeJWT(token);
 
-        if (decodedToken.userType !== "SERVICE TECHNIQUE") {
+        if (decodedToken.type !== "SERVICE TECHNIQUE") {
             throw new Error("Invalid user type");
         }
 
@@ -29,7 +29,7 @@ const getMetrics = async (req, res) => {
         }
 
         projectMetrics.monitoringMetrics = monitoringService.getPerformanceMetrics();
-        projectMetrics.authenticationMetrics = await monitoringService.getMetrics("authentication/auth", token);
+        projectMetrics.authenticationMetrics = await monitoringService.getMetrics("authentication-service/auth", token);
 
         return res.status(200).json({ metrics });
     }
@@ -38,7 +38,7 @@ const getMetrics = async (req, res) => {
             res.status(403).json({ error: "Forbidden" });
         }
         else {
-            console.error("Unexpected error while getting metrics : ", error);
+            console.error("Unexpected error while getting metrics :", error);
             res.status(500).json({ error: "Failed to get metrics" });
         }
     }
