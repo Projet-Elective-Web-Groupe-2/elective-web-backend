@@ -21,7 +21,7 @@ require("dotenv").config();
 
 const app = express();
 
-const port = process.env.RESTAURANT_PORT || 3006;
+const port = process.env.DELIVERY_PORT || 3006;
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
     console.log("Connected to MongoDB");
