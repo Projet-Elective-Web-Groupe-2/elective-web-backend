@@ -20,6 +20,21 @@ services:
     networks:
       - frontend
       - databases
+  
+  monitoring:
+    build:
+      context: ./monitoring
+    ports:
+      - "3007:3007"
+    depends_on:
+      - authentication
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+     - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
 
   mongoDB:
     image: mongo
@@ -51,3 +66,4 @@ networks:
 
 volumes:
   mongodb:
+  docker.sock:
