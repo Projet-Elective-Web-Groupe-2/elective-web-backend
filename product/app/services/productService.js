@@ -1,27 +1,17 @@
 const Restaurant = require('../models/restaurantModel');
 const Product = require('../models/productModel');
 
-async function addProductToRestaurant({ restaurantId, productData }) {
+async function addProductToRestaurant(restaurantId, name, description, price) {
     try {
-        const restaurantExists = await Restaurant.findById(restaurantId);
-        if (!restaurantExists) {
-            return { error: true, statusCode: 404, message: "Restaurant not found." };
-        }
 
-        const newProduct = await Product.create(productData);
+        const newProduct = await Product.create({ name, description, price, restaurantId });
 
         await Restaurant.findByIdAndUpdate(restaurantId, { $push: { products: newProduct._id } }, { new: true, useFindAndModify: false });
+        console.log("Product added to restaurant");
 
         return { error: false, product: newProduct };
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            return { error: true, statusCode: 400, message: "Validation error: " + error.message };
-        } else if (error.name === 'MongoError' && error.code === 11000) {
-            return { error: true, statusCode: 409, message: "Duplicate key error." };
-        } else {
-            console.error("Unexpected error in addProductToRestaurant:", error);
-            return { error: true, statusCode: 500, message: "An unexpected error occurred." };
-        }
+        return { error: true, message: error.message };
     }
 }
 

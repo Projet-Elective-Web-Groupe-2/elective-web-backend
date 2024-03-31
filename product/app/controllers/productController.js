@@ -1,15 +1,24 @@
-const Restaurant = require('../models/restaurantModel');
-const Product = require('../models/productModel');
+const productService = require('../services/productService');
 
-exports.addProductToRestaurant = async (req, res) => {
+const addProductToRestaurant = async (req, res) => {
     try {
         const { restaurantId, name, description, price } = req.body;
-        const newProduct = await Product.create({ name, description, price, restaurantId });
-        
-        await Restaurant.findByIdAndUpdate(restaurantId, { $push: { products: newProduct._id } });
+        console.log("Request Body:", req.body);
 
-        res.status(201).json({ message: 'Product added successfully', product: newProduct });
+        const result = await productService.addProductToRestaurant(restaurantId, name, description, price);
+        console.log("Result:", result);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.message });
+        }
+
+        res.status(201).json({ message: 'Product added successfully', product: result.product });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error("Error in addProductToRestaurant controller:", error);
+        res.status(500).json({ error: 'An unexpected error occurred' });
     }
+};
+
+module.exports = {
+    addProductToRestaurant,
 };
