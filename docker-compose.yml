@@ -9,8 +9,6 @@ services:
     depends_on:
       - mongoDB
       - traefik
-#    environment:
-#      MONGODB_URI: ${MONGODB_URI}
     env_file:
       - .env
     stdin_open: true
@@ -56,6 +54,20 @@ services:
       - databases
     labels:
       - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
+
+  product:
+    build:
+      context: ./product
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongoDB
+    env_file:
+      - .env
+    networks:
+      - databases
+    labels:
+      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
 
 networks:
   frontend:
