@@ -28,6 +28,11 @@ const productSchema = new mongoose.Schema({
         unique: false,
         required: true
     },
+    restaurantId:
+     { type: mongoose.Schema.Types.ObjectId,
+         ref: 'Restaurant',
+          required: true },
+
 });
 
 module.exports = productSchema;
