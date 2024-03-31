@@ -46,7 +46,7 @@ const createRestaurant = async (name, ownerID, address) => {
             ownerID: ownerID,
             address: address
         });
-        
+
         await newRestaurant.save();
     }
     catch (error) {

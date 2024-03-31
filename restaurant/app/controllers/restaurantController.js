@@ -21,17 +21,15 @@ const createRestaurant = async (req, res) => {
     }
 
     try {
-        const existingRestaurant = await restaurantService.findRestaurant(null, address, name);
+        const existingRestaurant = await restaurantService.findRestaurant(name, ownerID, address);
 
         if (existingRestaurant) {
             throw new Error("Restaurant already exists");
         }
 
-        restaurantService.createRestaurant(name, ownerID, address);
+        await restaurantService.createRestaurant(name, ownerID, address);
 
-        console.log("Restaurant saved:", savedRestaurant);
-
-        return res.status(201);
+        return res.status(201).json({ message: "Restaurant created" });
     }
     catch (error) {
         if (error.message === "Restaurant already exists") {

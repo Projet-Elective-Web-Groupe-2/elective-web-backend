@@ -10,6 +10,6 @@ const restaurantController = require('../controllers/restaurantController');
 
 router.post('/create', restaurantController.createRestaurant);
 // Autres routes à ajouter ici
-routeur.get('/metrics', restaurantController.metrics);
+router.get('/metrics', restaurantController.metrics);
 
 module.exports = router;

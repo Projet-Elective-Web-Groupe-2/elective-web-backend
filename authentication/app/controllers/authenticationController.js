@@ -104,21 +104,21 @@ const register = async (req, res) => {
             }
             case "RESTAURATEUR": {
                 const restaurantName = req.body["restaurantName"];
-                const restaurantAdress = req.body["restaurantAdress"];
+                const restaurantAddress = req.body["restaurantAddress"];
 
-                if (!restaurantName || !restaurantAdress) {
+                if (!restaurantName || !restaurantAddress) {
                     throw new Error("Missing mandatory data");
                 }
 
                 newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber);
                 
                 token = authenticationService.generateJWT(newUser.userID, newUser.userType);
-
-                const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurants/create`;
                 
+                const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurants/create`;
+
                 const response = await axios.post(url, {
                     name: restaurantName,
-                    address: restaurantAdress,
+                    address: restaurantAddress,
                     ownerID: newUser.userID
                 },
                 {
@@ -145,7 +145,7 @@ const register = async (req, res) => {
                 throw new Error("Invalid user type");
             }
         }
-        
+        console.log("Après le switch");
         return res.status(200).json({ token });
     }
     catch(error) {
