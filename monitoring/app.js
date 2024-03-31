@@ -14,6 +14,8 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
 
+const monitoringRouter = require('./app/routers/monitoringRouter');
+
 require("dotenv").config();
 
 const app = express();
@@ -22,13 +24,14 @@ const port = process.env.MONITORING_PORT || 3007;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
 app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 app.use(loggerMiddleware);
 app.use(authenticationMiddleware);
+
+app.use('/monitoring', monitoringRouter);
 
 app.get('/hello', function(req, res) {
     res.send("Hello World !");

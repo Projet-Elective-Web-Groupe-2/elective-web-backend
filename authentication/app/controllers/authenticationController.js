@@ -5,6 +5,7 @@
 */
 
 const authenticationService = require('../services/authenticationService');
+const decodeJWT = require('../utils/decodeToken');
 
 const login = async (req, res) => {
     if (!req.body) {
@@ -136,8 +137,33 @@ const register = async (req, res) => {
     }
 };
 
+const metrics = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
+
+    try {
+        if (userType != "SERVICE TECHNIQUE") {
+            throw new Error("Invalid user type");
+        }
+
+        const metrics = await authenticationService.getPerformanceMetrics();
+
+        return res.status(200).json({ metrics });
+    }
+    catch (error) {
+        if (error.message === "Invalid user type") {
+            res.status(403).json({ error: "Forbidden" });
+        }
+        else {
+            console.error("Unexpected error while getting metrics : ", error);
+            res.status(500).json({ error: "Metrics collecting failed" });
+        }
+    }
+};
+
 module.exports = {
     login,
     logout,
-    register
+    register,
+    metrics
 };
