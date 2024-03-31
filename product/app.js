@@ -11,6 +11,7 @@ const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDoc = YAML.load('./swagger.yaml');
 const mongoose = require('mongoose');
+const productRoutes = require('./app/routers/productRouter');
 
 
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
@@ -36,7 +37,9 @@ app.use(cors());
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.post('/test', (req, res) => {
     res.status(200).send('Test endpoint is working');
-  });  
+  });
+  app.use('/produits', productRoutes); 
+  
 
 
 
