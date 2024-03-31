@@ -5,8 +5,7 @@
 */
 
 const restaurantService = require('../services/restaurantService');
-
-const Restaurant = require('../models/restaurantModel');
+const decodeJWT = require('../utils/decodeToken');
 
 const createRestaurant = async (req, res) => {
     if (!req.body) {
@@ -15,37 +14,61 @@ const createRestaurant = async (req, res) => {
 
     const name = req.body["name"];
     const address = req.body["address"];
-    const phoneNumber = req.body["phoneNumber"];
+    const ownerID = req.body["ownerId"];
 
-    if (!name || !address || !phoneNumber) {
-        return res.status(400).json({ error: "Missing mandatory data for restaurant creation" });
+    if (!name || !address || !ownerID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
     }
 
     try {
-        // Checker si un restaurant avec ces mêmes paramètres existe déjà
-        // Si oui, renvoyer une erreur 409 Conflict
-        // Sinon, créer le restaurant
-        const newRestaurant = new Restaurant({
-            name: req.body.name,
-            address: req.body.address,
-            phoneNumber: req.body.phoneNumber,
-            image: req.body.image || '', 
-            ownerID: req.body.ownerID || null,
-            description: req.body.description || '', 
-            status: req.body.status || false, 
-        });
+        const existingRestaurant = await restaurantService.findRestaurant(null, address, name);
 
-      
-        const savedRestaurant = await newRestaurant.save();
+        if (existingRestaurant) {
+            throw new Error("Restaurant already exists");
+        }
+
+        restaurantService.createRestaurant(name, ownerID, address);
+
         console.log("Restaurant saved:", savedRestaurant);
 
-        res.status(201).send(savedRestaurant);
-    } catch (err) {
-        console.log("Error in createRestaurant:", err.message);
-        res.status(400).send({ error: err.message });
+        return res.status(200);
+    }
+    catch (error) {
+        if (error.message === "Restaurant already exists") {
+            return res.status(409).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while creating a restaurant :", error.message);
+            return res.status(400).send({ error: error.message });
+        }
+    }
+};
+
+const metrics = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
+
+    try {
+        if (userType != "SERVICE TECHNIQUE") {
+            throw new Error("Invalid user type");
+        }
+
+        const metrics = await restaurantService.getPerformanceMetrics();
+
+        return res.status(200).json({ metrics });
+    }
+    catch (error) {
+        if (error.message === "Invalid user type") {
+            res.status(403).json({ error: "Forbidden" });
+        }
+        else {
+            console.error("Unexpected error while getting metrics : ", error);
+            res.status(500).json({ error: "Metrics collecting failed" });
+        }
     }
 };
 
 module.exports = {
-    createRestaurant
+    createRestaurant,
+    metrics
 };

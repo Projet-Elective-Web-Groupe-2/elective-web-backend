@@ -4,21 +4,100 @@
  * @version 1.0 
 */
 
+const os = require('os');
+const osUtils = require('os-utils');
 const Restaurant = require('../models/restaurantModel');
 
-
-
-const createRestaurant = async (restaurantData) => {
+/**
+ * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
+ * La méthode va faire la recherche sur trois champs : ownerID, address et name.
+ * @param {string} name - Le nom du restaurant.
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {string} address - L'addresse du restaurant.
+ * @returns 
+ */
+const findRestaurant = async (name, ownerID, address) => {
     try {
-        const newRestaurant = new Restaurant(restaurantData);
-        const savedRestaurant = await newRestaurant.save();
-        return savedRestaurant;
-    } catch (err) {
-
-        throw err;
+        const restaurant = await Restaurant.findOne({
+            $or: [
+                { name },
+                { ownerID },
+                { address }
+            ]
+        });
+        return restaurant;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find a restaurant :" + error.message);
     }
 };
+
+/**
+ * Fonction permettant de créer un restaurant dans la base de données.
+ * @param {string} name - Le nom du restaurant.
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {string} address - L'addresse du restaurant.
+ * @returns {object} Le restaurant créé.
+*/
+const createRestaurant = async (name, ownerID, address) => {
+    try {
+        const newRestaurant = new Restaurant({
+            name: name,
+            ownerID: ownerID,
+            address: address
+        });
+        
+        await newRestaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to create a restaurant :" + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
+ * - CPU usage (usage du CPU)
+ * - Total memory (mémoire totale)
+ * - Free memory (mémoire inutilisée)
+ * - Used memory (mémoire utilisée)
+ * - Elapsed time (temps de réponse)
+ * @returns {object} Un objet contenant les métriques de performance de l'application.
+*/
+const getPerformanceMetrics = async () => {
+    const startTime = Date.now();
+
+    const cpuUsage = await getCpuUsage();
+    
+    const totalMemory = os.totalmem();
+    const freeMemory = os.freemem();
+    const usedMemory = totalMemory - freeMemory;
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    return {
+        cpuUsage: `${cpuUsage}%`,
+        totalMemory: `${(totalMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        freeMemory: `${(freeMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        usedMemory: `${(usedMemory / (1024 * 1024)).toFixed(2)} Mo`,
+        elapsedTime: `${elapsedTime} ms`
+    }
+};
+
+/**
+ * Fonction permettant de retourner le taux d'utilisation du CPU.
+ * @returns Le taux d'utilisation du CPU.
+*/
+function getCpuUsage() {
+    return new Promise((resolve) => {
+        osUtils.cpuUsage((usage) => {
+            resolve((usage * 100).toFixed(2));
+        });
+    });
+};
+
 module.exports = {
+    findRestaurant,
     createRestaurant,
-  
+    getPerformanceMetrics
 };

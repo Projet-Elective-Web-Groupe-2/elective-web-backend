@@ -122,7 +122,7 @@ const register = async (req, res) => {
     }
     catch(error) {
         if (error.message === "User already exists") {
-            return res.status(400).json({ error : error.message });
+            return res.status(409).json({ error : error.message });
         }
         else if (error.message === "Missing mandatory data") {
             return res.status(400).json({ error: `Missing mandatory data to create a ${userType}` });
