@@ -25,7 +25,7 @@ const login = async (req, res) => {
             throw new Error("User not found");
         }
 
-        const isPasswordCorrect = await authenticationService.comparePassword(existingUser.password, password);
+        authenticationService.comparePassword(existingUser.password, password);
         
         const token = authenticationService.generateJWT(existingUser.userID, existingUser.userType);
 

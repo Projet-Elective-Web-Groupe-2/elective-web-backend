@@ -1,4 +1,12 @@
+/**
+ * Le service contenant les requêtes liées aux restaurants.
+ * @author AMARA Ahmed
+ * @version 1.0 
+*/
+
 const Restaurant = require('../models/restaurantModel');
+
+
 
 const createRestaurant = async (restaurantData) => {
     try {

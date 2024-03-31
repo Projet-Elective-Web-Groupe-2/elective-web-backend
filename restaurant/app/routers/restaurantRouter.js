@@ -1,6 +1,12 @@
+/**
+ * Le routeur pour l'authentification
+ * @author AMARA Ahmed
+ * @version 1.0
+*/
+
 const express = require('express');
-const restaurantController = require('../controllers/restaurantController');
 const router = express.Router();
+const restaurantController = require('../controllers/restaurantController');
 
 router.post('/creer', restaurantController.createRestaurant);
 
