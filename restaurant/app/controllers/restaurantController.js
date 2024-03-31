@@ -14,7 +14,7 @@ const createRestaurant = async (req, res) => {
 
     const name = req.body["name"];
     const address = req.body["address"];
-    const ownerID = req.body["ownerId"];
+    const ownerID = req.body["ownerID"];
 
     if (!name || !address || !ownerID) {
         return res.status(400).json({ error: "Missing mandatory data" });
@@ -31,7 +31,7 @@ const createRestaurant = async (req, res) => {
 
         console.log("Restaurant saved:", savedRestaurant);
 
-        return res.status(200);
+        return res.status(201);
     }
     catch (error) {
         if (error.message === "Restaurant already exists") {

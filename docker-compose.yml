@@ -20,7 +20,25 @@ services:
       - microservices_network
       - mongodb_network  # À supprimer une fois MySQL installé et fonctionnel
 #      - mysql_network
-  
+
+  restaurant:
+    build:
+      context: ./restaurant
+    hostname: restaurant-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongoDB
+      - traefik
+    env_file:
+      - .env 
+    labels:
+      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+
+
   monitoring:
     build:
       context: ./monitoring
@@ -29,6 +47,7 @@ services:
       - "3007:3007"
     depends_on:
       - authentication
+      - restaurant
       - traefik
     env_file:
       - .env
@@ -63,19 +82,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  restaurant:
-    build:
-      context: ./restaurant 
-    ports:
-      - "3002:3002" 
-    depends_on:
-      - mongoDB
-    env_file:
-      - .env 
-    networks:
-      - databases
-    labels:
-      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
 
 networks:
   microservices_network:
