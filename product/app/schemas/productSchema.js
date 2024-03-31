@@ -1,6 +1,6 @@
 /**
  * Le schéma représentant un produit (article).
- * @author GAURE Warren
+ * @author GAURE Warren, Amara Ahmed
  * @version 1.0
 */
 
