@@ -3,12 +3,9 @@ const Product = require('../models/productModel');
 
 async function addProductToRestaurant(restaurantId, name, description, price) {
     try {
-
         const newProduct = await Product.create({ name, description, price, restaurantId });
 
         await Restaurant.findByIdAndUpdate(restaurantId, { $push: { products: newProduct._id } }, { new: true, useFindAndModify: false });
-        console.log("Product added to restaurant");
-
         return { error: false, product: newProduct };
     } catch (error) {
         return { error: true, message: error.message };
