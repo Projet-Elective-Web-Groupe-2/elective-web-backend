@@ -19,7 +19,7 @@ services:
     networks:
       - microservices_network
       - mongodb_network  # À supprimer une fois MySQL installé et fonctionnel
-#      - mysql_network
+      - mysql_network
   
   monitoring:
     build:
@@ -54,6 +54,30 @@ services:
       - mongodb_network
       - microservices_network
 
+  mysql:
+    image: mysql
+    hostname: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example_pass
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./volumes/mysql-data:/var/lib/mysql
+    networks:
+      - mysql_network
+
+
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+    ports:
+      - "8081:80"
+
+
   traefik:
     image: traefik:v3.0
     command: --api.insecure=true --providers.docker
@@ -70,8 +94,9 @@ networks:
     driver: bridge
   mongodb_network:
     driver: bridge
-#  mysql_network:
-#    driver: bridge
+  mysql_network:
+    driver: bridge
 
 volumes:
   mongodb:
+  mysql-data:

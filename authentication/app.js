@@ -17,6 +17,8 @@ const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
 
+const mySQLConnector = require('./app/db/mySQLConnector.js');
+
 require("dotenv").config();
 
 const app = express();
@@ -55,6 +57,30 @@ app.get('/mongo', function(req, res) {
         res.status(500).send("Error while connecting to MongoDB");
     }
 });
+
+app.get('/mysql', function(req, res) {
+    // Établir la connexion à la base de données
+    mySQLConnector.connect((err) => {
+        if (err) {
+        console.error('Error connecting to MySQL:', err);
+        return;
+    }
+    console.log('Connected to MySQL database');
+    console.log('User connected');
+  
+    // Vous pouvez exécuter ici des requêtes SQL pour tester la connexion
+    // Par exemple :
+    mySQLConnector.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
+      if (error) {
+        console.error('Error executing query:', error);
+        return;
+      }
+      console.log('Query result:', results[0].solution);
+      mySQLConnector.end(); // Fermer la connexion après avoir exécuté la requête
+    });
+  });
+  
+})
 /* -------------------------------------------------- */
 
 app.listen(port, function() {
