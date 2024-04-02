@@ -27,12 +27,7 @@ const productSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true
-    },
-    restaurantId:
-     { type: mongoose.Schema.Types.ObjectId,
-         ref: 'Restaurant',
-          required: true },
-
+    }
 });
 
 module.exports = productSchema;
