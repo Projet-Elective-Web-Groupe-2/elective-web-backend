@@ -99,7 +99,7 @@ const register = async (req, res) => {
         switch(userType) {
             case "CLIENT":
             case "LIVREUR":
-            case "SERVICE TECHNIQUE": {
+            /*case "SERVICE TECHNIQUE":*/ {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];

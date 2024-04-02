@@ -11,6 +11,8 @@ const osUtils = require('os-utils');
 const fs = require('fs')
 const User = require('../models/userModel');
 
+const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
+
 /**
  * Fonction permettant de créér un client ou un livreur dans la base de données.
  * @param {String} email - L'email du client / livreur.
@@ -213,27 +215,31 @@ function getCpuUsage() {
  * @param {String} type - Le type de l'utilisateur.
 */
 const writeLogs = async (useCase, id, type) => {
-    let logMessage = "";
+    const currentDate = new Date();
+    const timezoneOffset = currentDate.getTimezoneOffset() * 60000;
+    const localDate = new Date(currentDate.getTime() - timezoneOffset);
+    localDate.setHours(localDate.getHours() + 2);
+    let logMessage = `[${localDate.toLocaleString('fr-FR')}] `;
 
     switch (useCase) {
         case 1: {
-            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) logged in\n`;
+            logMessage = logMessage + `User n°${id} (${type}) logged in\n`;
             break;
         }
         case 2: {
-            logMessage = `[${new Date().toLocaleString()}] User tried to log in with incorrect email\n`;
+            logMessage = logMessage + `User tried to log in with incorrect email\n`;
             break;
         }
         case 3: {
-            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) tried to log in with incorrect password\n`;
+            logMessage = logMessage + `User n°${id} (${type}) tried to log in with incorrect password\n`;
             break;
         }
         case 4: {
-            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) tried to log in while being suspended\n`;
+            logMessage = logMessage + `User n°${id} (${type}) tried to log in while being suspended\n`;
             break;
         }
         case 5: {
-            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) logged in for the first time\n`;
+            logMessage = logMessage + `User n°${id} (${type}) logged in for the first time\n`;
             break;
         }
         default: {
@@ -241,12 +247,11 @@ const writeLogs = async (useCase, id, type) => {
         }
     }
 
-    fs.appendFile('../logs/connectionLogs.log', logMessage, (error) => {
+    fs.appendFile(logsPath, logMessage, { flag: 'a+' }, (error) => {
         if (error) {
             console.error("Error while writing logs : ", error);
         }
     });
-    fs.writeFile
 }
 
 /**
@@ -254,7 +259,8 @@ const writeLogs = async (useCase, id, type) => {
  * @returns {String} Le contenu du fichier de logs.
 */
 const getLogs = () => {
-    return fs.readFileSync('../logs/connectionLogs.log', 'utf8');
+    const logsContent = fs.readFileSync(logsPath, 'utf8');
+    return logsContent.split('\n');
 }
 
 module.exports = {
