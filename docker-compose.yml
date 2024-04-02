@@ -55,8 +55,7 @@ services:
       - microservices_network
 
   mysql:
-    image: mysql
-    hostname: mysql
+    image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: example_pass
       MYSQL_ROOT_HOST: "%"

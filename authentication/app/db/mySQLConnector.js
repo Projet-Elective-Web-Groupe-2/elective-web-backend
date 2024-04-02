@@ -1,12 +1,12 @@
+setTimeout(function(){
+
 const mysql = require('mysql');
 
 // Créer une connexion à la base de données MySQL
 const connection = mysql.createConnection({
-  host: "mysql", // Utilisation du nom d'hôte défini dans Docker Compose
+  host: 'mysql',
   user: 'root', // Nom d'utilisateur MySQL
   port:3306,
-  socketPath: '/var/lib/mysqld/mysqld.sock', /*example: /Applications/MAMP/tmp/mysql/mysql.sock*/
-
   password: 'example_pass', // Mot de passe MySQL
 });
 
@@ -20,3 +20,5 @@ connection.connect((err) => {
 });
 
 module.exports = connection;
+
+}, 5 * 1000);
