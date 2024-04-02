@@ -1,3 +1,19 @@
+## [5.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v4.0.0...v5.0.0) (2024-04-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* microservice restaurant done (more or less)
+
+### Features
+
+* microservice restaurant done (more or less) ([2dac337](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2dac337e68f5853025031c865cf07d5a1add0876))
+
+
+### Bug Fixes
+
+* add post router to restaurants ([c506006](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c50600643f943e057200937f54af6d53fc80ed75))
+
 ## [4.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v3.0.1...v4.0.0) (2024-03-30)
 
 
