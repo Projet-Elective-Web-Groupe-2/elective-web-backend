@@ -14,8 +14,8 @@ const mongoose = require('mongoose');
 const productRoutes = require('./app/routers/productRouter');
 
 
-const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
-const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
+//const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
+//const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
 
 require("dotenv").config();
 
@@ -43,8 +43,8 @@ app.post('/test', (req, res) => {
 
 
 
-app.use(loggerMiddleware);
-app.use(authenticationMiddleware);
+//app.use(loggerMiddleware);
+//app.use(authenticationMiddleware);
 
 app.get('/hello', function(req, res) {
     res.send("Hello World !");
