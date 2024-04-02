@@ -156,7 +156,9 @@ const register = async (req, res) => {
                 throw new Error("Invalid user type");
             }
         }
-        console.log("Après le switch");
+
+        await authenticationService.writeLogs(5, newUser.userID, newUser.userType);
+
         return res.status(200).json({ token });
     }
     catch(error) {

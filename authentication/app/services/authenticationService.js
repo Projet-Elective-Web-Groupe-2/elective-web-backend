@@ -208,6 +208,7 @@ function getCpuUsage() {
  * - 2 : Email incorrect
  * - 3 : Mot de passe incorrect
  * - 4 : Compte suspendu
+ * - 5 : Première connexion
  * @param {Number} id - L'id de l'utilisateur.
  * @param {String} type - Le type de l'utilisateur.
 */
@@ -229,6 +230,10 @@ const writeLogs = async (useCase, id, type) => {
         }
         case 4: {
             logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) tried to log in while being suspended\n`;
+            break;
+        }
+        case 5: {
+            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) logged in for the first time\n`;
             break;
         }
         default: {
