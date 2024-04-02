@@ -98,7 +98,8 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "LIVREUR": {
+            case "LIVREUR":
+            case "SERVICE TECHNIQUE": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -181,6 +182,28 @@ const register = async (req, res) => {
     }
 };
 
+const logs = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
+
+    try {
+        if (userType != "SERVICE TECHNIQUE") {
+            throw new Error("Invalid user type");
+        }
+
+        const logs = await authenticationService.getLogs();
+
+        return res.status(200).json({ logs });
+    }
+    catch (error) {
+        if (error.message === "Invalid user type") {
+            res.status(403).json({ error: "Forbidden" });
+        }
+        console.error("Unexpected error while retrieving logs : ", error);
+        res.status(500).json({ error: "Failed to retrieve logs" });
+    }
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -209,5 +232,6 @@ module.exports = {
     login,
     logout,
     register,
+    logs,
     metrics
 };

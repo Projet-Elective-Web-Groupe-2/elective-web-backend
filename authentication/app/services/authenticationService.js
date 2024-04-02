@@ -1,7 +1,7 @@
 /**
  * Le fichier contenant les requêtes liées à l'authentification.
  * @author GAURE Warren
- * @version 1.0
+ * @version 4.2
 */
 
 const jwt = require('jsonwebtoken');
@@ -246,6 +246,15 @@ const writeLogs = async (useCase, id, type) => {
             console.error("Error while writing logs : ", error);
         }
     });
+    fs.writeFile
+}
+
+/**
+ * Fonction permettant de récupérer le contenu du fichier de logs de connexion.
+ * @returns {String} Le contenu du fichier de logs.
+*/
+const getLogs = () => {
+    return fs.readFileSync('../logs/connectionLogs.log', 'utf8');
 }
 
 module.exports = {
@@ -257,5 +266,6 @@ module.exports = {
     comparePassword,
     generateJWT,
     getPerformanceMetrics,
-    writeLogs
+    writeLogs,
+    getLogs
 };
