@@ -17,7 +17,7 @@ const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
 
-const mySQLConnector = require('./app/db/mySQLConnector.js');
+const mysql = require('mysql');
 
 require("dotenv").config();
 
@@ -58,29 +58,31 @@ app.get('/mongo', function(req, res) {
     }
 });
 
+
+
 app.get('/mysql', function(req, res) {
-    // Établir la connexion à la base de données
-    mySQLConnector.connect((err) => {
-        if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL database');
-    console.log('User connected');
-  
-    // Vous pouvez exécuter ici des requêtes SQL pour tester la connexion
-    // Par exemple :
-    mySQLConnector.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
-      if (error) {
-        console.error('Error executing query:', error);
-        return;
-      }
-      console.log('Query result:', results[0].solution);
-      mySQLConnector.end(); // Fermer la connexion après avoir exécuté la requête
+    // Créer une connexion à la base de données MySQL
+    const connection = mysql.createConnection({
+        host: 'mysql',
+        user: 'root', // Nom d'utilisateur MySQL
+        port: 3306,
+        password: 'example_pass', // Mot de passe MySQL
     });
-  });
-  
-})
+
+    // Établir la connexion à la base de données
+    connection.connect((err) => {
+        if (err) {
+            res.status(500).send('Error connecting to MySQL:', err.stack);
+            return;
+        }
+        // Send response with status 200 (OK) and connected thread ID
+        res.status(200).send('Connected to MySQL as id ' + connection.threadId);
+        console.log("Connected to MySQL");
+    });
+
+    // Export the connection
+    module.exports = connection;
+});
 /* -------------------------------------------------- */
 
 app.listen(port, function() {
