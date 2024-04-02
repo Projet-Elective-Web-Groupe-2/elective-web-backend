@@ -61,6 +61,7 @@ const createRestaurateur = async (email, password, userType, phoneNumber) => {
             password: password,
             phoneNumber: phoneNumber,
             userType: userType,
+            referralCode: (Math.random() + 1).toString(36).substring(2),
             isSuspended: false
         });
 

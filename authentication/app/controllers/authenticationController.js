@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const axios = require('axios');
 const authenticationService = require('../services/authenticationService');
 const decodeJWT = require('../utils/decodeToken');
 
@@ -26,7 +27,7 @@ const login = async (req, res) => {
             throw new Error("User not found");
         }
 
-        const isPasswordCorrect = await authenticationService.comparePassword(existingUser.password, password);
+        authenticationService.comparePassword(existingUser.password, password);
         
         const token = authenticationService.generateJWT(existingUser.userID, existingUser.userType);
 
@@ -82,6 +83,7 @@ const register = async (req, res) => {
         const encryptedPassword = await authenticationService.encryptPassword(password);
 
         let newUser;
+        let token;
 
         switch(userType) {
             case "CLIENT":
@@ -96,12 +98,38 @@ const register = async (req, res) => {
 
                 newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber);
                 
+                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+
                 break;
             }
             case "RESTAURATEUR": {
-                newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber);
+                const restaurantName = req.body["restaurantName"];
+                const restaurantAddress = req.body["restaurantAddress"];
 
-                // TODO : Implémenter la création d'un restaurant dans la base MongoDB
+                if (!restaurantName || !restaurantAddress) {
+                    throw new Error("Missing mandatory data");
+                }
+
+                newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber);
+                
+                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+                
+                const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurants/create`;
+
+                const response = await axios.post(url, {
+                    name: restaurantName,
+                    address: restaurantAddress,
+                    ownerID: newUser.userID
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (response.status !== 201) {
+                    throw new Error("Failed to create restaurant");
+                }
 
                 break;
             }
@@ -109,23 +137,26 @@ const register = async (req, res) => {
                 // TODO : Penser à modifier la méthode pour inclure la clé de sécurité
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber);
 
+                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+
                 break;
             }
             default: {
                 throw new Error("Invalid user type");
             }
         }
-        
-        const token = authenticationService.generateJWT(newUser.userID, newUser.userType);
-        
+        console.log("Après le switch");
         return res.status(200).json({ token });
     }
     catch(error) {
         if (error.message === "User already exists") {
-            return res.status(400).json({ error : error.message });
+            return res.status(409).json({ error : error.message });
         }
         else if (error.message === "Missing mandatory data") {
             return res.status(400).json({ error: `Missing mandatory data to create a ${userType}` });
+        }
+        else if (error.message === "Failed to create restaurant") {
+            return res.status(500).json({ error: "Failed to create restaurant" });
         }
         else if (error.message === "Invalid user type") {
             return res.status(400).json({ error: "Invalid user type"});

@@ -36,7 +36,8 @@ const restaurantSchema = new mongoose.Schema({
     status: {
         type: Boolean,
         unique: false,
-        required: true
+        required: true,
+        default: true
     },
     menus : [{ 
         type: mongoose.Schema.Types.ObjectId,
