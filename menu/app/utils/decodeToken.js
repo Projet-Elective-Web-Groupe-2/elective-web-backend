@@ -12,16 +12,7 @@ const jwt = require('jsonwebtoken');
  * @returns {object} L'ID et le type de l'utilisateur.
 */
 const decodeToken = (token) => {
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
-        if (error) {
-            console.error("Error while decoding token : " + error.message);
-        }
-        else {
-            const userID = decoded.id;
-            const userType = decoded.type;
-            return { userID, userType };
-        }
-    });
+    return jwt.verify(token, process.env.JWT_SECRET_KEY);
 };
 
 module.exports = decodeToken;

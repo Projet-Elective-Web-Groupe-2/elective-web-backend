@@ -1,7 +1,15 @@
-const express = require('express');
-const restaurantController = require('../controllers/restaurantController');
-const router = express.Router();
+/**
+ * Le routeur pour l'authentification
+ * @author AMARA Ahmed
+ * @version 1.0
+*/
 
-router.post('/creer', restaurantController.createRestaurant);
+const express = require('express');
+const router = express.Router();
+const restaurantController = require('../controllers/restaurantController');
+
+router.post('/create', restaurantController.createRestaurant);
+// Autres routes à ajouter ici
+router.get('/metrics', restaurantController.metrics);
 
 module.exports = router;

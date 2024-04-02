@@ -5,11 +5,12 @@
 */
 
 const express = require('express');
-const routeur = express.Router();
+const router = express.Router();
 const authenticationController = require('../controllers/authenticationController');
 
-routeur.post('/login', authenticationController.login);
-routeur.post('/logout', authenticationController.logout);
-routeur.post('/register', authenticationController.register);
+router.post('/login', authenticationController.login);
+router.post('/logout', authenticationController.logout);
+router.post('/register', authenticationController.register);
+router.get('/metrics', authenticationController.metrics);
 
-module.exports = routeur;
+module.exports = router;
