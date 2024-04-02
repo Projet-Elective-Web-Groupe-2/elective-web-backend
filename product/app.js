@@ -38,7 +38,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.post('/test', (req, res) => {
     res.status(200).send('Test endpoint is working');
   });
-  app.use('/produits', productRoutes); 
+  app.use('/product', productRoutes); 
   
 
 
