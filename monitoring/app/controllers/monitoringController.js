@@ -18,7 +18,7 @@ const getMetrics = async (req, res) => {
 
         const authentication = await monitoringService.getMetrics(`${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth`, token);
         //const users = await monitoringService.getMetrics(`${process.env.USERS_HOST}:${process.env.USERS_PORT}/user`, token);
-        const restaurant = await monitoringService.getMetrics(`${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurants`, token);
+        const restaurant = await monitoringService.getMetrics(`${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant`, token);
         //const menu = await monitoringService.getMetrics(`${process.env.MENU_HOST}:${process.env.MENU_PORT}/menu`, token);
         const product = await monitoringService.getMetrics(`${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product`, token);
         //const order= await monitoringService.getMetrics(`${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order`, token);
@@ -43,7 +43,7 @@ const getMetrics = async (req, res) => {
             res.status(403).json({ error: "Forbidden" });
         }
         else {
-            console.error("Unexpected error while getting metrics :", error);
+            console.error("Unexpected error while getting metrics : ", error);
             res.status(500).json({ error: "Failed to get metrics" });
         }
     }

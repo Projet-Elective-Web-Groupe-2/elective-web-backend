@@ -28,7 +28,7 @@ const createProduct = async (name, description, price) => {
         return newProduct;
     }
     catch (error) {
-        throw new Error("Error while trying to create a product :" + error.message)
+        throw new Error("Error while trying to create a product : " + error.message)
     }
 }
 

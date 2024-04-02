@@ -87,7 +87,8 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "LIVREUR": {
+            case "LIVREUR":
+            case "SERVICE TECHNIQUE": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -114,7 +115,7 @@ const register = async (req, res) => {
                 
                 token = authenticationService.generateJWT(newUser.userID, newUser.userType);
                 
-                const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurants/create`;
+                const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/create`;
 
                 const response = await axios.post(url, {
                     name: restaurantName,

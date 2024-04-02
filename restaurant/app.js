@@ -42,7 +42,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use(loggerMiddleware);
 app.use(authenticationMiddleware);
 
-app.use('/restaurants', restaurantRouter);
+app.use('/restaurant', restaurantRouter);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 app.get('/hello', function(req, res) {
