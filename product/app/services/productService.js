@@ -1,7 +1,36 @@
-const Restaurant = require('../models/restaurantModel');
-const Product = require('../models/productModel');
+/**
+ * Le fichier contenant les traitements liés aux articles.
+ * @author AMARA Ahmed
+ * @version 1.0
+*/
+
 const os = require('os');
 const osUtils = require('os-utils');
+const Product = require('../models/productModel');
+
+/**
+ * Fonction permettant de créer un article et de l'ajouter à un restaurant.
+ * @param {String} name - Le nom de l'article.
+ * @param {String} description - La description de l'article.
+ * @param {Number} price - Le prix de l'article.
+ * @returns {object} L'article créé.
+ */
+const createProduct = async (name, description, price) => {
+    try {
+        const newProduct = new Product({ 
+            name: name,
+            description: description,
+            price: price 
+        });
+
+        await newProduct.save();
+
+        return newProduct;
+    }
+    catch (error) {
+        throw new Error("Error while trying to create a product :" + error.message)
+    }
+}
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -45,20 +74,7 @@ function getCpuUsage() {
     });
 };
 
-async function addProductToRestaurant(restaurantId, name, description, price) {
-    try {
-        const newProduct = await Product.create({ name, description, price });
-
-        await Restaurant.findByIdAndUpdate(restaurantId, { $push: { products: newProduct._id } }, { new: true, useFindAndModify: false });
-        return { error: false, product: newProduct };
-    } catch (error) {
-        return { error: true, message: error.message };
-    }
-}
-
 module.exports = {
-    getPerformanceMetrics,
-    getCpuUsage,
-    addProductToRestaurant,
-
+    createProduct,
+    getPerformanceMetrics
 };

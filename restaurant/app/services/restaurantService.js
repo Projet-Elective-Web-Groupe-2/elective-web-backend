@@ -1,5 +1,5 @@
 /**
- * Le service contenant les requêtes liées aux restaurants.
+ * Le ficher contenant les traitements liés aux restaurants.
  * @author AMARA Ahmed
  * @version 1.0 
 */
