@@ -29,7 +29,7 @@ const getMetrics = async (req, res) => {
         return res.status(200).json({
             authentication,
             //users,
-            //restaurant,
+            restaurant,
             //menu,
             //product,
             //order,

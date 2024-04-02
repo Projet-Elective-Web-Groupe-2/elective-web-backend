@@ -37,7 +37,9 @@ const getPerformanceMetrics = async () => {
         elapsedTime: `${elapsedTime} ms`
     }
 
-    return metrics;
+    return {
+        metrics
+    };
 };
 
 /**
