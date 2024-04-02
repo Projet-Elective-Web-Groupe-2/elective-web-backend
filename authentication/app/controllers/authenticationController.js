@@ -26,19 +26,30 @@ const login = async (req, res) => {
         if (!existingUser) {
             throw new Error("User not found");
         }
+        else if (existingUser.isSuspended === true) {
+            throw new Error("User is suspended");
+        }
 
         authenticationService.comparePassword(existingUser.password, password);
         
         const token = authenticationService.generateJWT(existingUser.userID, existingUser.userType);
 
+        await authenticationService.writeLogs(1, existingUser.userID, existingUser.userType);
+
         return res.status(200).json({ token });
     }
     catch (error) {
         if (error.message === "User not found") {
+            await authenticationService.writeLogs(2, null, null);
             return res.status(404).json({ error : error.message });
         }
         else if (error.message === "Invalid password") {
+            await authenticationService.writeLogs(3, existingUser.userID, existingUser.userType);
             return res.status(401).json({ error : error.message });
+        }
+        else if (error.message === "User is suspended") {
+            await authenticationService.writeLogs(4, existingUser.userID, existingUser.userType);
+            return res.status(403).json({ error : error.message });
         }
         else {
             console.error("Unexpected error while logging in : ", error);

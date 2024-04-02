@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const os = require('os');
 const osUtils = require('os-utils');
+const fs = require('fs')
 const User = require('../models/userModel');
 
 /**
@@ -199,6 +200,49 @@ function getCpuUsage() {
     });
 };
 
+/**
+ * Fonction permettant d'écrire les logs dans un fichier.
+ * @param {Number} useCase - Le cas d'utilisation à logger.
+ * Cas possibles :
+ * - 1 : Connexion réussie
+ * - 2 : Email incorrect
+ * - 3 : Mot de passe incorrect
+ * - 4 : Compte suspendu
+ * @param {Number} id - L'id de l'utilisateur.
+ * @param {String} type - Le type de l'utilisateur.
+*/
+const writeLogs = async (useCase, id, type) => {
+    let logMessage = "";
+
+    switch (useCase) {
+        case 1: {
+            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) logged in\n`;
+            break;
+        }
+        case 2: {
+            logMessage = `[${new Date().toLocaleString()}] User tried to log in with incorrect email\n`;
+            break;
+        }
+        case 3: {
+            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) tried to log in with incorrect password\n`;
+            break;
+        }
+        case 4: {
+            logMessage = `[${new Date().toLocaleString()}] User n°${id} (${type}) tried to log in while being suspended\n`;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+
+    fs.appendFile('../logs/connectionLogs.log', logMessage, (error) => {
+        if (error) {
+            console.error("Error while writing logs : ", error);
+        }
+    });
+}
+
 module.exports = {
     createClientOrDeliverer,
     createRestaurateur,
@@ -207,5 +251,6 @@ module.exports = {
     encryptPassword,
     comparePassword,
     generateJWT,
-    getPerformanceMetrics
+    getPerformanceMetrics,
+    writeLogs
 };
