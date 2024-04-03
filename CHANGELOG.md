@@ -1,3 +1,10 @@
+## [5.2.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.0...v5.2.1) (2024-04-03)
+
+
+### Bug Fixes
+
+* traefik issues ([6c20ae1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6c20ae15e29fc15c18db37a464efb07dcd4103d9))
+
 ## [5.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.1.0...v5.2.0) (2024-04-03)
 
 
