@@ -5,9 +5,9 @@
 */
 
 const express = require('express');
-const routeur = express.Router();
+const router = express.Router();
 const monitoringController = require('../controllers/monitoringController');
 
-routeur.get('/getMetrics', monitoringController.getMetrics);
+router.get('/getMetrics', monitoringController.getMetrics);
 
-module.exports = routeur;
+module.exports = router;

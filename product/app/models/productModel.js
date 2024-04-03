@@ -7,7 +7,6 @@
 const mongoose = require('mongoose');
 const productSchema = require('../schemas/productSchema');
 
-// Définition du modèle pour un produit.
 const productModel = mongoose.model('Product', productSchema);
 
 module.exports = productModel;

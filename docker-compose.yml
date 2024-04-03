@@ -5,6 +5,7 @@ services:
     build:
       context: ./authentication
     hostname: authentication-service
+    container_name: authentication-service
     ports:
       - "3000:3000"
     depends_on:
@@ -20,15 +21,40 @@ services:
       - microservices_network
       - mongodb_network  # À supprimer une fois MySQL installé et fonctionnel
       - mysql_network
+
+  restaurant:
+    build:
+      context: ./restaurant
+    hostname: restaurant-service
+    container_name: restaurant-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongoDB
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+
+      - mysql_network
   
   monitoring:
     build:
       context: ./monitoring
     hostname: monitoring-service
+    container_name: monitoring-service
     ports:
       - "3007:3007"
     depends_on:
       - authentication
+      - restaurant
+      - product
       - traefik
     env_file:
       - .env
@@ -40,8 +66,29 @@ services:
       - microservices_network
       - mongodb_network
 
+  product:
+    build:
+      context: ./product
+    hostname: product-service
+    container_name: product-service
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongoDB
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+
   mongoDB:
     image: mongo
+    container_name: mongoDB
     ports:
       - "27017:27017"
     volumes:
@@ -79,15 +126,14 @@ services:
 
   traefik:
     image: traefik:v3.0
+    container_name: traefik
     command: --api.insecure=true --providers.docker
     ports:
       - 80:80
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - microservices_network
-  
+
 networks:
   microservices_network:
     driver: bridge

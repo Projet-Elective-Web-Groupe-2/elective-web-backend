@@ -1,5 +1,5 @@
 /**
- * Le fichier contenant les requêtes liées au monitoring.
+ * Le fichier contenant les traitements liés au monitoring.
  * @author GAURE Warren
  * @version 1.0
 */
@@ -37,7 +37,9 @@ const getPerformanceMetrics = async () => {
         elapsedTime: `${elapsedTime} ms`
     }
 
-    return metrics;
+    return {
+        metrics
+    };
 };
 
 /**

@@ -1,6 +1,6 @@
 /**
  * Le schéma représentant un produit (article).
- * @author GAURE Warren
+ * @author GAURE Warren, Amara Ahmed
  * @version 1.0
 */
 
@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true
-    },
+    }
 });
 
 module.exports = productSchema;

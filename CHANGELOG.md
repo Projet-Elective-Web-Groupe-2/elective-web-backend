@@ -1,3 +1,41 @@
+## [5.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.1.0...v5.2.0) (2024-04-03)
+
+
+### Features
+
+* connection logs working perfectly ([e34ee40](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/e34ee4017a9e34e48f51a3f253052d5201b11e3f))
+* refresh token implemented ([2d95ddc](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2d95ddc37669868dd658c7b4258da3d084da7afb))
+
+## [5.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.0.0...v5.1.0) (2024-04-03)
+
+
+### Features
+
+* add products done ([b77557f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b77557fedd7dd4c92e3cdd6b5dcdfe41fe7cf878))
+* adding product feature done ([ef2cfa5](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/ef2cfa569bcc60a68c9f3fa0799b8af39984d526))
+
+
+### Bug Fixes
+
+* changes on metrics ([38f2236](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/38f22363669481a3eb8c7b9ca165332fde527b5c))
+* error gest ([22c01b4](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/22c01b4dbc4be4014ab2324885d5078f43ad09f0))
+
+## [5.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v4.0.0...v5.0.0) (2024-04-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* microservice restaurant done (more or less)
+
+### Features
+
+* microservice restaurant done (more or less) ([2dac337](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2dac337e68f5853025031c865cf07d5a1add0876))
+
+
+### Bug Fixes
+
+* add post router to restaurants ([c506006](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c50600643f943e057200937f54af6d53fc80ed75))
+
 ## [4.0.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v3.0.1...v4.0.0) (2024-03-30)
 
 
