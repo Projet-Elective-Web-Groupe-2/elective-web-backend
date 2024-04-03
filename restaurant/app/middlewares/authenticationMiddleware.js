@@ -34,7 +34,7 @@ function verifyToken(req, res, next) {
         return res.status(401).send({ message: "Missing token" });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).send({ message: "Authentication failed" });
         }

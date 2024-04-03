@@ -78,6 +78,11 @@ const userSchema = new mongoose.Schema({
         unique: false,
         required: true,
         default: false
+    },
+    refreshToken: {
+        type: String,
+        unique: true,
+        required: true
     }
 });
 
