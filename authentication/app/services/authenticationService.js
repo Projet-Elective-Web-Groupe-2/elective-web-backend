@@ -162,7 +162,7 @@ const comparePassword = async (password, passwordToVerify) => {
  * @returns {token} Le JSON Web Token d'accès.
 */
 const generateAccessToken = (userID, userType) => {
-    const token = jwt.sign({ id : userID, type : userType }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id : userID, type : userType }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 120 });
     
     return token;
 };

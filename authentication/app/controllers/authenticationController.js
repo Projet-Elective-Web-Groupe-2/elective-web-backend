@@ -74,7 +74,7 @@ const logout = async (req, res) => {
 
         await authenticationService.writeLogs(7, userID, userType);
 
-        res.status(200).json({ message: "Logout successful" });
+        res.status(200).json({ message: "Logged out successfully" });
     }
     catch(error) {
         console.error("Unexpected error while logging out : ", error);
@@ -180,7 +180,7 @@ const register = async (req, res) => {
 
         await authenticationService.writeLogs(5, newUser.userID, newUser.userType);
 
-        return res.status(200).json({ accessToken });
+        return res.status(200).json({ accessToken, refreshToken });
     }
     catch(error) {
         if (error.message === "User already exists") {
