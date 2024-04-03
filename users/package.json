@@ -1,7 +1,7 @@
 {
   "name": "elective-web-backend-users",
   "version": "0.0.0-development",
-  "description": "Microservice des utilisateurs du projet \"Élective Logiciel\"",	
+  "description": "Microservice des utilisateurs du projet \"Élective Logiciel\"",
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
@@ -13,8 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "AMARA A., GAURE W., JOURNEL N.",
   "license": "ISC",
   "bugs": {
@@ -36,4 +35,4 @@
   "devDependencies": {
     "nodemon": "^3.1.0"
   }
-}  
+}

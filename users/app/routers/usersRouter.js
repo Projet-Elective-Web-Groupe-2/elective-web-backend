@@ -9,7 +9,8 @@ const router =  express.Router();
 const usersController = require('../controllers/usersController');
 
 router.get('/get', usersController.getUser);
-router.get('/getall', usersController.getAllUsers);
+router.get('/getByEmail', usersController.getUserByEmail);
+router.get('/getAll', usersController.getAllUsers);
 router.post('/edit', usersController.editUser);
 router.post('/suspend', usersController.suspendUser);
 router.post('/unsuspend', usersController.unsuspendUser);

@@ -38,6 +38,37 @@ const getUser = async (req, res) => {
     }
 };
 
+const getUserByEmail = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const email = req.body["email"];
+
+    if (!email) {
+        return res.status(400).json({ error: "Missing mandatory data for user retrieval" });
+    }
+
+    try {
+        const user = await usersService.getUserByEmail(email);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return res.status(200).json({ user });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            res.status(404).json({ error: "User not found" });
+        }
+        else {
+            console.error("Unexpected error while getting user by email : ", error);
+            res.status(500).json({ error: "User fetching failed" });
+        }
+    }
+};
+
 const getAllUsers = async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(accessToken).type;
@@ -306,6 +337,7 @@ const metrics = async (req, res) => {
 
 module.exports = {
     getUser,
+    getUserByEmail,
     getAllUsers,
     editUser,
     suspendUser,

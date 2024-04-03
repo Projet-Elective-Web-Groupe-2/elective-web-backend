@@ -19,6 +19,16 @@ const getUser = async (userID) => {
 };
 
 /**
+ * Fonction permettant de récupérer un utilisateur en fonction de son email.
+ * @param {String} email - L'email de l'utilisateur à récupérer.
+ * @returns {object} L'utilisateur correspondant à l'email passé en paramètre.
+*/
+const getUserByEmail = async (email) => {
+
+    // return user à trouver
+};
+
+/**
  * Fonction permettant de récupérer tous les utilisateurs.
  * @returns {Array} Un tableau contenant tous les utilisateurs.
 */
@@ -44,6 +54,7 @@ const editUser = async (userID, edits) => {
  * @param {String} userID - L'ID de l'utilisateur à suspendre.
 */
 const suspendUser = async (userID) => {
+
     // rien return, juste suspendre l'utilisateur (modifier le booléen du coup)
 }
 
@@ -52,6 +63,7 @@ const suspendUser = async (userID) => {
  * @param {String} userID - L'ID de l'utilisateur à réactiver.
 */
 const unsuspendUser = async (userID) => {
+
     // rien return, juste réactiver l'utilisateur (modifier le booléen du coup)
 }
 
@@ -60,6 +72,7 @@ const unsuspendUser = async (userID) => {
  * @param {String} userID - L'ID de l'utilisateur à supprimer.
 */
 const deleteUser = async (userID) => {
+    
     // rien return, juste supprimer l'utilisateur
 }
 
