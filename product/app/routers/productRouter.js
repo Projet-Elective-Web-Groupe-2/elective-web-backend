@@ -10,5 +10,6 @@ const productController = require('../controllers/productController');
 
 router.post('/add', productController.createAndAddProduct);
 router.get('/metrics', productController.metrics);
+router.get('/getProducts',productController.getProductsByIds);
 
 module.exports = router;
