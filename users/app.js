@@ -14,6 +14,8 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
 
+const usersRouter = require('./app/routers/usersRouter');
+
 require("dotenv").config();
 
 const app = express();
@@ -30,9 +32,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use(loggerMiddleware);
 app.use(authenticationMiddleware);
 
-app.get('/hello', function(req, res) {
-    res.send("Hello World !");
-});
+app.use('/user', usersRouter);
 
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);
