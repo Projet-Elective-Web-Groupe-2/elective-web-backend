@@ -16,6 +16,7 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
+const createClientOrDeliverer = require('./app/routers/authenticationRouter');
 
 const mysql = require('mysql');
 
@@ -43,6 +44,8 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use(loggerMiddleware);
 
 app.use('/auth', authenticationRouter);
+
+app.use('/createLivreur', createClientOrDeliverer);
 
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 app.get('/hello', function(req, res) {
