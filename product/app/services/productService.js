@@ -73,6 +73,27 @@ function getCpuUsage() {
         });
     });
 };
+/**
+ * Fonction permettant de récupérer les noms et les prix des produits à partir de leurs IDs.
+ * @param {Array} productIds - Les IDs des produits à récupérer.
+ * @returns {Array} Un tableau contenant les noms et les prix des produits correspondants.
+ */
+const getProductsByIds = async (productIds) => {
+    try {
+        // Récupérer les produits correspondant aux IDs fournis
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        // Mapper les résultats pour récupérer uniquement les noms et les prix
+        const productsInfo = products.map(product => ({
+            name: product.name,
+            price: product.price
+        }));
+
+        return productsInfo;
+    } catch (error) {
+        throw new Error("Erreur lors de la récupération des produits : " + error.message);
+    }
+};
 
 module.exports = {
     createProduct,
