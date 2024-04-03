@@ -30,7 +30,9 @@ const login = async (req, res) => {
             throw new Error("User is suspended");
         }
 
-        authenticationService.comparePassword(existingUser.password, password);
+        await authenticationService.verifyRefreshToken(existingUser.refreshToken);
+
+        await authenticationService.comparePassword(existingUser.password, password);
         
         const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
 
@@ -51,6 +53,9 @@ const login = async (req, res) => {
             await authenticationService.writeLogs(4, existingUser.userID, existingUser.userType);
             return res.status(403).json({ error : error.message });
         }
+        else if (error.message === "Expired refresh token") {
+            return res.status(401).json({ error: error.message });
+        }
         else {
             console.error("Unexpected error while logging in : ", error);
             res.status(500).json({ error: "Login failed" });
@@ -58,9 +63,16 @@ const login = async (req, res) => {
     }
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(accessToken);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
     try {
         res.clearCookie("token");
+
+        await authenticationService.writeLogs(7, userID, userType);
 
         res.status(200).json({ message: "Logout successful" });
     }
@@ -190,6 +202,73 @@ const register = async (req, res) => {
     }
 };
 
+const token = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const refreshToken = req.body["refreshToken"];
+
+    if (!refreshToken) {
+        return res.status(400).json({ error: "Missing mandatory data for token renewal" });
+    }
+
+    let email;
+    let existingUser;
+    let accessToken;
+
+    try {
+        email = authenticationService.decodeRefreshToken(refreshToken);
+
+        existingUser = await authenticationService.findUserByEmail(email);
+
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+        else if (existingUser.isSuspended === true) {
+            throw new Error("User is suspended");
+        }
+
+        await authenticationService.verifyRefreshToken(refreshToken);
+
+        if (existingUser.refreshToken !== refreshToken) {
+            throw new Error("Invalid refresh token");
+        }
+        
+        accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+
+        await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+
+        return res.status(200).json({ accessToken });
+    }
+    catch(error) {
+        if (error.message === "Invalid refresh token") {
+            return res.status(401).json({ error: "Invalid refresh token" });
+        }
+        else if (error.message === "User not found") {
+            return res.status(404).json({ error: "User not found" });
+        }
+        else if (error.message === "User is suspended") {
+            return res.status(403).json({ error: "User is suspended" });
+        }
+        else if (error.message === "Expired refresh token") {
+            const newRefreshToken = authenticationService.generateRefreshToken(email);
+
+            await authenticationService.updateRefreshToken(existingUser.userID, newRefreshToken);
+
+            accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+
+            await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+
+            return res.status(200).json({ accessToken, refreshToken: newRefreshToken });
+        }
+        else {
+            console.error("Unexpected error while verifying refresh token : ", error);
+            res.status(500).json({ error: "Token renewal failed" });
+        }
+    }
+};
+
 const logs = async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(accessToken).type;
@@ -240,6 +319,7 @@ module.exports = {
     login,
     logout,
     register,
+    token,
     logs,
     metrics
 };

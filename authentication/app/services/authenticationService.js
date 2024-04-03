@@ -179,6 +179,56 @@ const generateRefreshToken = (email) => {
 };
 
 /**
+ * Fonction permettant de décoder le token de rafraîchissement pour récupérer l'email.
+ * @param {String} refreshToken - Le token de rafraîchissement à décoder.
+ * @returns {String} L'email contenu dans le token de rafraîchissement.
+ */
+const decodeRefreshToken = (refreshToken) => {
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        return decoded.email;
+    }
+    catch (error) {
+        throw new Error("Error while decoding refresh token : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de vérifier le token de rafraîchissement de l'utilisateur.
+ * @param {String} refreshToken - Le token de rafraîchissement à vérifier.
+ * @returns {String} Le token de rafraîchissement de l'utilisateur.
+*/
+const verifyRefreshToken = (refreshToken) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, decoded) => {
+            if (error) {
+                reject("Invalid refresh token");
+            }
+            else if (!decoded || !decoded.exp || decoded.exp < Date.now() / 1000){
+                reject("Expired refresh token");
+            }
+            else {
+                resolve(decoded);
+            }
+        });
+    });
+};
+
+/**
+ * Fonction permettant de mettre à jour le token de rafraîchissement de l'utilisateur.
+ * @param {String} email - L'email de l'utilisateur.
+ * @param {String} refreshToken - Le nouveau token de rafraîchissement.
+*/
+const updateRefreshToken = async (email, refreshToken) => {
+    try {
+        await User.updateOne({ email }, { refreshToken });
+    }
+    catch (error) {
+        throw new Error("Error while trying to update refresh token : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -225,10 +275,12 @@ function getCpuUsage() {
  * @param {Number} useCase - Le cas d'utilisation à logger.
  * Cas possibles :
  * - 1 : Connexion réussie
- * - 2 : Email incorrect
- * - 3 : Mot de passe incorrect
- * - 4 : Compte suspendu
+ * - 2 : Connexion échouée (email incorrect)
+ * - 3 : Connexion échouée (mot de passe incorrect)
+ * - 4 : Connexion echouée (compte suspendu)
  * - 5 : Première connexion
+ * - 6 : Connexion après rafraîchissement du token
+ * - 7 : Déconnexion
  * @param {Number} id - L'id de l'utilisateur.
  * @param {String} type - Le type de l'utilisateur.
 */
@@ -258,6 +310,14 @@ const writeLogs = async (useCase, id, type) => {
         }
         case 5: {
             logMessage = logMessage + `User n°${id} (${type}) logged in for the first time\n`;
+            break;
+        }
+        case 6: {
+            logMessage = logMessage + `User n°${id} (${type}) logged in after refreshing their token\n`;
+            break;
+        }
+        case 7: {
+            logMessage = logMessage + `User n°${id} (${type}) logged out\n`;
             break;
         }
         default: {
@@ -290,6 +350,9 @@ module.exports = {
     comparePassword,
     generateAccessToken,
     generateRefreshToken,
+    decodeRefreshToken,
+    verifyRefreshToken,
+    updateRefreshToken,
     getPerformanceMetrics,
     writeLogs,
     getLogs
