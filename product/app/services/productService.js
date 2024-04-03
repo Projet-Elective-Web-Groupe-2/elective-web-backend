@@ -73,14 +73,14 @@ function getCpuUsage() {
         });
     });
 };
-// recuperer les infos des produits
 const getProductsByIds = async (productIds) => {
     try {
         const products = await Product.find({ _id: { $in: productIds } });
 
         const productsInfo = products.map(product => ({
             name: product.name,
-            price: product.price
+            price: product.price,
+           // description: product.description // pas besoin de ca pour le moment on a juste besoin de prix pour faire la somme et le nom
         }));
 
         return productsInfo;
