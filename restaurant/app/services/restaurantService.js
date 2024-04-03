@@ -7,6 +7,8 @@
 const os = require('os');
 const osUtils = require('os-utils');
 const Restaurant = require('../models/restaurantModel');
+const Product = require('../models/productModel'); 
+
 
 /**
  * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
@@ -55,19 +57,38 @@ const findRestaurantByID = async (id) => {
  * @param {string} address - L'addresse du restaurant.
  * @returns {object} Le restaurant créé.
 */
+
+
 const createRestaurant = async (name, ownerID, address) => {
     try {
+        const product1 = new Product({
+            name: "Coca",
+            description: "Coca cola 33cl",
+            price: 10
+        });
+        const product2 = new Product({                         
+            name: "Frites",
+            description: "frites avec 3 sauces au choix",
+            price: 7
+        });
+
+        await product1.save(); 
+        await product2.save(); 
+
+        const products = [product1.toObject(), product2.toObject()]; 
+
         const newRestaurant = new Restaurant({
             name: name,
             ownerID: ownerID,
-            address: address
+            address: address,
+            products: products 
         });
 
         await newRestaurant.save();
-        // For testing purposes
-        console.log("Restaurant created : " + newRestaurant._id);
-    }
-    catch (error) {
+
+        return newRestaurant;
+
+    } catch (error) {
         throw new Error("Error while trying to create a restaurant : " + error.message);
     }
 };

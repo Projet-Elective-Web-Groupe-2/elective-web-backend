@@ -5,6 +5,8 @@
 */
 
 const mongoose = require('mongoose');
+const productSchema = require('./productSchema');
+
 
 // Définition du schéma pour un restaurant.
 const restaurantSchema = new mongoose.Schema({
@@ -45,12 +47,8 @@ const restaurantSchema = new mongoose.Schema({
         unique: false,
         required: false
     }],
-    products : [{ 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        unique: false,
-        required: false
-    }],
+    products: [productSchema], 
+
     orders : [{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
