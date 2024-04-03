@@ -1,5 +1,5 @@
 /**
- * Le service contenant les requêtes liées aux restaurants.
+ * Le ficher contenant les traitements liés aux restaurants.
  * @author AMARA Ahmed
  * @version 1.0 
 */
@@ -28,7 +28,23 @@ const findRestaurant = async (name, ownerID, address) => {
         return restaurant;
     }
     catch (error) {
-        throw new Error("Error while trying to find a restaurant :" + error.message);
+        throw new Error("Error while trying to find a restaurant : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de retrouver un restaurant dans la base de données grâce à son ID.
+ * @param {String} id - L'ID du restaurant.
+ * @returns {object} Le restaurant trouvé.
+*/
+const findRestaurantByID = async (id) => {
+    try {
+        const restaurant = await Restaurant.findById(id);
+
+        return restaurant;
+    }
+    catch(error) {
+        throw new Error("Error while trying to find a restaurant by ID : " + error.message);
     }
 };
 
@@ -48,11 +64,30 @@ const createRestaurant = async (name, ownerID, address) => {
         });
 
         await newRestaurant.save();
+        // For testing purposes
+        console.log("Restaurant created : " + newRestaurant._id);
     }
     catch (error) {
-        throw new Error("Error while trying to create a restaurant :" + error.message);
+        throw new Error("Error while trying to create a restaurant : " + error.message);
     }
 };
+
+/**
+ * Fonction permettant d'ajouter un produit à un restaurant.
+ * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
+ * @param {object} product - Le produit à ajouter.
+ */
+const addProduct = async (restaurantID, product) => {
+    try {
+        Restaurant.findByIdAndUpdate(restaurantID, {
+            $addToSet: { products: product }
+        });
+    }
+    catch (error) {
+        throw new Error("Error while trying to add a product to a restaurant : " + error.message);
+    }
+};
+
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -98,6 +133,8 @@ function getCpuUsage() {
 
 module.exports = {
     findRestaurant,
+    findRestaurantByID,
     createRestaurant,
+    addProduct,
     getPerformanceMetrics
 };

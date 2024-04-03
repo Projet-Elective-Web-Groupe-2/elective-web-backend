@@ -1,5 +1,5 @@
 /**
- * Le fichier contenant les requêtes liées à l'authentification.
+ * Le fichier contenant les traitements liés à l'authentification.
  * @author GAURE Warren
  * @version 4.2
 */

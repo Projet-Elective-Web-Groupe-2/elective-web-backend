@@ -138,3 +138,46 @@ jobs:
           DOCKER_BUILDKIT: 1
       - name: Push image to Docker Hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.restaurant_config.outputs.APP_NAME }}:${{ needs.restaurant_config.outputs.APP_VERSION }}
+
+  product_config:
+    name: 🛠 🔨 Setup Product Version
+    runs-on: ubuntu-latest
+    needs: [restaurant_docker]
+    outputs:
+      APP_VERSION: ${{ steps.config.outputs.APP_VERSION }}
+      APP_NAME: ${{ steps.config.outputs.APP_NAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup version
+        id: config
+        run: |
+          APP_NAME=$(node -p "require('./product/package.json').name")
+          APP_VERSION=$(node -p "require('./product/package.json').version")
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "app_name = $APP_NAME"
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "app_version = $APP_VERSION"
+      
+  product_docker:
+    name: 🐋 ☁️ Build Product Service
+    runs-on: ubuntu-latest
+    needs: [product_config]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.product_config.outputs.APP_NAME }}:${{ needs.product_config.outputs.APP_VERSION }} ./product
+        env:
+          DOCKER_BUILDKIT: 1
+      - name: Push image to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.product_config.outputs.APP_NAME }}:${{ needs.product_config.outputs.APP_VERSION }}
