@@ -32,11 +32,11 @@ const login = async (req, res) => {
 
         authenticationService.comparePassword(existingUser.password, password);
         
-        const token = authenticationService.generateJWT(existingUser.userID, existingUser.userType);
+        const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
 
         await authenticationService.writeLogs(1, existingUser.userID, existingUser.userType);
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ accessToken });
     }
     catch (error) {
         if (error.message === "User not found") {
@@ -94,11 +94,13 @@ const register = async (req, res) => {
         const encryptedPassword = await authenticationService.encryptPassword(password);
 
         let newUser;
-        let token;
+        let accessToken;
+        let refreshToken;
 
         switch(userType) {
             case "CLIENT":
             case "LIVREUR":
+            // For testing purposes
             /*case "SERVICE TECHNIQUE":*/ {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
@@ -108,9 +110,11 @@ const register = async (req, res) => {
                     throw new Error("Missing mandatory data");
                 }
 
-                newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber);
+                refreshToken = authenticationService.generateRefreshToken(email);
+
+                newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber, refreshToken);
                 
-                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+                accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
 
                 break;
             }
@@ -122,9 +126,11 @@ const register = async (req, res) => {
                     throw new Error("Missing mandatory data");
                 }
 
-                newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber);
+                refreshToken = authenticationService.generateRefreshToken(email);
+
+                newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber, refreshToken);
                 
-                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+                accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
                 
                 const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/create`;
 
@@ -147,10 +153,12 @@ const register = async (req, res) => {
             }
             case "DEVELOPPEUR TIERS": {
                 // TODO : Penser à modifier la méthode pour inclure la clé de sécurité
-                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber);
+                refreshToken = authenticationService.generateRefreshToken(email);
 
-                token = authenticationService.generateJWT(newUser.userID, newUser.userType);
+                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
 
+                accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
+                
                 break;
             }
             default: {
@@ -160,7 +168,7 @@ const register = async (req, res) => {
 
         await authenticationService.writeLogs(5, newUser.userID, newUser.userType);
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ accessToken });
     }
     catch(error) {
         if (error.message === "User already exists") {
@@ -183,8 +191,8 @@ const register = async (req, res) => {
 };
 
 const logs = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(accessToken).type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {
@@ -205,8 +213,8 @@ const logs = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(accessToken).type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {

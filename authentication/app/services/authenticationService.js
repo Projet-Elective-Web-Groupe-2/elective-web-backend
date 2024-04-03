@@ -22,9 +22,10 @@ const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
  * @param {String} lastName - Le nom du client / livreur.
  * @param {String} address - L'addresse du client / livreur.
  * @param {String} phoneNumber - Le numéro de téléphone du client / livreur.
+ * @param {String} refreshToken - Le token de rafraîchissement du client / livreur.
  * @returns {object} Le client / livreur en question, ou false si rien n'a été créé.
 */
-const createClientOrDeliverer = async (email, password, userType, firstName, lastName, address, phoneNumber) => {
+const createClientOrDeliverer = async (email, password, userType, firstName, lastName, address, phoneNumber, refreshToken) => {
     try {
         const newUser = new User({
             userID: Math.floor(Math.random() * 100),
@@ -36,7 +37,8 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
             userType: userType,
             address: address,
             referralCode: (Math.random() + 1).toString(36).substring(2),
-            isSuspended: false
+            isSuspended: false,
+            refreshToken: refreshToken
         });
 
         await newUser.save();
@@ -54,9 +56,10 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
  * @param {String} password - Le mot de passe du restaurateur.
  * @param {String} userType - Le type de l'utilisateur ("RESTAURATEUR").
  * @param {String} phoneNumber - Le numéro de téléphone du restaurateur.
+ * @param {String} refreshToken - Le token de rafraîchissement du restaurateur.
  * @returns {object} Le restaurateur en question, ou false si rien n'a été créé.
 */
-const createRestaurateur = async (email, password, userType, phoneNumber) => {
+const createRestaurateur = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
         const newUser = new User({
             userID: Math.floor(Math.random() * 100),
@@ -65,7 +68,8 @@ const createRestaurateur = async (email, password, userType, phoneNumber) => {
             phoneNumber: phoneNumber,
             userType: userType,
             referralCode: (Math.random() + 1).toString(36).substring(2),
-            isSuspended: false
+            isSuspended: false,
+            refreshToken: refreshToken
         });
 
         await newUser.save();
@@ -83,10 +87,11 @@ const createRestaurateur = async (email, password, userType, phoneNumber) => {
  * @param {String} password - Le mot de passe du développeur.
  * @param {String} userType - Le type de l'utilisateur ("DEVELOPPEUR TIERS").
  * @param {String} phoneNumber - Le numéro de téléphone du développeur.
+ * @param {String} refreshToken - Le token de rafraîchissement du développeur.
  * @returns {object} Le développeur en question, ou false si rien n'a été créé.
  */
 // TODO : Modifier la méthode pour générer la clé de sécurité et l'ajouter
-const createDeveloper = async (email, password, userType, phoneNumber) => {
+const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
         const newUser = new User({
             userID: Math.floor(Math.random() * 100),
@@ -94,7 +99,8 @@ const createDeveloper = async (email, password, userType, phoneNumber) => {
             password: password,
             phoneNumber: phoneNumber,
             userType: userType,
-            isSuspended: false
+            isSuspended: false,
+            refreshToken: refreshToken
         });
 
         await newUser.save();
@@ -150,13 +156,25 @@ const comparePassword = async (password, passwordToVerify) => {
 };
 
 /**
- * Fonction permettant de générer un JSON Web Token destiné à l'utilisateur.
+ * Fonction permettant de générer un JSON Web Token d'accès destiné à l'utilisateur.
  * @param {Number} userID - L'ID de l'utilisateur.
- * @param {String} userType - Le type de l'utilisateur (client, livreur, restaurateur, etc...)
- * @returns {token} Le JSON Web Token.
+ * @param {String} userType - Le type de l'utilisateur (client, livreur, restaurateur, etc...).
+ * @returns {token} Le JSON Web Token d'accès.
 */
-const generateJWT = (userID, userType) => {
-    const token = jwt.sign({ id : userID, type : userType }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+const generateAccessToken = (userID, userType) => {
+    const token = jwt.sign({ id : userID, type : userType }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+    
+    return token;
+};
+
+/**
+ * Fonction permettant de générer un JSON Web Token de rafraîchissement destiné à l'utilisateur.
+ * @param {String} email - L'email de l'utilisateur.
+ * @returns {token} Le JSON Web Token de rafraîchissement.
+ */
+const generateRefreshToken = (email) => {
+    const token = jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    
     return token;
 };
 
@@ -270,7 +288,8 @@ module.exports = {
     findUserByEmail,
     encryptPassword,
     comparePassword,
-    generateJWT,
+    generateAccessToken,
+    generateRefreshToken,
     getPerformanceMetrics,
     writeLogs,
     getLogs
