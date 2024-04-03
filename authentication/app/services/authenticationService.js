@@ -44,7 +44,6 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
                 }
             });
         });
-c
         // Return the created user object
         return {
             userID,
