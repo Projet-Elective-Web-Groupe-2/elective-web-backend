@@ -28,15 +28,15 @@ const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
 */
 const createClientOrDeliverer = async (email, password, userType, firstName, lastName, address, phoneNumber, refreshToken) => {
     try {
-        // Generate a unique userID
-        const userID = Math.floor(Math.random() * 100);
 
+        
         // Generate a random referral code
         const referralCode = (Math.random() + 1).toString(36).substring(2);
 
         // Construct the SQL query
-        const sql = "INSERT INTO users (userID, firstName, lastName, email, password, phoneNumber, userType, address, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        const values = [userID, firstName, lastName, email, password, phoneNumber, userType, address, referralCode, false, refreshToken];
+        console.log('dans service '+refreshToken);
+        const sql = "INSERT INTO users (firstName, lastName, email, password, phoneNumber, userType, address, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const values = [firstName, lastName, email, password, phoneNumber, userType, address, referralCode, false, refreshToken];
 
         // Execute the query
         await new Promise((resolve, reject) => {
@@ -50,7 +50,6 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
         });
         // Return the created user object
         return {
-            userID,
             firstName,
             lastName,
             email,
@@ -59,15 +58,12 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
             userType,
             address,
             referralCode,
-            isSuspended: false,
-            refreshToken
+            isSuspended: false
         };
     } catch (error) {
         throw error;
     }
 };
-
-module.exports = createClientOrDeliverer;
 
 
 /**
@@ -81,12 +77,10 @@ module.exports = createClientOrDeliverer;
 */
 const createRestaurateur = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-        // Generate a unique userID
-        const userID = Math.floor(Math.random() * 100);
 
         // Construct the SQL query
-        const sql = "INSERT INTO users (userID, email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const values = [userID, email, password, phoneNumber, userType, false, refreshToken];
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken];
 
         // Execute the query
         await new Promise((resolve, reject) => {
@@ -101,20 +95,16 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
 
         // Return the created user object
         return {
-            userID,
             email,
             password,
             phoneNumber,
             userType,
-            isSuspended: false,
-            refreshToken
+            isSuspended: true,
         };
     } catch (error) {
         throw error;
     }
 };
-
-module.exports = createRestaurateur;
 
 
 /**
@@ -129,12 +119,10 @@ module.exports = createRestaurateur;
 // TODO : Modifier la méthode pour générer la clé de sécurité et l'ajouter
 const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-        // Generate a unique userID
-        const userID = Math.floor(Math.random() * 100);
 
         // Construct the SQL query
-        const sql = "INSERT INTO users (userID, email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const values = [userID, email, password, phoneNumber, userType, false, refreshToken];
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken];
 
         // Execute the query
         await new Promise((resolve, reject) => {
@@ -149,20 +137,16 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
 
         // Return the created user object
         return {
-            userID,
             email,
             password,
             phoneNumber,
             userType,
-            isSuspended: false,
             refreshToken
         };
     } catch (error) {
         throw error;
     }
 };
-
-module.exports = createDeveloper;
 
 
 /**
@@ -241,8 +225,11 @@ const generateAccessToken = (userID, userType) => {
  * @returns {token} Le JSON Web Token de rafraîchissement.
  */
 const generateRefreshToken = (email) => {
+    console.log('ici');
+    console.log(email);
     const token = jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    
+    console.log(token);
+
     return token;
 };
 

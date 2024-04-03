@@ -45,8 +45,6 @@ app.use(loggerMiddleware);
 
 app.use('/auth', authenticationRouter);
 
-app.use('/createLivreur', createClientOrDeliverer);
-
 /* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
 app.get('/hello', function(req, res) {
     res.send("Hello World !");
@@ -63,29 +61,6 @@ app.get('/mongo', function(req, res) {
 
 
 
-app.get('/mysql', function(req, res) {
-    // Créer une connexion à la base de données MySQL
-    const connection = mysql.createConnection({
-        host: 'mysql',
-        user: 'root', // Nom d'utilisateur MySQL
-        port: 3306,
-        password: 'example_pass', // Mot de passe MySQL
-    });
-
-    // Établir la connexion à la base de données
-    connection.connect((err) => {
-        if (err) {
-            res.status(500).send('Error connecting to MySQL:', err.stack);
-            return;
-        }
-        // Send response with status 200 (OK) and connected thread ID
-        res.status(200).send('Connected to MySQL as id ' + connection.threadId);
-        console.log("Connected to MySQL");
-    });
-
-    // Export the connection
-    module.exports = connection;
-});
 /* -------------------------------------------------- */
 
 app.listen(port, function() {
