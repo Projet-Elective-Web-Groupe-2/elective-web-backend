@@ -9,7 +9,8 @@ const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
 
 router.post('/create', restaurantController.createRestaurant);
-// Autres routes à ajouter ici
+router.get('/find', restaurantController.findRestaurant);
+router.post('/addProduct', restaurantController.addProduct);
 router.get('/metrics', restaurantController.metrics);
 
 module.exports = router;
