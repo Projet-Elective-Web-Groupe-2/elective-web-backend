@@ -8,7 +8,60 @@ const os = require('os');
 const osUtils = require('os-utils');
 
 
+/**
+ * Fonction permettant de récupérer un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à récupérer.
+ * @returns {object} L'utilisateur correspondant à l'ID passé en paramètre.
+*/
+const getUser = async (userID) => {
 
+    // return user à trouver
+};
+
+/**
+ * Fonction permettant de récupérer tous les utilisateurs.
+ * @returns {Array} Un tableau contenant tous les utilisateurs.
+*/
+const getAllUsers = async () => {
+
+    // return tous les users
+}
+
+/**
+ * Fonction permettant de modifier un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à modifier.
+ * @param {objet} edits - Les modifications à apporter à l'utilisateur.
+ * @returns {object} L'utilisateur modifié.
+ */
+const editUser = async (userID, edits) => {
+    // edits est un objet JSON contenant toutes les modification à apporter
+    // Demande à Paul ou Théo pour plus d'infos
+    // return user modifié
+}
+
+/**
+ * Fonction permettant de suspendre un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à suspendre.
+*/
+const suspendUser = async (userID) => {
+    // rien return, juste suspendre l'utilisateur (modifier le booléen du coup)
+}
+
+/**
+ * Fonction permettant de réactiver un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à réactiver.
+*/
+const unsuspendUser = async (userID) => {
+    // rien return, juste réactiver l'utilisateur (modifier le booléen du coup)
+}
+
+/**
+ * Fonction permettant de supprimer un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à supprimer.
+*/
+const deleteUser = async (userID) => {
+    // rien return, juste supprimer l'utilisateur
+}
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -53,5 +106,11 @@ function getCpuUsage() {
 };
 
 module.exports = {
+    getUser,
+    getAllUsers,
+    editUser,
+    suspendUser,
+    unsuspendUser,
+    deleteUser,
     getPerformanceMetrics
 };
