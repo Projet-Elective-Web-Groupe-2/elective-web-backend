@@ -1,3 +1,11 @@
+## [5.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.1.0...v5.2.0) (2024-04-03)
+
+
+### Features
+
+* connection logs working perfectly ([e34ee40](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/e34ee4017a9e34e48f51a3f253052d5201b11e3f))
+* refresh token implemented ([2d95ddc](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2d95ddc37669868dd658c7b4258da3d084da7afb))
+
 ## [5.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.0.0...v5.1.0) (2024-04-03)
 
 
