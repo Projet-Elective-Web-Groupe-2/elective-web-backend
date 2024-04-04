@@ -123,7 +123,6 @@ const register = async (req, res) => {
                 }
                 
                 refreshToken = authenticationService.generateRefreshToken(email);
-
                 newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber, refreshToken);
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
 
@@ -138,9 +137,7 @@ const register = async (req, res) => {
                 }
 
                 refreshToken = authenticationService.generateRefreshToken(email);
-
                 newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber, refreshToken);
-                
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
                 
                 const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/create`;
@@ -152,7 +149,7 @@ const register = async (req, res) => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${accessToken}`
                     }
                 });
 
@@ -163,11 +160,9 @@ const register = async (req, res) => {
                 break;
             }
             case "DEVELOPPEUR TIERS": {
-                // TODO : Penser à modifier la méthode pour inclure la clé de sécurité
                 refreshToken = authenticationService.generateRefreshToken(email);
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
-                
                 break;
             }
             default: {

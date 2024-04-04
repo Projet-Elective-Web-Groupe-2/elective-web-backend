@@ -9,7 +9,6 @@ const bcrypt = require('bcryptjs');
 const os = require('os');
 const osUtils = require('os-utils');
 const fs = require('fs')
-const User = require('../models/userModel');
 const connection = require('../db/mySQLConnector');
 
 const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');

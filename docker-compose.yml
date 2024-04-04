@@ -52,14 +52,34 @@ services:
     ports:
       - "${PRODUCT_PORT}:${PRODUCT_PORT}"
     depends_on:
-      - mongoDB
       - traefik
+      - mongoDB
     env_file:
       - .env
     stdin_open: true
     tty: true
     labels:
       - "traefik.http.routers.product.rule=Host(`product.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+  
+  order:
+    build:
+      context: ./order
+    hostname: ${ORDER_HOST}
+    container_name: ${ORDER_HOST}
+    ports:
+      - "${ORDER_PORT}:${ORDER_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.order.rule=Host(`order.localhost`)"
     networks:
       - microservices_network
       - mongodb_network

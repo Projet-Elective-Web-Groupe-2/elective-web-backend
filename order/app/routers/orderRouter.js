@@ -9,12 +9,12 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 
 router.post('/create', orderController.createAndAddOrder);
-router.post('/addMenu', orderController.addMenu);
-router.post('/addProduct', orderController.addProduct);
-router.get('/get', orderController.getOrder);
-router.get('/ordersOfUser', orderController.listOrdersFromUser);
-routeur.get('/ordersOfRestaurant', orderController.listOrdersFromRestaurant);
-router.delete('/delete', orderController.deleteOrder);
+//router.post('/addMenu', orderController.addMenu);
+//router.post('/addProduct', orderController.addProduct);
+//router.get('/get', orderController.getOrder);
+//router.get('/ordersOfUser', orderController.listOrdersFromUser);
+//router.get('/ordersOfRestaurant', orderController.listOrdersFromRestaurant);
+//router.delete('/delete', orderController.deleteOrder);
 router.get('/metrics', orderController.metrics);
 
 module.exports = router;
