@@ -27,14 +27,10 @@ const createAndAddOrder = async (req, res) => {
         return res.status(403).json({ error: "Forbidden" });
     }
 
-    const itemID = req.body["itemID"];
-    console.log("itemID : ", itemID);
-    const isMenu = req.body["isMenu"];
-    console.log("isMenu : ", isMenu);
+    const items = req.body["items"];
     const restaurantID = req.body["restaurantID"];
-    console.log("restaurantID : ", restaurantID);
 
-    if (!itemID || isMenu == undefined || !restaurantID ) {
+    if (!items || !restaurantID ) {
         return res.status(400).json({ error: "Missing mandatory data for order creation" });
     }
 
@@ -64,34 +60,78 @@ const createAndAddOrder = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        let item;
+        let totalPrice = 0;
 
-        switch (isMenu) {
-            case true:
+        for (let item of items) {
+            const itemID = item.idProduit;
+            const isMenu = item.isMenu;
+            const drinkID = item.drink;
+
+            if (!itemID || isMenu == undefined || (isMenu && drinkID == undefined)) {
+                throw new Error("Missing mandatory data for item verification");
+            }
+
+            if (isMenu) {
                 url = `${MENU_URL}find`;
                 response = await axios.get(url, {
                     params: { id: itemID },
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                item = response.data.menu;
-                break;
-            case false:
+                
+                if (response.status != 200) {
+                    throw new Error("Menu not found");
+                }
+
+                totalPrice += response.data.menu.totalPrice;
+
+                if (drinkID) {
+                    url = `${PRODUCT_URL}find`;
+                    response = await axios.get(url, {
+                        params: { id: drinkID },
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                }
+
+                if (response.status != 200) {
+                    throw new Error("Menu not found");
+                }
+
+                const drink = response.data.product;
+
+                totalPrice += drink.price;
+
+                // TODO : Potentiellement devoir changer le nom de la route
+                url = `${MENU_URL}addProduct`;
+                response = await axios.post(url, {
+                    menuID: itemID,
+                    product: drink,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (response.status != 201) {
+                    throw new Error("Drink not added to menu");
+                }
+            }
+            else {
                 url = `${PRODUCT_URL}find`;
                 response = await axios.get(url, {
                     params: { id: itemID },
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                item = response.data.product;
-                break;
-            default:
-                throw new Error("Invalid item type");
+                
+                if (response.status != 200) {
+                    throw new Error("Product not found");
+                }
+
+                totalPrice += response.data.product.price;
+            }
         }
 
-        if (response.status != 200) {
-            throw new Error("Item not found");
-        }
-
-        let order = await orderService.createOrder(item, isMenu, userID, userAddress);
+        let order = await orderService.createOrder(items, userID, userAddress, totalPrice);
 
         url = `${RESTAURANT_URL}addOrder`;
         response = await axios.post(url, {
@@ -108,13 +148,22 @@ const createAndAddOrder = async (req, res) => {
             throw new Error("Order creation failed");
         }
 
-        return res.status(201).json({ message: "Order created" });
+        return res.status(201).json({ order });
     }
     catch (error) {
-        if (error.message === "User not found"
+        if (error.message === "User not found" 
             || error.message === "Restaurant not found"
-            || error.message === "Item not found") {
+            || error.message === "Item not found"
+            || error.message === "Menu not found"
+            || error.message === "Drink not found"
+            || error.message === "Drink not added to menu") {
             return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Missing mandatory data for order creation") {
+            return res.status(400).json({ error: error.message });
+        }
+        else if (error.message === "Missing mandatory data for item verification") {
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Invalid item type") {
             return res.status(400).json({ error: error.message });

@@ -10,39 +10,39 @@ const Order = require('../models/orderModel');
 
 /**
  * Fonction permettant de créer une commande.
- * @param {String} item - L'item à commander (menu ou article).
- * @param {*} isMenu - Un booléen indiquant si l'item est un menu ou non.
- * @param {*} userID - L'ID du client passant la commande.
- * @param {*} userAddress - L'adresse de l'utilisateur passant la commande.
+ * @param {String} items - Le(s) item(s) commandé(s) (menu(s) et/ou article(s)).
+ * @param {String} userID - L'ID du client passant la commande.
+ * @param {String} userAddress - L'adresse de l'utilisateur passant la commande.
+ * @param {Number} totalPrice - Le prix total de la commande.
  * @returns {object} La commande créée.
  */
-const createOrder = async (item, isMenu, userID, userAddress) => {
+const createOrder = async (items, userID, userAddress, totalPrice) => {
 
     try {
         const newOrder = new Order({
             clientID: userID,
             address: userAddress,
             status: "Créée",
-            totalPrice: isMenu ? item.totalPrice : item.price,
+            totalPrice: totalPrice,
         });
 
-        if (isMenu) {
-            newOrder.menus.push(item._id);
-        }
-        else {
-            newOrder.products.push(item._id);
+        for (let item of items) {
+            if (item.isMenu) {
+                newOrder.menus.push(item.idProduit);
+            }
+            else {
+                newOrder.products.push(item.idProduit);
+            }
         }
 
         await newOrder.save();
-        console.log("Order created : " + newOrder._id + " for user " + userID + " at address " + userAddress + " for a total of " + newOrder.totalPrice + "€.");
-        console.log("Item ordered : " + (isMenu ? "Menu " + item.name : "Product " + item.name + " qui coûte " + item.price + "€."));
+
         return newOrder;
     }
     catch (error) {
         throw new Error("Error while trying to create an order : " + error.message);
     }
 };
-
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
