@@ -26,7 +26,7 @@ const createAndAddMenu = async (req, res) => {
 
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        const restaurantUrl = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`;
+        const restaurantUrl = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; // testé et fonctionnel
         const restaurantResponse = await axios.get(restaurantUrl, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
@@ -36,7 +36,7 @@ const createAndAddMenu = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProductsByIds`;
+        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProductsByIds`; // testé et fonctionnel 
         const productsResponse = await axios.get(productUrl, {
             params: { productIds },
             headers: { Authorization: `Bearer ${token}` }
@@ -48,7 +48,7 @@ const createAndAddMenu = async (req, res) => {
 
         const products = productsResponse.data.productsInfo;
 
-        const menu = await menuService.createMenu(name, products);
+        const menu = await menuService.createAndAddMenu(name, products);
 
         res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); // for test
     } catch (error) {
@@ -62,7 +62,36 @@ const createAndAddMenu = async (req, res) => {
         }
     }
 };
+const findMenu = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
 
+    const menuID = req.query.id;
+
+    if (!menuID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        const menu = await menuService.findMenuByID(menuID);
+
+        if (!menu) {
+            throw new Error("Menu not found");
+        }
+
+        return res.status(200).json({ menu });
+    }
+    catch (error) {
+        if (error.message === "Menu not found") {
+            return res.status(404).json({ error: "Menu not found" });
+        }
+        else {
+            console.error("Unexpected error while finding a menu : ", error);
+            return res.status(500).json({ error: "Menu finding failed" });
+        }
+    }
+};
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -87,5 +116,6 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddMenu,
-    metrics
+    findMenu,
+    metrics,
 };

@@ -20,7 +20,8 @@ function verifyToken(req, res, next) {
         '/docs',
         '/healthcheck',
         '/metrics',
-        '/favicon.ico'
+        '/favicon.ico',
+        '/menu'
     ];
 
     if (authorizedRoutes.some(route => route === req.path)) {
