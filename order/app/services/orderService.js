@@ -47,6 +47,38 @@ const createOrder = async (items, userID, userAddress, totalPrice) => {
     }
 };
 
+
+/**
+ * Fonction permettant de retrouver une commande dans la base de données grâce à son ID.
+ * @param {String} id - L'ID de la commande.
+ * @returns {object} La commande trouvée.
+*/
+const findOrderByID = async (id) => {
+    try {
+        const order = await Order.findById(id);
+
+        return order;
+    }
+    catch(error) {
+        throw new Error("Error while trying to find an order by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de mettre à jour le statut d'une commande.
+ * @param {String} id - L'ID de la commande.
+ * @param {String} newStatus - Le nouveau statut de la commande.
+ * @returns {object} La commande mise à jour.
+*/ 
+const updateOrderStatus = async (id, newStatus) => {
+    try {
+        Order.findByIdAndUpdate(id, { status: newStatus });
+    }
+    catch (error) {
+        throw new Error("Error while trying to update an order status : " + error.message);
+    }
+}
+
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
@@ -91,5 +123,7 @@ function getCpuUsage() {
 
 module.exports = {
     createOrder,
+    findOrderByID,
+    updateOrderStatus,
     getPerformanceMetrics
 };

@@ -76,7 +76,7 @@ const createRestaurant = async (name, ownerID, address) => {
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
  * @param {object} product - Le produit à ajouter.
- */
+*/
 const addProduct = async (restaurantID, product) => {
     try {
         Restaurant.findByIdAndUpdate(restaurantID, {
@@ -92,7 +92,7 @@ const addProduct = async (restaurantID, product) => {
  * Fonction permettant d'ajouter une commande à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter une commande.
  * @param {object} order - La commande à ajouter.
- */
+*/
 const addOrder = async (restaurantID, order) => {
     try {
         Restaurant.findByIdAndUpdate(restaurantID, {
@@ -103,6 +103,25 @@ const addOrder = async (restaurantID, order) => {
         throw new Error("Error while trying to add an order to a restaurant : " + error.message);
     }
 }
+
+/**
+ * Fonction permettant de mettre à jour le statut d'une commande.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @param {String} orderID - L'ID de la commande.
+ * @param {String} newStatus - Le nouveau statut de la commande.
+*/
+const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
+    try {
+        const restaurant = await Restaurant.findById(restaurantID);
+        const index = restaurant.orders.findIndex((o) => o._id === orderID);
+        restaurant.orders[index].status = newStatus;
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to update an order status : " + error.message);
+    }
+};
+
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -152,5 +171,6 @@ module.exports = {
     createRestaurant,
     addProduct,
     addOrder,
+    updateOrderStatus,
     getPerformanceMetrics
 };

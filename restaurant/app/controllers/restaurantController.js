@@ -136,6 +136,35 @@ const addOrder = async (req, res) => {
     }
 };
 
+const updateOrder = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const orderID = req.body["orderID"];
+    const newStatus = req.body["status"];
+
+    if (!orderID || !newStatus || !restaurantID) {
+        return res.status(400).json({ error: "Missing mandatory data for order status update" });
+    }
+
+    try {
+        await restaurantService.updateOrderStatus(restaurantID, orderID, newStatus);
+
+        return res.status(200).json({ message: "Order status updated" });
+    }
+    catch (error) {
+        if (error.message === "Order not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while updating order status : ", error.message);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+}
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;

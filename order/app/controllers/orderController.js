@@ -175,6 +175,108 @@ const createAndAddOrder = async (req, res) => {
     }
 };
 
+const updateOrderStatus = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+
+    const orderID = req.body["orderID"];
+    const restaurantID = req.body["restaurantID"];
+    const newStatus = req.body["statut"];
+
+    if (!orderID || !newStatus) {
+        return res.status(400).json({ error: "Missing mandatory data for order status update" });
+    }
+
+    const possibleStatuses = [
+        "Created",
+        "Payment refused",
+        "Order refused by restaurateur",
+        "In preparation",
+        "Order refused by deliverer",
+        "Being delivered",
+        "Delivered"
+    ];
+
+    if (!possibleStatuses.includes(newStatus)) {
+        return res.status(400).json({ error: "Invalid status" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
+        url = `${RESTAURANT_URL}find`;
+        response = await axios.get(url, {
+            params: { id: restaurantID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("Restaurant not found");
+        }
+
+        const order = await orderService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+
+        await orderService.updateOrderStatus(orderID, newStatus);
+
+        url = `${RESTAURANT_URL}updateOrder`;
+        response = await axios.post(url, {
+            orderID: orderID,
+            restaurantID: restaurantID,
+            newStatus: newStatus
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response.status != 200) {
+            throw new Error("Order status update failed");
+        }
+
+        return res.status(200).json({ message: "Order status updated" });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Restaurant not found" || error.message === "Order not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Invalid status") {
+            return res.status(400).json({ error: error.message });
+        }
+        else if (error.message === "Order status update failed") {
+            return res.status(500).json({ error: error.message });
+        }
+        else if (error.message === "Missing mandatory data for order status update") {
+            return res.status(400).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while updating order status : ", error);
+            return res.status(500).json({ error: "Order status update failed" });
+        }
+    }
+
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -201,5 +303,6 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddOrder,
+    updateOrderStatus,
     metrics
 };
