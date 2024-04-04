@@ -194,5 +194,6 @@ module.exports = {
     findRestaurant,
     addProduct,
     addOrder,
+    updateOrder,
     metrics
 };
