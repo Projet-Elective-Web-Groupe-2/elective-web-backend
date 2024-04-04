@@ -43,8 +43,8 @@ const createRestaurant = async (req, res) => {
 };
 
 const findRestaurant = async (req, res) => {
-    if (!req.params) {
-        return res.status(400).json({ error: "Required request parameters is missing" });
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
     }
 
     const restaurantID = req.query.id;
@@ -101,6 +101,41 @@ const addProduct = async (req, res) => {
     }
 };
 
+const addOrder = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const order = req.body["order"];
+
+    if (!restaurantID || !order) {
+        return res.status(400).json({ error: "Missing mandatory data for order adding" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
+
+    if (userType != "CLIENT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    try {
+        await restaurantService.addOrder(restaurantID, order);
+
+        return res.status(201).json({ message: "Order successfully added to restaurant" });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found" || error.message === "Order not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while adding an order to a restaurant : ", error.message);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -129,5 +164,6 @@ module.exports = {
     createRestaurant,
     findRestaurant,
     addProduct,
+    addOrder,
     metrics
 };

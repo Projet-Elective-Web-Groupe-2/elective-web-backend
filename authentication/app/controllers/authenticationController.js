@@ -199,6 +199,37 @@ const register = async (req, res) => {
     }
 };
 
+const findUser = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const userID = req.query.id;
+
+    if (!userID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        const user = await authenticationService.findUserByID(userID);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return res.status(200).json({ user });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while finding a user : ", error);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+};
+
 const token = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -316,6 +347,7 @@ module.exports = {
     login,
     logout,
     register,
+    findUser,
     token,
     logs,
     metrics

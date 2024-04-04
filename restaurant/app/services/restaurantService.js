@@ -88,6 +88,21 @@ const addProduct = async (restaurantID, product) => {
     }
 };
 
+/**
+ * Fonction permettant d'ajouter une commande à un restaurant.
+ * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter une commande.
+ * @param {object} order - La commande à ajouter.
+ */
+const addOrder = async (restaurantID, order) => {
+    try {
+        Restaurant.findByIdAndUpdate(restaurantID, {
+            $addToSet: { orders: order }
+        });
+    }
+    catch (error) {
+        throw new Error("Error while trying to add an order to a restaurant : " + error.message);
+    }
+}
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -136,5 +151,6 @@ module.exports = {
     findRestaurantByID,
     createRestaurant,
     addProduct,
+    addOrder,
     getPerformanceMetrics
 };

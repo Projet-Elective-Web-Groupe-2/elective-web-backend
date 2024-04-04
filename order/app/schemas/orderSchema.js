@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         unique: false,
         required: true,
-        default: Date.now()
+        default: Date.now
     },
     status: {
         type: String,
@@ -61,6 +61,20 @@ const orderSchema = new mongoose.Schema({
         unique: false,
         required: true,
     }
+});
+
+orderSchema.virtual('productDetails', {
+    ref: 'Product',
+    localField: 'products',
+    foreignField: '_id',
+    justOne: false
+});
+
+orderSchema.virtual('menuDetails', {
+    ref: 'Menu',
+    localField: 'menus',
+    foreignField: '_id',
+    justOne: false
 });
 
 module.exports = orderSchema;
