@@ -1,6 +1,6 @@
 /**
  * Le fichier contenant les traitements liés à l'authentification.
- * @author GAURE Warren
+ * @author GAURE Warren, JOURNEL Nicolas
  * @version 4.2
 */
 
@@ -9,7 +9,6 @@ const bcrypt = require('bcryptjs');
 const os = require('os');
 const osUtils = require('os-utils');
 const fs = require('fs')
-const User = require('../models/userModel');
 const connection = require('../db/mySQLConnector');
 
 const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
@@ -28,27 +27,26 @@ const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
 */
 const createClientOrDeliverer = async (email, password, userType, firstName, lastName, address, phoneNumber, refreshToken) => {
     try {
+        const referralCode = generateReferralCode();
 
-        
-        // Generate a random referral code
-        const referralCode = (Math.random() + 1).toString(36).substring(2);
-
-        // Construct the SQL query
         const sql = "INSERT INTO users (firstName, lastName, email, password, phoneNumber, userType, address, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         const values = [firstName, lastName, email, password, phoneNumber, userType, address, referralCode, false, refreshToken];
 
-        // Execute the query
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Error while trying to create a client/deliverer in the database: " + error.message));
-                } else {
+                    reject(new Error("Error while trying to create a client/deliverer in the database : " + error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
-        // Return the created user object
+
+        const userID = await findUserIDByEmail(email);
+
         return {
+            userID,
             firstName,
             lastName,
             email,
@@ -59,11 +57,11 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
             referralCode,
             isSuspended: false
         };
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error(`Error while trying to create a ${userType}`);
     }
 };
-
 
 /**
  * Fonction permettant de créer un restaurateur dans la base de données.
@@ -76,35 +74,38 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
 */
 const createRestaurateur = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
+        const referralCode = generateReferralCode();
 
-        // Construct the SQL query
-        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
-        const values = [email, password, phoneNumber, userType, false, refreshToken];
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, referralCode, false, refreshToken];
 
-        // Execute the query
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Error while trying to create a restaurateur in the database: " + error.message));
-                } else {
+                    reject(new Error("Error while trying to create a restaurateur in the database : " + error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
 
-        // Return the created user object
+        const userID = await findUserIDByEmail(email);
+
         return {
+            userID,
             email,
             password,
             phoneNumber,
             userType,
-            isSuspended: true,
+            referralCode,
+            isSuspended: false,
         };
-    } catch (error) {
-        throw new Error(`Error while trying to create a restaurateur`);
+    }
+    catch (error) {
+        throw new Error(`Error while trying to create a restaurateur : ${error.message}`);
     }
 };
-
 
 /**
  * Fonction permettant de créer un développeur tiers dans la base de données.
@@ -115,35 +116,38 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
  * @param {String} refreshToken - Le token de rafraîchissement du développeur.
  * @returns {object} Le développeur en question, ou false si rien n'a été créé.
  */
-// TODO : Modifier la méthode pour générer la clé de sécurité et l'ajouter
 const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
         const apiKey = generateApiKey();
-        // Construct the SQL query
+
         const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken, apiKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const values = [email, password, phoneNumber, userType, false, refreshToken, apiKey];
 
-        // Execute the query
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
                     reject(new Error("Error while trying to create a developer in the database: " + error.message));
-                } else {
+                }
+                else {
                     resolve(results);
                 }
             });
         });
 
-        // Return the created user object
+        const userID = await findUserIDByEmail(email);
+
         return {
+            userID,
             email,
             password,
             phoneNumber,
             userType,
             refreshToken,
-            apiKey
+            apiKey,
+            userID
         };
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error(`Error while trying to create a developer`);
     }
 };
@@ -156,28 +160,84 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
 */
 const findUserByEmail = async (email) => {
     try {
-        // Construct the SQL query
         const sql = `SELECT * FROM users WHERE email = ?`;
         const values = [email];
 
-        // Execute the query
         const [user] = await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Error while trying to find user by email: " + error.message));
-                } else {
+                    reject(new Error("Error while trying to find user by email : " + error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
 
         return user;
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error("Error while trying to find user by email : " + error.message);
     }
 };
 
+/**
+ * Fonction permettant de récupérer un utilsateur depuis la base de données grâce à son email.
+ * @param {string} email - L'addresse email de l'utilisateur à récupérer.
+ * @returns {object} L'utilisateur en question, ou false si rien n'a été trouvé.
+*/
+const findUserIDByEmail = async (email) => {
+    try {
+        const sql = `SELECT userID FROM users WHERE email = ?`;
+        const values = [email];
 
+        let userID;
+        
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to find user by email : " + error.message));
+                }
+                else {
+                    userID = results[0].userID;
+                    resolve(results);
+                }
+            });
+        });
+        return userID;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find user by email : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de générer un code de parrainage aléatoire.
+ * @returns {string} Le code de parrainage généré.
+ */
+function generateReferralCode() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let referralCode = '';
+    for (let i = 0; i < 12; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        referralCode += characters.charAt(randomIndex);
+    }
+    return referralCode;
+};
+
+/**
+ * Fonction permettant de générer une clé d'API aléatoire.
+ * @returns {string} La clé d'API générée.
+ */
+function generateApiKey() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let apiKey = '';
+    for (let i = 0; i < 42; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        apiKey += characters.charAt(randomIndex);
+    }
+    return apiKey;
+};
 
 /**
  * Fonction permettant de crypter le mot de passe entré par l'utilisateur.
@@ -186,7 +246,6 @@ const findUserByEmail = async (email) => {
 */
 const encryptPassword = async(password) => {
     const newPassword = await bcrypt.hash(password + process.env.PEPPER_STRING, 10);
-
     return newPassword;
 }
 
@@ -214,7 +273,6 @@ const comparePassword = async (password, passwordToVerify) => {
 */
 const generateAccessToken = (userID, userType) => {
     const token = jwt.sign({ id : userID, type : userType }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-    
     return token;
 };
 
@@ -225,7 +283,6 @@ const generateAccessToken = (userID, userType) => {
  */
 const generateRefreshToken = (email) => {
     const token = jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-
     return token;
 };
 
@@ -272,7 +329,8 @@ const verifyRefreshToken = (refreshToken) => {
 */
 const updateRefreshToken = async (email, refreshToken) => {
     try {
-        await User.updateOne({ email }, { refreshToken });
+        const query = `UPDATE users SET refreshToken = ? WHERE email = ?`;
+        await connection.query(query, [refreshToken, email]);
     }
     catch (error) {
         throw new Error("Error while trying to update refresh token : " + error.message);
@@ -381,7 +439,7 @@ const writeLogs = async (useCase, id, type) => {
             console.error("Error while writing logs : ", error);
         }
     });
-}
+};
 
 /**
  * Fonction permettant de récupérer le contenu du fichier de logs de connexion.
@@ -390,27 +448,14 @@ const writeLogs = async (useCase, id, type) => {
 const getLogs = () => {
     const logsContent = fs.readFileSync(logsPath, 'utf8');
     return logsContent.split('\n');
-}
-
-/**
- * Fonction permettant de générer une clé d'API aléatoire.
- * @returns {string} La clé d'API générée.
- */
-function generateApiKey() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let apiKey = '';
-    for (let i = 0; i < 38; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        apiKey += characters.charAt(randomIndex);
-    }
-    return apiKey;
-}
+};
 
 module.exports = {
     createClientOrDeliverer,
     createRestaurateur,
     createDeveloper,
     findUserByEmail,
+    findUserIDByEmail,
     encryptPassword,
     comparePassword,
     generateAccessToken,

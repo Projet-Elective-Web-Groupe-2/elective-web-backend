@@ -83,6 +83,26 @@ services:
       - microservices_network
       - mongodb_network
 
+  users:
+    build:
+      context: ./users
+    hostname: users-service
+    container_name: users-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.users.rule=Host(`users.localhost`)"
+    networks:
+      - microservices_network
+      - mysql_network
+
   mongoDB:
     image: mongo
     container_name: mongoDB
