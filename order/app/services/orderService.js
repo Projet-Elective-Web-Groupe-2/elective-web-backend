@@ -22,7 +22,7 @@ const createOrder = async (items, userID, userAddress, totalPrice) => {
         const newOrder = new Order({
             clientID: userID,
             address: userAddress,
-            status: "Créée",
+            status: "Created",
             totalPrice: totalPrice,
         });
 
@@ -36,6 +36,9 @@ const createOrder = async (items, userID, userAddress, totalPrice) => {
         }
 
         await newOrder.save();
+
+        await Order.populate(newOrder, { path: 'menus', model: 'Menu' });
+        await Order.populate(newOrder, { path: 'products', model: 'Product' });
 
         return newOrder;
     }
