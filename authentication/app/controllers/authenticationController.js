@@ -70,7 +70,7 @@ const logout = async (req, res) => {
     const userType = decodedToken.type;
 
     try {
-        res.clearCookie("token");
+        res.clearCookie("accessToken");
 
         await authenticationService.writeLogs(7, userID, userType);
 
@@ -108,7 +108,7 @@ const register = async (req, res) => {
         let newUser;
         let accessToken;
         let refreshToken;
-        let userIDJSON;
+
         switch(userType) {
             case "CLIENT":
             case "LIVREUR":
@@ -123,9 +123,8 @@ const register = async (req, res) => {
                 }
                 
                 refreshToken = authenticationService.generateRefreshToken(email);
-
+                
                 newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber, refreshToken);
-                accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
 
                 break;
             }
@@ -138,7 +137,7 @@ const register = async (req, res) => {
                 }
 
                 refreshToken = authenticationService.generateRefreshToken(email);
-
+                
                 newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber, refreshToken);
                 
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
@@ -152,7 +151,7 @@ const register = async (req, res) => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${accessToken}`
                     }
                 });
 
@@ -163,14 +162,8 @@ const register = async (req, res) => {
                 break;
             }
             case "DEVELOPPEUR TIERS": {
-                // TODO : Penser à modifier la méthode pour inclure la clé de sécurité
                 refreshToken = authenticationService.generateRefreshToken(email);
-                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken, userID);
-                console.log(newUser);
-                accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
-                userIDJSON = newUser.userID;
-
-                
+                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
                 break;
             }
             default: {
@@ -180,7 +173,7 @@ const register = async (req, res) => {
 
         await authenticationService.writeLogs(5, newUser.userID, newUser.userType);
 
-        return res.status(200).json({ accessToken, refreshToken });
+        return res.status(200).json({ message: "User registered successfully" });
     }
     catch(error) {
         if (error.message === "User already exists") {
