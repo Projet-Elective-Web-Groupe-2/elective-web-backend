@@ -34,7 +34,6 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
         const referralCode = (Math.random() + 1).toString(36).substring(2);
 
         // Construct the SQL query
-        console.log('dans service '+refreshToken);
         const sql = "INSERT INTO users (firstName, lastName, email, password, phoneNumber, userType, address, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         const values = [firstName, lastName, email, password, phoneNumber, userType, address, referralCode, false, refreshToken];
 
@@ -61,7 +60,7 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
             isSuspended: false
         };
     } catch (error) {
-        throw error;
+        throw new Error(`Error while trying to create a ${userType}`);
     }
 };
 
@@ -102,7 +101,7 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
             isSuspended: true,
         };
     } catch (error) {
-        throw error;
+        throw new Error(`Error while trying to create a restaurateur`);
     }
 };
 
@@ -119,10 +118,10 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
 // TODO : Modifier la méthode pour générer la clé de sécurité et l'ajouter
 const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-
+        const apiKey = generateApiKey();
         // Construct the SQL query
-        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
-        const values = [email, password, phoneNumber, userType, false, refreshToken];
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken, apiKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken, apiKey];
 
         // Execute the query
         await new Promise((resolve, reject) => {
@@ -141,7 +140,8 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
             password,
             phoneNumber,
             userType,
-            refreshToken
+            refreshToken,
+            apiKey
         };
     } catch (error) {
         throw error;
@@ -173,7 +173,7 @@ const findUserByEmail = async (email) => {
 
         return user;
     } catch (error) {
-        throw error;
+        throw new Error("Error while trying to find user by email : " + error.message);
     }
 };
 
@@ -225,10 +225,7 @@ const generateAccessToken = (userID, userType) => {
  * @returns {token} Le JSON Web Token de rafraîchissement.
  */
 const generateRefreshToken = (email) => {
-    console.log('ici');
-    console.log(email);
     const token = jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    console.log(token);
 
     return token;
 };
@@ -394,6 +391,20 @@ const writeLogs = async (useCase, id, type) => {
 const getLogs = () => {
     const logsContent = fs.readFileSync(logsPath, 'utf8');
     return logsContent.split('\n');
+}
+
+/**
+ * Fonction permettant de générer une clé d'API aléatoire.
+ * @returns {string} La clé d'API générée.
+ */
+function generateApiKey() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let apiKey = '';
+    for (let i = 0; i < 38; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        apiKey += characters.charAt(randomIndex);
+    }
+    return apiKey;
 }
 
 module.exports = {

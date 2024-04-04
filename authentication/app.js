@@ -16,7 +16,6 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
-const createClientOrDeliverer = require('./app/routers/authenticationRouter');
 
 const mysql = require('mysql');
 

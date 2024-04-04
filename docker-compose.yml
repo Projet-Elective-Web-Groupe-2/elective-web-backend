@@ -19,7 +19,6 @@ services:
      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
     networks:
       - microservices_network
-      - mongodb_network  # À supprimer une fois MySQL installé et fonctionnel
       - mysql_network
 
   restaurant:
@@ -41,8 +40,6 @@ services:
     networks:
       - microservices_network
       - mongodb_network
-
-      - mysql_network
   
   monitoring:
     build:
