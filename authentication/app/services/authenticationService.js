@@ -144,7 +144,7 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
             apiKey
         };
     } catch (error) {
-        throw error;
+        throw new Error(`Error while trying to create a developer`);
     }
 };
 
@@ -177,7 +177,6 @@ const findUserByEmail = async (email) => {
     }
 };
 
-module.exports = findUserByEmail;
 
 
 /**
