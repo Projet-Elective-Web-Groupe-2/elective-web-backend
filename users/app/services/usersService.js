@@ -6,7 +6,7 @@
 
 const os = require('os');
 const osUtils = require('os-utils');
-
+const connection = require('../db/mySQLConnector');
 
 /**
  * Fonction permettant de récupérer un utilisateur en fonction de son ID.
@@ -14,9 +14,28 @@ const osUtils = require('os-utils');
  * @returns {object} L'utilisateur correspondant à l'ID passé en paramètre.
 */
 const getUser = async (userID) => {
+    try {
+        // Construction de la requête SQL
+        const sql = `SELECT * FROM users WHERE user_id = ?`;
+        const values = [userID];
 
-    // return user à trouver
+        // Exécution de la requête
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Erreur lors de la recherche de l'utilisateur par ID: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        return user;
+    } catch (error) {
+        throw new Error("Erreur lors de la recherche de l'utilisateur par ID : " + error.message);
+    }
 };
+
 
 /**
  * Fonction permettant de récupérer un utilisateur en fonction de son email.
@@ -24,8 +43,26 @@ const getUser = async (userID) => {
  * @returns {object} L'utilisateur correspondant à l'email passé en paramètre.
 */
 const getUserByEmail = async (email) => {
+    try {
+        // Construction de la requête SQL
+        const sql = `SELECT * FROM users WHERE email = ?`;
+        const values = [email];
 
-    // return user à trouver
+        // Exécution de la requête
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Erreur lors de la recherche de l'utilisateur par email: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        return user;
+    } catch (error) {
+        throw new Error("Erreur lors de la recherche de l'utilisateur par email : " + error.message);
+    }
 };
 
 /**
@@ -33,9 +70,26 @@ const getUserByEmail = async (email) => {
  * @returns {Array} Un tableau contenant tous les utilisateurs.
 */
 const getAllUsers = async () => {
+    try {
+        // Construction de la requête SQL
+        const sql = `SELECT * FROM users`;
 
-    // return tous les users
-}
+        // Exécution de la requête
+        const users = await new Promise((resolve, reject) => {
+            connection.query(sql, (error, results) => {
+                if (error) {
+                    reject(new Error("Erreur lors de la récupération de tous les utilisateurs: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        console.log(users);
+        return users;
+    } catch (error) {
+        throw new Error("Erreur lors de la récupération de tous les utilisateurs : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de modifier un utilisateur en fonction de son ID.
@@ -120,6 +174,7 @@ function getCpuUsage() {
 
 module.exports = {
     getUser,
+    getUserByEmail,
     getAllUsers,
     editUser,
     suspendUser,

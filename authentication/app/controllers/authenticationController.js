@@ -108,7 +108,7 @@ const register = async (req, res) => {
         let newUser;
         let accessToken;
         let refreshToken;
-
+        let userIDJSON;
         switch(userType) {
             case "CLIENT":
             case "LIVREUR":
@@ -165,8 +165,11 @@ const register = async (req, res) => {
             case "DEVELOPPEUR TIERS": {
                 // TODO : Penser à modifier la méthode pour inclure la clé de sécurité
                 refreshToken = authenticationService.generateRefreshToken(email);
-                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
+                newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken, userID);
+                console.log(newUser);
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
+                userIDJSON = newUser.userID;
+
                 
                 break;
             }

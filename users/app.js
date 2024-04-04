@@ -24,7 +24,6 @@ const port = process.env.USERS_PORT || 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
 app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));

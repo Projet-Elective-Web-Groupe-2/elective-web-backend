@@ -133,7 +133,8 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
                 }
             });
         });
-
+        userID = await findUserIDByEmail(email).userID;
+        console.log("user ", userID);
         // Return the created user object
         return {
             email,
@@ -141,7 +142,8 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
             phoneNumber,
             userType,
             refreshToken,
-            apiKey
+            apiKey,
+            userID
         };
     } catch (error) {
         throw new Error(`Error while trying to create a developer`);
@@ -177,6 +179,33 @@ const findUserByEmail = async (email) => {
     }
 };
 
+/**
+ * Fonction permettant de récupérer un utilsateur depuis la base de données grâce à son email.
+ * @param {string} email - L'addresse email de l'utilisateur à récupérer.
+ * @returns {object} L'utilisateur en question, ou false si rien n'a été trouvé.
+*/
+const findUserIDByEmail = async (email) => {
+    try {
+        // Construct the SQL query
+        const sql = `SELECT userID FROM users WHERE email = ?`;
+        const values = [email];
+
+        // Execute the query
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to find user by email: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+        console.log("1", userID);
+        return userID;
+    } catch (error) {
+        throw new Error("Error while trying to find user by email : " + error.message);
+    }
+};
 
 
 /**
@@ -411,6 +440,7 @@ module.exports = {
     createRestaurateur,
     createDeveloper,
     findUserByEmail,
+    findUserIDByEmail,
     encryptPassword,
     comparePassword,
     generateAccessToken,

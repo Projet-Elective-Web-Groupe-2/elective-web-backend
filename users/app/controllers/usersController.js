@@ -10,10 +10,10 @@ const decodeJWT = require('../utils/decodeToken');
 const getUser = async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const userID = decodeJWT(accessToken).id;
-
+    console.log("userID:", userID); // Log userID
     try {
         if (!userID) {
-            throw new Error("Invalid user ID");
+            throw new Error("Invalid user ID " + userID); // Include userID in the error message
         }
 
         const user = await usersService.getUser(userID);
@@ -37,6 +37,7 @@ const getUser = async (req, res) => {
         }
     }
 };
+
 
 const getUserByEmail = async (req, res) => {
     if (!req.body) {
