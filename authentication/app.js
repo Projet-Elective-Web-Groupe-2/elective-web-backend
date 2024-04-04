@@ -1,12 +1,10 @@
 /**
  * Le fichier principal du microservice d'authentification.
- * @author GAURE Warren, JOURNEL Nicolas, AMARA Ahmed
+ * @author GAURE Warren, JOURNEL Nicolas
  * @version 1.0
 */
 
 const express = require('express');
-const mongoose = require('mongoose');
-const mongoSanitize = require('express-mongo-sanitize');
 const cors = require('cors');
 
 const swaggerUI = require('swagger-ui-express');
@@ -25,7 +23,6 @@ const port = process.env.AUTH_PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
 app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));

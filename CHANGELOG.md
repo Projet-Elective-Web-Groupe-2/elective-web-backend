@@ -1,3 +1,11 @@
+## [5.3.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.0...v5.3.1) (2024-04-04)
+
+
+### Bug Fixes
+
+* authentication fixed (thanks Nicholas) ([48d9179](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/48d9179f466a8dd20d24ba58951a39882bff8f28))
+* tried fixing ([877f116](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/877f1169a1151b5e83f965461865b048a33596df))
+
 ## [5.3.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.1...v5.3.0) (2024-04-04)
 
 
