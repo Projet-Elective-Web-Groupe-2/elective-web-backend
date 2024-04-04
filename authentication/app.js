@@ -17,6 +17,8 @@ const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
 
+const mysql = require('mysql');
+
 require("dotenv").config();
 
 const app = express();
@@ -55,6 +57,9 @@ app.get('/mongo', function(req, res) {
         res.status(500).send("Error while connecting to MongoDB");
     }
 });
+
+
+
 /* -------------------------------------------------- */
 
 app.listen(port, function() {

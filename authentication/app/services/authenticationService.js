@@ -10,6 +10,7 @@ const os = require('os');
 const osUtils = require('os-utils');
 const fs = require('fs')
 const User = require('../models/userModel');
+const connection = require('../db/mySQLConnector');
 
 const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
 
@@ -27,28 +28,42 @@ const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
 */
 const createClientOrDeliverer = async (email, password, userType, firstName, lastName, address, phoneNumber, refreshToken) => {
     try {
-        const newUser = new User({
-            userID: Math.floor(Math.random() * 100),
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-            phoneNumber: phoneNumber,
-            userType: userType,
-            address: address,
-            referralCode: (Math.random() + 1).toString(36).substring(2),
-            isSuspended: false,
-            refreshToken: refreshToken
+
+        
+        // Generate a random referral code
+        const referralCode = (Math.random() + 1).toString(36).substring(2);
+
+        // Construct the SQL query
+        const sql = "INSERT INTO users (firstName, lastName, email, password, phoneNumber, userType, address, referralCode, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const values = [firstName, lastName, email, password, phoneNumber, userType, address, referralCode, false, refreshToken];
+
+        // Execute the query
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to create a client/deliverer in the database: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
         });
-
-        await newUser.save();
-
-        return newUser;
+        // Return the created user object
+        return {
+            firstName,
+            lastName,
+            email,
+            password,
+            phoneNumber,
+            userType,
+            address,
+            referralCode,
+            isSuspended: false
+        };
+    } catch (error) {
+        throw new Error(`Error while trying to create a ${userType}`);
     }
-    catch(error) {
-        throw new Error("Error while trying to create a client / deliverer in the database : " + error.message);
-    }
-}
+};
+
 
 /**
  * Fonction permettant de créer un restaurateur dans la base de données.
@@ -61,25 +76,35 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
 */
 const createRestaurateur = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-        const newUser = new User({
-            userID: Math.floor(Math.random() * 100),
-            email: email,
-            password: password,
-            phoneNumber: phoneNumber,
-            userType: userType,
-            referralCode: (Math.random() + 1).toString(36).substring(2),
-            isSuspended: false,
-            refreshToken: refreshToken
+
+        // Construct the SQL query
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken];
+
+        // Execute the query
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to create a restaurateur in the database: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
         });
 
-        await newUser.save();
-
-        return newUser;
-    }
-    catch(error) {
-        throw new Error("Error while trying to create a restaurateur in the database : " + error.message);
+        // Return the created user object
+        return {
+            email,
+            password,
+            phoneNumber,
+            userType,
+            isSuspended: true,
+        };
+    } catch (error) {
+        throw new Error(`Error while trying to create a restaurateur`);
     }
 };
+
 
 /**
  * Fonction permettant de créer un développeur tiers dans la base de données.
@@ -93,24 +118,36 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
 // TODO : Modifier la méthode pour générer la clé de sécurité et l'ajouter
 const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-        const newUser = new User({
-            userID: Math.floor(Math.random() * 100),
-            email: email,
-            password: password,
-            phoneNumber: phoneNumber,
-            userType: userType,
-            isSuspended: false,
-            refreshToken: refreshToken
+        const apiKey = generateApiKey();
+        // Construct the SQL query
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken, apiKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken, apiKey];
+
+        // Execute the query
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to create a developer in the database: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
         });
 
-        await newUser.save();
-
-        return newUser;
-    }
-    catch(error) {
-        throw new Error("Error while trying to create a developer in the database : " + error.message);
+        // Return the created user object
+        return {
+            email,
+            password,
+            phoneNumber,
+            userType,
+            refreshToken,
+            apiKey
+        };
+    } catch (error) {
+        throw new Error(`Error while trying to create a developer`);
     }
 };
+
 
 /**
  * Fonction permettant de récupérer un utilsateur depuis la base de données grâce à son email.
@@ -119,14 +156,28 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
 */
 const findUserByEmail = async (email) => {
     try {
-        const user = await User.findOne({ email });
+        // Construct the SQL query
+        const sql = `SELECT * FROM users WHERE email = ?`;
+        const values = [email];
+
+        // Execute the query
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to find user by email: " + error.message));
+                } else {
+                    resolve(results);
+                }
+            });
+        });
 
         return user;
-    }
-    catch (error) {
+    } catch (error) {
         throw new Error("Error while trying to find user by email : " + error.message);
     }
 };
+
+
 
 /**
  * Fonction permettant de crypter le mot de passe entré par l'utilisateur.
@@ -174,7 +225,7 @@ const generateAccessToken = (userID, userType) => {
  */
 const generateRefreshToken = (email) => {
     const token = jwt.sign({ email: email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    
+
     return token;
 };
 
@@ -339,6 +390,20 @@ const writeLogs = async (useCase, id, type) => {
 const getLogs = () => {
     const logsContent = fs.readFileSync(logsPath, 'utf8');
     return logsContent.split('\n');
+}
+
+/**
+ * Fonction permettant de générer une clé d'API aléatoire.
+ * @returns {string} La clé d'API générée.
+ */
+function generateApiKey() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let apiKey = '';
+    for (let i = 0; i < 38; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        apiKey += characters.charAt(randomIndex);
+    }
+    return apiKey;
 }
 
 module.exports = {
