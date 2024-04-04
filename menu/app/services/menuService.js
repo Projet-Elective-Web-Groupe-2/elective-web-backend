@@ -1,6 +1,6 @@
 const menu = require('../models/menuModel');
 
-const createMenu = async (name, products) => {
+const createAndAddMenu = async (name, products) => {
     try {
         const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
 
@@ -22,5 +22,5 @@ const createMenu = async (name, products) => {
 }
 
 module.exports = {
-    createMenu,
+    createAndAddMenu,
 };
