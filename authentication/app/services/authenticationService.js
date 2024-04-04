@@ -186,7 +186,7 @@ const findUserByEmail = async (email) => {
 */
 const findUserByID = async (id) => {
     try {
-        const sql = `SELECT * FROM users WHERE id = ?`;
+        const sql = `SELECT * FROM users WHERE userID = ?`;
         const values = [id];
 
         const [user] = await new Promise((resolve, reject) => {
@@ -480,6 +480,7 @@ module.exports = {
     createRestaurateur,
     createDeveloper,
     findUserByEmail,
+    findUserByID,
     findUserIDByEmail,
     encryptPassword,
     comparePassword,

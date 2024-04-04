@@ -34,7 +34,8 @@ const createOrder = async (item, isMenu, userID, userAddress) => {
         }
 
         await newOrder.save();
-
+        console.log("Order created : " + newOrder._id + " for user " + userID + " at address " + userAddress + " for a total of " + newOrder.totalPrice + "€.");
+        console.log("Item ordered : " + (isMenu ? "Menu " + item.name : "Product " + item.name + " qui coûte " + item.price + "€."));
         return newOrder;
     }
     catch (error) {

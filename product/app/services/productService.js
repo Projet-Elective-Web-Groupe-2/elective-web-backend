@@ -24,7 +24,7 @@ const createProduct = async (name, description, price) => {
         });
 
         await newProduct.save();
-
+        console.log("Product created : " + newProduct._id);
         return newProduct;
     }
     catch (error) {

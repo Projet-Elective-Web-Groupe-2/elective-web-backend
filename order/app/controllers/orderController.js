@@ -28,8 +28,11 @@ const createAndAddOrder = async (req, res) => {
     }
 
     const itemID = req.body["itemID"];
+    console.log("itemID : ", itemID);
     const isMenu = req.body["isMenu"];
+    console.log("isMenu : ", isMenu);
     const restaurantID = req.body["restaurantID"];
+    console.log("restaurantID : ", restaurantID);
 
     if (!itemID || isMenu == undefined || !restaurantID ) {
         return res.status(400).json({ error: "Missing mandatory data for order creation" });

@@ -138,6 +138,7 @@ const register = async (req, res) => {
                 refreshToken = authenticationService.generateRefreshToken(email);
 
                 newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber, refreshToken);
+                
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
                 
                 const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/create`;
@@ -161,7 +162,9 @@ const register = async (req, res) => {
             }
             case "DEVELOPPEUR TIERS": {
                 refreshToken = authenticationService.generateRefreshToken(email);
+                
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
+                
                 break;
             }
             default: {
