@@ -1,3 +1,22 @@
+## [5.3.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.1...v5.3.0) (2024-04-04)
+
+
+### Features
+
+* tried to add MySQL ([8dad74d](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8dad74dd890b5c7e17c1b3312a0ca48f31909522))
+
+
+### Bug Fixes
+
+* Added MySQL routes ! ([3f3e21f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/3f3e21fb9c1b481809668f4174c7d9af51a7b33a))
+* Added refrashToken to SQL ([8096c77](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8096c77589e316309ff21f05b301145b05cf7eeb))
+* changed MongoDB to MySQL for users ([8c1ef9b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8c1ef9b2fc06ef4da355232f753353478f0bc0c5))
+* Fixed bugs ([54ded6e](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/54ded6e04625d1f38456f658c6f146ea0989c4b6))
+* fixed minor things ([52a496a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/52a496ada07a3d42966d51dc69f1dc59a3826ede))
+* Removed every bug from MySQL (hopefully) ([71491ab](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/71491abd5c91cda9eaf46974cf0fa86eea400260))
+* tried to fix MySQL, didn't work ([561dd74](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/561dd743d71cc1239b2a46a7a64a31f0541d505d))
+* undid rebase ([f3bc614](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f3bc614293744640ff35b2051219eb940409b47a))
+
 ## [5.2.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.0...v5.2.1) (2024-04-03)
 
 

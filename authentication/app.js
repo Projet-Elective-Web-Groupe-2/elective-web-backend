@@ -17,6 +17,8 @@ const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
 
 const authenticationRouter = require('./app/routers/authenticationRouter');
 
+const mysql = require('mysql');
+
 require("dotenv").config();
 
 const app = express();
