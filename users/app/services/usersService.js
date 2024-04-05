@@ -16,7 +16,7 @@ const connection = require('../db/mySQLConnector');
 const getUser = async (userID) => {
     try {
         // Construction de la requête SQL
-        const sql = `SELECT * FROM users WHERE user_id = ?`;
+        const sql = `SELECT * FROM users WHERE userID = ?`;
         const values = [userID];
 
         // Exécution de la requête
