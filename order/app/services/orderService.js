@@ -73,7 +73,7 @@ const findOrderByID = async (id) => {
 const updateOrderStatus = async (id, newStatus) => {
     try {
         const order = await findOrderByID(id);
-        
+
         order.status = newStatus;
 
         await order.save();
@@ -83,7 +83,27 @@ const updateOrderStatus = async (id, newStatus) => {
     catch (error) {
         throw new Error("Error while trying to update an order status : " + error.message);
     }
-}
+};
+
+/**
+ * Fonction permettant de récupérer toutes les commandes d'un utilisateur.
+ * @param {String} userID - L'ID de l'utilisateur.
+ * @returns {Array} Les commandes de l'utilisateur.
+ */
+const getAllOrdersFromUser = async (userID) => {
+    try {
+        const orders = await Order.find({ clientID: userID });
+
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found for this user.");
+        }
+
+        return orders;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all orders from a user : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -131,5 +151,6 @@ module.exports = {
     createOrder,
     findOrderByID,
     updateOrderStatus,
+    getAllOrdersFromUser,
     getPerformanceMetrics
 };
