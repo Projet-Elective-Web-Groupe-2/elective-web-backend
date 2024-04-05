@@ -152,7 +152,6 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
     }
 };
 
-
 /**
  * Fonction permettant de récupérer un utilsateur depuis la base de données grâce à son email.
  * @param {string} email - L'addresse email de l'utilisateur à récupérer.
@@ -173,11 +172,37 @@ const findUserByEmail = async (email) => {
                 }
             });
         });
-
         return user;
     }
     catch (error) {
         throw new Error("Error while trying to find user by email : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de trouver un utilisateur dans la base de données grâce à son ID.
+ * @param {String} id - L'ID de l'utilisateur à trouver.
+ * @returns {object} L'utilisateur en question, ou false si rien n'a été trouvé.
+*/
+const findUserByID = async (id) => {
+    try {
+        const sql = `SELECT * FROM users WHERE userID = ?`;
+        const values = [id];
+
+        const [user] = await new Promise((resolve, reject) => {
+            connection.query(sql, values , (error, results) => {
+                if (error) {
+                    reject(new Error("Error while trying to find user by id: " + error.message));
+                }
+                else {
+                    resolve(results);
+                }
+            });
+        });
+        return user;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find user by id : " + error.message);
     }
 };
 
@@ -455,6 +480,7 @@ module.exports = {
     createRestaurateur,
     createDeveloper,
     findUserByEmail,
+    findUserByID,
     findUserIDByEmail,
     encryptPassword,
     comparePassword,

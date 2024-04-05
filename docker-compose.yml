@@ -4,13 +4,16 @@ services:
   authentication:
     build:
       context: ./authentication
-    hostname: authentication-service
-    container_name: authentication-service
+    hostname: ${AUTH_HOST}
+    container_name: ${AUTH_HOST}
     ports:
-      - "3000:3000"
+      - "${AUTH_PORT}:${AUTH_PORT}"
     depends_on:
-      - mongoDB
       - traefik
+      - mysql
+      - restaurant
+      - product
+      - monitoring
     env_file:
       - .env
     stdin_open: true
@@ -18,81 +21,19 @@ services:
     labels:
      - "traefik.http.routers.authentication.rule=Host(`authentication.localhost`)"
     networks:
-      - microservices_network
       - mysql_network
-
-  restaurant:
-    build:
-      context: ./restaurant
-    hostname: restaurant-service
-    container_name: restaurant-service
-    ports:
-      - "3002:3002"
-    depends_on:
-      - mongoDB
-      - traefik
-    env_file:
-      - .env
-    stdin_open: true
-    tty: true
-    labels:
-      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
-    networks:
       - microservices_network
-      - mongodb_network
-  
-  monitoring:
-    build:
-      context: ./monitoring
-    hostname: monitoring-service
-    container_name: monitoring-service
-    ports:
-      - "3007:3007"
-    depends_on:
-      - authentication
-      - restaurant
-      - product
-      - traefik
-    env_file:
-      - .env
-    stdin_open: true
-    tty: true
-    labels:
-     - "traefik.http.routers.monitoring.rule=Host(`monitoring.localhost`)"
-    networks:
-      - microservices_network
-      - mongodb_network
-
-  product:
-    build:
-      context: ./product
-    hostname: product-service
-    container_name: product-service
-    ports:
-      - "3004:3004"
-    depends_on:
-      - mongoDB
-      - traefik
-    env_file:
-      - .env
-    stdin_open: true
-    tty: true
-    labels:
-      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
-    networks:
-      - microservices_network
-      - mongodb_network
 
   users:
     build:
       context: ./users
-    hostname: users-service
-    container_name: users-service
+    hostname: ${USERS_HOST}
+    container_name: ${USERS_HOST}
     ports:
-      - "3001:3001"
+      - "${USERS_PORT}:${USERS_PORT}"
     depends_on:
-      - mysql
       - traefik
+      - mysql
     env_file:
       - .env
     stdin_open: true
@@ -103,43 +44,123 @@ services:
       - microservices_network
       - mysql_network
 
+  restaurant:
+    build:
+      context: ./restaurant
+    hostname: ${RESTAURANT_HOST}
+    container_name: ${RESTAURANT_HOST}
+    ports:
+      - "${RESTAURANT_PORT}:${RESTAURANT_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
+    networks:
+      - mongodb_network
+      - microservices_network
+  
+  product:
+    build:
+      context: ./product
+    hostname: ${PRODUCT_HOST}
+    container_name: ${PRODUCT_HOST}
+    ports:
+      - "${PRODUCT_PORT}:${PRODUCT_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+  
+  order:
+    build:
+      context: ./order
+    hostname: ${ORDER_HOST}
+    container_name: ${ORDER_HOST}
+    ports:
+      - "${ORDER_PORT}:${ORDER_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.order.rule=Host(`order.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network
+  
+  monitoring:
+    build:
+      context: ./monitoring
+    hostname: ${MONITORING_HOST}
+    container_name: ${MONITORING_HOST}
+    ports:
+      - "${MONITORING_PORT}:${MONITORING_PORT}"
+    depends_on:
+      - traefik
+      - restaurant
+      - product
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+     - "traefik.http.routers.monitoring.rule=Host(`monitoring.localhost`)"
+    networks:
+      - microservices_network
+      #- mongodb_network # Peut poser problème
+
   mongoDB:
     image: mongo
     container_name: mongoDB
     ports:
-      - "27017:27017"
-    volumes:
-      - ./volumes/mongodb:/data/database
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
     depends_on:
       - traefik
+    volumes:
+      - ./volumes/mongodb:/data/database
     labels:
      - "traefik.http.routers.mongo.rule=Host(`mongo.localhost`)"
     networks:
       - mongodb_network
-      - microservices_network
+      #- microservices_network # Peut poser problème
 
   mysql:
     image: mysql:5.7
+    container_name: mySQL
     environment:
-      MYSQL_ROOT_PASSWORD: example_pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_ROOT_HOST: "%"
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
     networks:
       - mysql_network
 
-
-
   phpmyadmin:
     image: phpmyadmin
+    container_name: phpmyadmin
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: mysql
     ports:
       - "8081:80"
-
 
   traefik:
     image: traefik:v3.0

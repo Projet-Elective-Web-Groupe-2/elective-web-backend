@@ -43,12 +43,6 @@ app.use(loggerMiddleware);
 app.use(authenticationMiddleware);
 
 app.use('/product', productRouter); 
-  
-/* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
-app.get('/hello', function(req, res) {
-    res.send("Hello World !");
-});
-/* -------------------------------------------------- */
 
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);

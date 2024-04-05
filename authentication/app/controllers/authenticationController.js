@@ -123,7 +123,6 @@ const register = async (req, res) => {
                 }
                 
                 refreshToken = authenticationService.generateRefreshToken(email);
-                
                 newUser = await authenticationService.createClientOrDeliverer(email, encryptedPassword, userType, firstName, lastName, address, phoneNumber, refreshToken);
 
                 break;
@@ -137,7 +136,7 @@ const register = async (req, res) => {
                 }
 
                 refreshToken = authenticationService.generateRefreshToken(email);
-                
+
                 newUser = await authenticationService.createRestaurateur(email, encryptedPassword, userType, phoneNumber, refreshToken);
                 
                 accessToken = authenticationService.generateAccessToken(newUser.userID, newUser.userType);
@@ -161,9 +160,11 @@ const register = async (req, res) => {
 
                 break;
             }
-            case "DEVELOPPEUR TIERS": {
+            case "DEVELOPPEUR": {
                 refreshToken = authenticationService.generateRefreshToken(email);
+                
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
+                
                 break;
             }
             default: {
@@ -191,6 +192,37 @@ const register = async (req, res) => {
         else {
             console.error("Unexpected error while registering : ", error);
             res.status(500).json({ error: "Registration failed" });
+        }
+    }
+};
+
+const findUser = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const userID = req.query.id;
+
+    if (!userID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        const user = await authenticationService.findUserByID(userID);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return res.status(200).json({ user });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while finding a user : ", error);
+            return res.status(500).send({ error: error.message });
         }
     }
 };
@@ -312,6 +344,7 @@ module.exports = {
     login,
     logout,
     register,
+    findUser,
     token,
     logs,
     metrics

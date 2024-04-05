@@ -80,6 +80,37 @@ const createAndAddProduct = async (req, res) => {
     }
 };
 
+const findProduct = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const productID = req.query.id;
+
+    if (!productID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        const product = await productService.findProductByID(productID);
+
+        if (!product) {
+            throw new Error("Product not found");
+        }
+
+        return res.status(200).json({ product });
+    }
+    catch (error) {
+        if (error.message === "Product not found") {
+            return res.status(404).json({ error: "Product not found" });
+        }
+        else {
+            console.error("Unexpected error while finding a product : ", error);
+            return res.status(500).json({ error: "Product finding failed" });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -106,5 +137,6 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddProduct,
+    findProduct,
     metrics,
 };
