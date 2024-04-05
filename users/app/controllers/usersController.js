@@ -106,7 +106,7 @@ const editUser = async (req, res) => {
     }
 
     const edits = req.body["edits"];
-    const targetUserID = req.body["id"];
+    const targetUserID = req.body["userID"];
 
     if (!edits || !targetUserID) {
         return res.status(400).json({ error: "Missing mandatory data for edit" });

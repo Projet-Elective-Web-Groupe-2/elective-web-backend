@@ -101,6 +101,28 @@ const editUser = async (userID, edits) => {
     // edits est un objet JSON contenant toutes les modification à apporter
     // Demande à Paul ou Théo pour plus d'infos
     // return user modifié
+
+    // try {
+    //     // Construction de la requête SQL
+    //     const sql = `UPDATE users SET ? WHERE userID = ?`;
+    //     const values = [edits, userID];
+
+    //     // Exécution de la requête
+    //     const result = await new Promise((resolve, reject) => {
+    //         connection.query(sql, values, (error, results) => {
+    //             if (error) {
+    //                 reject(new Error("Erreur lors de la mise à jour des informations de l'utilisateur: " + error.message));
+    //             } else {
+    //                 resolve(results);
+    //             }
+    //         });
+    //     });
+
+    //     return result;
+
+    // } catch (error) {
+    //     throw new Error("Erreur lors de la mise à jour des informations de l'utilisateur: " + error.message);
+    // }
 }
 
 /**
@@ -126,9 +148,26 @@ const unsuspendUser = async (userID) => {
  * @param {String} userID - L'ID de l'utilisateur à supprimer.
 */
 const deleteUser = async (userID) => {
-    
-    // rien return, juste supprimer l'utilisateur
-}
+    try {
+        // Construction de la requête SQL
+        const sql = `DELETE FROM users WHERE userID = ?`;
+        const values = [userID];
+
+        // Exécution de la requête
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, results) => {
+                if (error) {
+                    reject(new Error("Erreur lors de la suppression de l'utilisateur par ID: " + error.message));
+                } else {
+                    resolve();
+                }
+            });
+        });
+    } catch (error) {
+        throw new Error("Erreur lors de la suppression de l'utilisateur par ID: " + error.message);
+    }
+};
+
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
