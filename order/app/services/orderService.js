@@ -98,6 +98,11 @@ const getAllOrdersFromUser = async (userID) => {
             throw new Error("No orders found for this user.");
         }
 
+        for (let order of orders) {
+            await Order.populate(order, { path: 'menus', model: 'Menu' });
+            await Order.populate(order, { path: 'products', model: 'Product' });
+        }
+        
         return orders;
     }
     catch (error) {

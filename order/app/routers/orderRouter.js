@@ -10,7 +10,7 @@ const orderController = require('../controllers/orderController');
 
 router.post('/create', orderController.createAndAddOrder);
 router.post('/update', orderController.updateOrderStatus);
-router.post('getAllFromUser', orderController.getAllFromUser);
+router.get('/getAllFromUser', orderController.getAllFromUser);
 router.get('/metrics', orderController.metrics);
 
 module.exports = router;
