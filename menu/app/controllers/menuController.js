@@ -1,6 +1,8 @@
 const axios = require('axios');
 const mongoose = require('mongoose');
 const menuService = require('../services/menuService');
+const decodeJWT = require('../utils/decodeToken');
+
 
 const createAndAddMenu = async (req, res) => {
     if (!req.body) {
@@ -14,11 +16,11 @@ const createAndAddMenu = async (req, res) => {
     let restaurantID = req.body["restaurantID"];
     const name = req.body["name"];
     let image = req.body["image"];
-
+/*
     if (!name || !restaurantID || !productIds) {
-        return res.status(400).json({ error: "Missing mandatory data to add a product" });
+        return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
-
+*/
     try {
         if (userType !== "RESTAURATEUR") {
             throw new Error("Invalid user type");
@@ -36,10 +38,10 @@ const createAndAddMenu = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProductsByIds`; // testé et fonctionnel 
+        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`; // testé et fonctionnel 
         const productsResponse = await axios.get(productUrl, {
             params: { productIds },
-            headers: { Authorization: `Bearer ${token}` }
+            //headers: { Authorization: `Bearer ${token}` }
         });
 
         if (productsResponse.status !== 200) {
@@ -62,6 +64,7 @@ const createAndAddMenu = async (req, res) => {
         }
     }
 };
+/*
 const findMenu = async (req, res) => {
     if (!req.query) {
         return res.status(400).json({ error: "Required query parameter is missing" });
@@ -92,6 +95,7 @@ const findMenu = async (req, res) => {
         }
     }
 };
+*/
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -116,6 +120,6 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddMenu,
-    findMenu,
+   // findMenu,
     metrics,
 };

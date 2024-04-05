@@ -4,7 +4,7 @@ const router = express.Router();
 const menuController = require('../controllers/menuController');
 
 router.post('/create', menuController.createAndAddMenu);
-router.get('./find', menuController.findMenu);
+// router.get('./find', menuController.findMenu);
 
 router.get('/metrics', menuController.metrics);
 
