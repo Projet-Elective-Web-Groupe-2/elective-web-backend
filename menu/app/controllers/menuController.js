@@ -16,6 +16,7 @@ const createAndAddMenu = async (req, res) => {
     let restaurantID = req.body["restaurantID"];
     const name = req.body["name"];
     let image = req.body["image"];
+    console.log(req.body);
 /*
     if (!name || !restaurantID || !productIds) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
@@ -25,7 +26,7 @@ const createAndAddMenu = async (req, res) => {
         if (userType !== "RESTAURATEUR") {
             throw new Error("Invalid user type");
         }
-
+        console.log(productIds);
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
         const restaurantUrl = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; // testé et fonctionnel
@@ -33,16 +34,24 @@ const createAndAddMenu = async (req, res) => {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
         });
-
+        console.log(restaurantID);
         if (restaurantResponse.status !== 200) {
             throw new Error("Restaurant not found");
         }
-
+/*
         const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`; // testé et fonctionnel 
         const productsResponse = await axios.get(productUrl, {
-            params: { productIds },
-            //headers: { Authorization: `Bearer ${token}` }
+            params: { productIds: JSON.stringify(productIds) },
+            headers: { Authorization: `Bearer ${token}` }
+        });*/
+        const productIdsString = productIds.join(',');
+
+        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts?productIds=${productIdsString}`;
+
+        const productsResponse = await axios.get(productUrl, {
+        headers: { Authorization: `Bearer ${token}` }
         });
+
 
         if (productsResponse.status !== 200) {
             throw new Error("Failed to fetch products");
