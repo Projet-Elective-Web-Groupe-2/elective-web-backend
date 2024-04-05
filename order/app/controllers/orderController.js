@@ -328,7 +328,7 @@ const metrics = async (req, res) => {
             throw new Error("Invalid user type");
         }
 
-        const metrics = await restaurantService.getPerformanceMetrics();
+        const metrics = await orderService.getPerformanceMetrics();
 
         return res.status(200).json({ metrics });
     }

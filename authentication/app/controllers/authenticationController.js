@@ -113,7 +113,7 @@ const register = async (req, res) => {
             case "CLIENT":
             case "LIVREUR":
             // For testing purposes
-            case "SERVICE TECHNIQUE": {
+            /*case "SERVICE TECHNIQUE":*/ {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -160,7 +160,7 @@ const register = async (req, res) => {
 
                 break;
             }
-            case "DEVELOPPEUR TIERS": {
+            case "DEVELOPPEUR": {
                 refreshToken = authenticationService.generateRefreshToken(email);
                 
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
