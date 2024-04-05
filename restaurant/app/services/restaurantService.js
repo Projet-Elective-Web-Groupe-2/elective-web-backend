@@ -79,9 +79,15 @@ const createRestaurant = async (name, ownerID, address) => {
 */
 const addProduct = async (restaurantID, product) => {
     try {
-        Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { products: product }
-        });
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.products.push(product);
+
+        await restaurant.save();
     }
     catch (error) {
         throw new Error("Error while trying to add a product to a restaurant : " + error.message);
@@ -95,9 +101,15 @@ const addProduct = async (restaurantID, product) => {
 */
 const addOrder = async (restaurantID, order) => {
     try {
-        Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { orders: order }
-        });
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.orders.push(order);
+
+        await restaurant.save();
     }
     catch (error) {
         throw new Error("Error while trying to add an order to a restaurant : " + error.message);
@@ -113,7 +125,7 @@ const addOrder = async (restaurantID, order) => {
 const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
     try {
         const restaurant = await Restaurant.findById(restaurantID);
-        const index = restaurant.orders.findIndex((o) => o._id === orderID);
+        const index = restaurant.orders.findIndex((o) => o._id.toString() === orderID.toString());
         restaurant.orders[index].status = newStatus;
         await restaurant.save();
     }
@@ -121,7 +133,6 @@ const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
         throw new Error("Error while trying to update an order status : " + error.message);
     }
 };
-
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :

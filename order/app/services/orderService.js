@@ -72,7 +72,13 @@ const findOrderByID = async (id) => {
 */ 
 const updateOrderStatus = async (id, newStatus) => {
     try {
-        Order.findByIdAndUpdate(id, { status: newStatus });
+        const order = await findOrderByID(id);
+        
+        order.status = newStatus;
+
+        await order.save();
+
+        return order;
     }
     catch (error) {
         throw new Error("Error while trying to update an order status : " + error.message);

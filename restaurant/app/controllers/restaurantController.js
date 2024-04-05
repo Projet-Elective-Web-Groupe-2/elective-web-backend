@@ -91,7 +91,7 @@ const addProduct = async (req, res) => {
         return res.status(201).json({ message: "Product successfully added to restaurant" });
     }
     catch (error) {
-        if (error.message === "Restaurant not found" || error.message === "Product not found") {
+        if (error.message === "Restaurant not found") {
             return res.status(404).json({ error: error.message });
         }
         else {
@@ -126,7 +126,7 @@ const addOrder = async (req, res) => {
         return res.status(201).json({ message: "Order successfully added to restaurant" });
     }
     catch (error) {
-        if (error.message === "Restaurant not found" || error.message === "Order not found") {
+        if (error.message === "Restaurant not found") {
             return res.status(404).json({ error: error.message });
         }
         else {
@@ -143,7 +143,7 @@ const updateOrder = async (req, res) => {
 
     const restaurantID = req.body["restaurantID"];
     const orderID = req.body["orderID"];
-    const newStatus = req.body["status"];
+    const newStatus = req.body["newStatus"];
 
     if (!orderID || !newStatus || !restaurantID) {
         return res.status(400).json({ error: "Missing mandatory data for order status update" });
