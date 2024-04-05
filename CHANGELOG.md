@@ -1,3 +1,18 @@
+## [5.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.1...v5.4.0) (2024-04-05)
+
+
+### Features
+
+* order microservice done ([6cd5e01](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6cd5e010a3840fa76b226a53529e1dd20d93ab9b))
+
+
+### Bug Fixes
+
+* ameliorated docker-compose and removed connection to mongo ([67d2f9b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/67d2f9b72f94fbf4ae8861d199d0696ea1c2ea16))
+* display product and menu ([16ef871](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/16ef8719e5a982ac7e7eafd96f8a7edf91deddbf))
+* fixed CI ([42a6651](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/42a6651da4ccd942141a849ec273a8e7f5c52c58))
+* fixed some issues ([5998b59](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5998b59cb7fba5ce21c09148307d0eef708d8a01))
+
 ## [5.3.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.0...v5.3.1) (2024-04-04)
 
 
