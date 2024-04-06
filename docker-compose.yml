@@ -20,7 +20,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.authentication.rule=Host(`authentication.localhost`)"
     networks:
       - mysql_network
       - microservices_network
@@ -41,7 +40,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.users.rule=Host(`users.localhost`)"
     networks:
       - microservices_network
       - mysql_network
@@ -62,7 +60,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
     networks:
       - mongodb_network
       - microservices_network
@@ -83,7 +80,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
     networks:
       - microservices_network
       - mongodb_network
@@ -104,7 +100,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.order.rule=Host(`order.localhost`)"
     networks:
       - microservices_network
       - mongodb_network
@@ -126,7 +121,6 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.monitoring.rule=Host(`monitoring.localhost`)"
     networks:
       - microservices_network
       #- mongodb_network # Peut poser problème

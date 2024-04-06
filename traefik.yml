@@ -3,8 +3,8 @@ api:
   dashboard: true
 
 entryPoints:
-  frontend:
-    address: ':4200'
+  web:
+    address: ":80"
 
 providers:
   file:

@@ -1,66 +1,45 @@
 http:
   routers:
     authentication-router:
-      rule: Host(`authentication.localhost`)
+      rule: Host(`authentication`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: authentication-service
     users-router:
-      rule: Host(`users.localhost`)
+      rule: Host(`users`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: users-service
     restaurant-router:
-      rule: Host(`restaurant.localhost`)
+      rule: Host(`restaurant`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: restaurant-service
     menu-router:
-      rule: Host(`menu.localhost`)
+      rule: Host(`menu`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: menu-service
     product-router:
-      rule: Host(`product.localhost`)
+      rule: Host(`product`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: product-service
     order-router:
-      rule: Host(`order.localhost`)
+      rule: Host(`order`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: order-service
     delivery-router:
-      rule: Host(`delivery.localhost`)
+      rule: Host(`delivery`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: delivery-service
     monitoring-router:
-      rule: Host(`monitoring.localhost`)
+      rule: Host(`monitoring`)
       entryPoints:
-        - frontend
-      middlewares:
-        - strip-prefix
+        - web
       service: monitoring-service
-    frontend-router:
-      rule: Host(`frontend.localhost`) && PathPrefix(`/`)
-      entryPoints:
-        - frontend
-      service: frontend
 
   services:
     authentication-service:
@@ -95,20 +74,3 @@ http:
       loadBalancer:
         servers:
           - url: 'http://monitoring:3007'
-    frontend:
-      loadBalancer:
-        servers:
-          - url: 'http://frontend:4200'
-
-  middlewares:
-    strip-prefix:
-      stripPrefix:
-        prefixes:
-          - /auth
-          - /user
-          - /restaurant
-          - /menu
-          - /product
-          - /order
-          - /delivery
-          - /monitoring
