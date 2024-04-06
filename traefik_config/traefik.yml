@@ -93,65 +93,65 @@ http:
     authentication-service:
       loadBalancer:
         servers:
-          - url: "http://authentication-service:3000"
+          - url: "http://authentication:3000"
       endpoints:
-        - name: "authentication-service"
+        - name: "authentication"
           port: 3000
     users-service:
       loadBalancer:
         servers:
-          - url: "http://users-service:3001"
+          - url: "http://users:3001"
         endpoints:
-          - name: "users-service"
+          - name: "users"
             port: 3001
     restaurant-service:
       loadBalancer:
         servers:
-          - url: "http://restaurant-service:3002"
+          - url: "http://restaurant:3002"
         endpoints:
-          - name: "restaurant-service"
+          - name: "restaurant"
             port: 3002
     menu-service:
       loadBalancer:
         servers:
-          - url: "http://menu-service:3003"
+          - url: "http://menu:3003"
         endpoints:
-          - name: "menu-service"
+          - name: "menu"
             port: 3003
     product-service:
       loadBalancer:
         servers:
-          - url: "http://product-service:3004"
+          - url: "http://product:3004"
         endpoints:
-          - name: "product-service"
+          - name: "product"
             port: 3004
     order-service:
       loadBalancer:
         servers:
-          - url: "http://order-service:3005"
+          - url: "http://order:3005"
         endpoints:
-          - name: "order-service"
+          - name: "order"
             port: 3005
     delivery-service:
       loadBalancer:
         servers:
-          - url: "http://delivery-service:3006"
+          - url: "http://delivery:3006"
         endpoints:
-          - name: "delivery-service"
+          - name: "delivery"
             port: 3006
     monitoring-service:
       loadBalancer:
         servers:
-          - url: "http://monitoring-service:3007"
+          - url: "http://monitoring:3007"
         endpoints:
-          - name: "monitoring-service"
+          - name: "monitoring"
             port: 3007
 #    components-service:
 #      loadBalancer:
 #        servers:
-#          - url: "http://components-service:3008"
+#          - url: "http://components:3008"
 #        endpoints:
-#          - name: "components-service"
+#          - name: "components"
 #            port: 3008
     frontend:
       loadBalancer:
