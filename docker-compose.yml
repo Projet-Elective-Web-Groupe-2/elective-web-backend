@@ -172,6 +172,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik-config/traefik.yml:/etc/traefik-config/traefik.yml
+    networks:
+      - microservices_network
 
 networks:
   microservices_network:
