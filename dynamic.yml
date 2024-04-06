@@ -1,0 +1,114 @@
+http:
+  routers:
+    authentication-router:
+      rule: Host(`authentication.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: authentication-service
+    users-router:
+      rule: Host(`users.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: users-service
+    restaurant-router:
+      rule: Host(`restaurant.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: restaurant-service
+    menu-router:
+      rule: Host(`menu.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: menu-service
+    product-router:
+      rule: Host(`product.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: product-service
+    order-router:
+      rule: Host(`order.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: order-service
+    delivery-router:
+      rule: Host(`delivery.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: delivery-service
+    monitoring-router:
+      rule: Host(`monitoring.localhost`)
+      entryPoints:
+        - frontend
+      middlewares:
+        - strip-prefix
+      service: monitoring-service
+    frontend-router:
+      rule: Host(`frontend.localhost`) && PathPrefix(`/`)
+      entryPoints:
+        - frontend
+      service: frontend
+
+  services:
+    authentication-service:
+      loadBalancer:
+        servers:
+          - url: 'http://authentication:3000'
+    users-service:
+      loadBalancer:
+        servers:
+          - url: 'http://users:3001'
+    restaurant-service:
+      loadBalancer:
+        servers:
+          - url: 'http://restaurant:3002'
+    menu-service:
+      loadBalancer:
+        servers:
+          - url: 'http://menu:3003'
+    product-service:
+      loadBalancer:
+        servers:
+          - url: 'http://product:3004'
+    order-service:
+      loadBalancer:
+        servers:
+          - url: 'http://order:3005'
+    delivery-service:
+      loadBalancer:
+        servers:
+          - url: 'http://delivery:3006'
+    monitoring-service:
+      loadBalancer:
+        servers:
+          - url: 'http://monitoring:3007'
+    frontend:
+      loadBalancer:
+        servers:
+          - url: 'http://frontend:4200'
+
+  middlewares:
+    strip-prefix:
+      stripPrefix:
+        prefixes:
+          - /auth
+          - /user
+          - /restaurant
+          - /menu
+          - /product
+          - /order
+          - /delivery
+          - /monitoring

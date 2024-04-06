@@ -19,7 +19,8 @@ services:
     stdin_open: true
     tty: true
     labels:
-     - "traefik.http.routers.authentication.rule=Host(`authentication.localhost`)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentication.rule=Host(`authentication.localhost`)"
     networks:
       - mysql_network
       - microservices_network
@@ -39,6 +40,7 @@ services:
     stdin_open: true
     tty: true
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.users.rule=Host(`users.localhost`)"
     networks:
       - microservices_network
@@ -59,6 +61,7 @@ services:
     stdin_open: true
     tty: true
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.restaurant.rule=Host(`restaurant.localhost`)"
     networks:
       - mongodb_network
@@ -79,6 +82,7 @@ services:
     stdin_open: true
     tty: true
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.product.rule=Host(`product.localhost`)"
     networks:
       - microservices_network
@@ -99,6 +103,7 @@ services:
     stdin_open: true
     tty: true
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.order.rule=Host(`order.localhost`)"
     networks:
       - microservices_network
@@ -120,7 +125,8 @@ services:
     stdin_open: true
     tty: true
     labels:
-     - "traefik.http.routers.monitoring.rule=Host(`monitoring.localhost`)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.monitoring.rule=Host(`monitoring.localhost`)"
     networks:
       - microservices_network
       #- mongodb_network # Peut poser problème
@@ -134,8 +140,6 @@ services:
       - traefik
     volumes:
       - ./volumes/mongodb:/data/database
-    labels:
-     - "traefik.http.routers.mongo.rule=Host(`mongo.localhost`)"
     networks:
       - mongodb_network
       #- microservices_network # Peut poser problème
@@ -165,7 +169,16 @@ services:
   traefik:
     image: traefik:v3.0
     container_name: traefik
-    command: --api.insecure=true --providers.docker
+    command: 
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.network=microservices_network
+      - --providers.file.filename=/etc/traefik/traefik.yml
+      - --log.level=DEBUG
+      - --accesslog=true
     ports:
       - 80:80
       - 8080:8080
@@ -173,7 +186,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - type: bind
         source: ./traefik.yml
-        target: /etc/traefik.yml
+        target: /etc/traefik/traefik.yml
+      - type: bind
+        source: ./dynamic.yml
+        target: /etc/traefik/dynamic.yml
     networks:
       - microservices_network
 
