@@ -80,7 +80,7 @@ const findMenu = async (req, res) => {
         return res.status(400).json({ error: "Required query parameter is missing" });
     }
 
-    const menuID = req.body;
+    const menuID = req.query.id;
 
     if (!menuID) {
         return res.status(400).json({ error: "Missing mandatory data" });
