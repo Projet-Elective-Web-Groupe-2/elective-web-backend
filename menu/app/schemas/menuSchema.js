@@ -22,6 +22,7 @@ const menuSchema = new mongoose.Schema({
         type: String,
         unique: false,
         required: false,
+        default: ''
     },
     products : [{ 
         type: mongoose.Schema.Types.ObjectId,

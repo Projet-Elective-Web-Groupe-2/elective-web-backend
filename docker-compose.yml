@@ -42,6 +42,26 @@ services:
       - microservices_network
       - mongodb_network
 
+  menu:
+    build:
+      context: ./menu
+    hostname: menu-service
+    container_name: menu-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongoDB
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.http.routers.menu.rule=Host(`menu.localhost`)"
+    networks:
+      - microservices_network
+      - mongodb_network    
+
   monitoring:
     build:
       context: ./monitoring

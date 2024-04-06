@@ -15,10 +15,10 @@ const createAndAddMenu = async (req, res) => {
     const productIds = req.body["productIds"];
     let restaurantID = req.body["restaurantID"];
     const name = req.body["name"];
-    let image = req.body["image"];
+    const image = req.body["image"];
     console.log(req.body);
 
-    if (!name || !restaurantID || !productIds) {
+    if (!name || !restaurantID || !productIds || !image) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
 
@@ -62,7 +62,7 @@ const createAndAddMenu = async (req, res) => {
 
         const menu = await menuService.createAndAddMenu(name, products, image);
 
-        res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); 
+        res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); // for test
     } catch (error) {
         if (error.message === "Invalid user type") {
             return res.status(403).json({ error: "Forbidden" });

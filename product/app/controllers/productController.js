@@ -61,7 +61,7 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Product not added");
         }
 
-        res.status(201).json({ message: 'Product added successfully' });
+        return res.status(201).json({ message: 'Product added successfully', product });
     }
     catch (error) {
         if (error.message === "Invalid user type") {
@@ -103,6 +103,7 @@ const metrics = async (req, res) => {
         }
     }
 };
+
 const getProductsByIds = async (req, res) => {
     const { productIds } = req.body;
 
