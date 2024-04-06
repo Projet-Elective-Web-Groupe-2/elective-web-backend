@@ -13,6 +13,11 @@ const menuSchema = new mongoose.Schema({
         unique: false,
         required: true
     },
+    description: {
+        type: String,
+        unique: false,
+        required: true
+    },
     image: {
         type: String,
         unique: false,

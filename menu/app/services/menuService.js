@@ -27,7 +27,7 @@ const createAndAddMenu = async (name, products) => {
         const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
 
         const description = products.map(product => product.name).join(', ');
-
+        console.log("description", + description);
         const newMenu = new menu({ 
             name: name,
             description: description,
