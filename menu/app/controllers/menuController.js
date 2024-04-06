@@ -17,11 +17,11 @@ const createAndAddMenu = async (req, res) => {
     const name = req.body["name"];
     let image = req.body["image"];
     console.log(req.body);
-/*
+
     if (!name || !restaurantID || !productIds) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
-*/
+
     try {
         if (userType !== "RESTAURATEUR") {
             throw new Error("Invalid user type");
@@ -39,19 +39,20 @@ const createAndAddMenu = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 /*
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`; // testé et fonctionnel 
-        const productsResponse = await axios.get(productUrl, {
-            params: { productIds: JSON.stringify(productIds) },
-            headers: { Authorization: `Bearer ${token}` }
-        });*/
-        const productIdsString = productIds.join(',');
-
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts?productIds=${productIdsString}`;
-
-        const productsResponse = await axios.get(productUrl, {
-         headers: { Authorization: `Bearer ${token}` }
+        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
+        const productsResponse = await axios.get(productUrl, { productIds }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json' 
+            }
         });
-
+     */
+        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
+        const productsResponse = await axios.get(productUrl, {
+            data: { productIds }, 
+            headers: { Authorization: `Bearer ${token}` }
+        });
+           
 
         if (productsResponse.status !== 200) {
             throw new Error("Failed to fetch products");
@@ -69,7 +70,7 @@ const createAndAddMenu = async (req, res) => {
             return res.status(404).json({ error: "Restaurant not found" });
         } else {
             console.error("Unexpected error while adding a menu : ", error);
-            res.status(500).json({ error: 'Menu adding failed' });
+            res.status(500).json({ error: 'Menu adding failed'});
         }
     }
 };
