@@ -1,3 +1,4 @@
+const menuModel = require('../models/menuModel');
 const menu = require('../models/menuModel');
 
 const getPerformanceMetrics = async () => {
@@ -46,9 +47,9 @@ const createAndAddMenu = async (name, products) => {
  * @param {String} id - L'ID du menu.
  * @returns {object} Le menu trouvé.
 */
-/* const findMenuByID = async (id) => {
+const findMenuByID = async (id) => {
     try {
-        const menu = await Menu.findById(id);
+        const menu = await menuModel.findById(id);
 
         return menu;
     }
@@ -56,9 +57,9 @@ const createAndAddMenu = async (name, products) => {
         throw new Error("Error while trying to find a menu by ID : " + error.message);
     }
 };
-*/
+
 module.exports = {
     createAndAddMenu,
     getPerformanceMetrics,
-   // findMenuByID,
+    findMenuByID,
 };
