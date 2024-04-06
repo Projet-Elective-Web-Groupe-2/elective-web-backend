@@ -1,3 +1,10 @@
+## [5.4.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.0...v5.4.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* fixed some small issues ([897b000](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/897b000e55a40c6447317ee0a4694b1187fe3e04))
+
 ## [5.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.1...v5.4.0) (2024-04-05)
 
 
