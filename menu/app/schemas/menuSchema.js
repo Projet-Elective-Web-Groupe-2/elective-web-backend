@@ -34,6 +34,10 @@ const menuSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true
+    },
+    drink: {
+        type: Boolean,
+        default: false
     }
 });
 
