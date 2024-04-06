@@ -44,12 +44,12 @@ const createAndAddMenu = async (req, res) => {
             params: { productIds: JSON.stringify(productIds) },
             headers: { Authorization: `Bearer ${token}` }
         });*/
-        const productIdsString = productIds.join(',');
+        //const productIdsString = productIds.join(',');
 
         const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts?productIds=${productIdsString}`;
 
         const productsResponse = await axios.get(productUrl, {
-        headers: { Authorization: `Bearer ${token}` }
+         headers: { Authorization: `Bearer ${token}` }
         });
 
 
