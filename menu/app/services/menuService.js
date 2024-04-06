@@ -22,16 +22,19 @@ const getPerformanceMetrics = async () => {
     }
 };
 
-const createAndAddMenu = async (name, products, image) => {
+const createAndAddMenu = async (name, products, image, drink) => {
     try {
         const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
 
         const description = products.map(product => product.name).join(', ');
+        
         const newMenu = new menu({ 
             name: name,
             description: description,
             totalPrice: totalPrice,
             image: image,
+           // products: products.map(product => product._id), a confirmer avec le groupe s'il veulent les ids ou les noms
+            drink: drink 
         });
 
         await newMenu.save();
@@ -49,7 +52,7 @@ const createAndAddMenu = async (name, products, image) => {
 */
 const findMenuByID = async (id) => {
     try {
-        const menu = await menuModel.findById(id);
+        const menu = await menuModel.findById(id).select('-products');
 
         return menu;
     }

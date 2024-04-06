@@ -16,6 +16,8 @@ const createAndAddMenu = async (req, res) => {
     let restaurantID = req.body["restaurantID"];
     const name = req.body["name"];
     const image = req.body["image"];
+    const drinkButtonClicked = req.body["drinkButtonClicked"]; 
+    const drink = drinkButtonClicked ? true : false;
     console.log(req.body);
 
     if (!name || !restaurantID || !productIds || !image) {
@@ -60,7 +62,7 @@ const createAndAddMenu = async (req, res) => {
 
         const products = productsResponse.data.productsInfo;
 
-        const menu = await menuService.createAndAddMenu(name, products, image);
+        const menu = await menuService.createAndAddMenu(name, products, image, drink);
 
         res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); // for test
     } catch (error) {
