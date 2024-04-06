@@ -60,9 +60,9 @@ const createAndAddMenu = async (req, res) => {
 
         const products = productsResponse.data.productsInfo;
 
-        const menu = await menuService.createAndAddMenu(name, products);
+        const menu = await menuService.createAndAddMenu(name, products, image);
 
-        res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); // for test
+        res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); 
     } catch (error) {
         if (error.message === "Invalid user type") {
             return res.status(403).json({ error: "Forbidden" });
