@@ -20,9 +20,13 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.authentication-service.rule=Host(`authentication.localhost`)"
+      - "traefik.http.services.authentication-service.loadbalancer.server.port=${AUTH_PORT}"
     networks:
-      - mysql_network
-      - microservices_network
+      mysql_network:
+        ipv4_address: 182.168.16.3
+      microservices_network:
+        ipv4_address: 192.168.16.2
 
   users:
     build:
@@ -40,9 +44,13 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.users-service.rule=Host(`users.localhost`)"
+      - "traefik.http.services.users-service.loadbalancer.server.port=${USERS_PORT}"
     networks:
-      - microservices_network
-      - mysql_network
+      mysql_network:
+        ipv4_address: 182.168.16.4
+      microservices_network:
+        ipv4_address: 192.168.16.3
 
   restaurant:
     build:
@@ -60,9 +68,13 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.restaurant-service.rule=Host(`restaurant.localhost`)"
+      - "traefik.http.services.restaurant-service.loadbalancer.server.port=${RESTAURANT_PORT}"
     networks:
-      - mongodb_network
-      - microservices_network
+      mongodb_network:
+        ipv4_address: 172.168.16.3
+      microservices_network:
+        ipv4_address: 192.168.16.4
   
   product:
     build:
@@ -80,9 +92,13 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.product-service.rule=Host(`product.localhost`)"
+      - "traefik.http.services.product-service.loadbalancer.server.port=${PRODUCT_PORT}"
     networks:
-      - microservices_network
-      - mongodb_network
+      mongodb_network:
+        ipv4_address: 172.168.16.4
+      microservices_network:
+        ipv4_address: 192.168.16.5
   
   order:
     build:
@@ -100,9 +116,13 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.order-service.rule=Host(`order.localhost`)"
+      - "traefik.http.services.order-service.loadbalancer.server.port=${ORDER_PORT}"
     networks:
-      - microservices_network
-      - mongodb_network
+      mongodb_network:
+        ipv4_address: 172.168.16.5
+      microservices_network:
+        ipv4_address: 192.168.16.6
   
   monitoring:
     build:
@@ -121,9 +141,11 @@ services:
     tty: true
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.monitoring-service.rule=Host(`monitoring.localhost`)"
+      - "traefik.http.services.monitoring-service.loadbalancer.server.port=${MONITORING_PORT}"
     networks:
-      - microservices_network
-      #- mongodb_network # Peut poser problème
+      microservices_network:
+        ipv4_address: 192.168.16.7
 
   mongoDB:
     image: mongo
@@ -135,8 +157,8 @@ services:
     volumes:
       - ./volumes/mongodb:/data/database
     networks:
-      - mongodb_network
-      #- microservices_network # Peut poser problème
+      mongodb_network:
+        ipv4_address: 172.168.16.2
 
   mysql:
     image: mysql:5.7
@@ -149,7 +171,8 @@ services:
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
     networks:
-      - mysql_network
+      mysql_network:
+        ipv4_address: 182.168.16.2
 
   phpmyadmin:
     image: phpmyadmin
@@ -171,6 +194,7 @@ services:
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.network=microservices_network
       - --providers.file.filename=/etc/traefik/traefik.yml
+      - --providers.file.watch=true
       - --log.level=DEBUG
       - --accesslog=true
     ports:
@@ -181,19 +205,35 @@ services:
       - type: bind
         source: ./traefik.yml
         target: /etc/traefik/traefik.yml
-      - type: bind
-        source: ./dynamic.yml
-        target: /etc/traefik/dynamic.yml
     networks:
-      - microservices_network
+      microservices_network:
+        ipv4_address: 192.168.16.10
 
 networks:
   microservices_network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.16.0/20
+          gateway: 192.168.16.1
+          ip_range: 192.168.16.0/20
   mongodb_network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.168.16.0/20
+          gateway: 172.168.16.1
+          ip_range: 172.168.16.0/20
   mysql_network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 182.168.16.0/20
+          gateway: 182.168.16.1
+          ip_range: 182.168.16.0/20
 
 volumes:
   mongodb:
