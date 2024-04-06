@@ -33,7 +33,7 @@ const createAndAddMenu = async (name, products, image, drink) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-           // products: products.map(product => product._id), a confirmer avec le groupe s'il veulent les ids ou les noms
+           // products: products.map(product => product._id), a confirmer avec le groupe s'il veulent les ids ou les noms des produits
             drink: drink 
         });
 
