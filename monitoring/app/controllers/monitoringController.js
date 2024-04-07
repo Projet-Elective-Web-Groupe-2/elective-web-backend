@@ -22,7 +22,7 @@ const getMetrics = async (req, res) => {
         //const menu = await monitoringService.getMetrics(`${process.env.MENU_HOST}:${process.env.MENU_PORT}/menu`, token);
         const product = await monitoringService.getMetrics(`${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product`, token);
         const order = await monitoringService.getMetrics(`${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order`, token);
-        //const delivery = await monitoringService.getMetrics(`${process.env.DELIVERY_HOST}:${process.env.DELIVERY_PORT}/delivery`, token);
+        const delivery = await monitoringService.getMetrics(`${process.env.DELIVERY_HOST}:${process.env.DELIVERY_PORT}/delivery`, token);
         const monitoring = await monitoringService.getPerformanceMetrics();
         //const components = await monitoringService.getMetrics(`${process.env.COMPONENT_HOST}:${process.env.COMPONENT_PORT}/components`, token);
 
@@ -33,7 +33,7 @@ const getMetrics = async (req, res) => {
             //menu,
             product,
             order,
-            //delivery,
+            delivery,
             monitoring,
             //components
         });
