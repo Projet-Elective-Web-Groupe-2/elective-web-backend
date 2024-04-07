@@ -11,8 +11,10 @@ services:
     depends_on:
       - traefik
       - mysql
+      - users
       - restaurant
       - product
+      - order
       - monitoring
     env_file:
       - .env
@@ -124,6 +126,30 @@ services:
       microservices_network:
         ipv4_address: 192.168.16.6
   
+  delivery:
+    build:
+      context: ./delivery
+    hostname: ${DELIVERY_HOST}
+    container_name: ${DELIVERY_HOST}
+    ports:
+      - "${DELIVERY_PORT}:${DELIVERY_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.delivery-service.rule=Host(`delivery.localhost`)"
+      - "traefik.http.services.delivery-service.loadbalancer.server.port=${DELIVERY_PORT}"
+    networks:
+      mongodb_network:
+        ipv4_address: 172.168.16.6
+      microservices_network:
+        ipv4_address: 192.168.16.7
+
   monitoring:
     build:
       context: ./monitoring
@@ -133,8 +159,11 @@ services:
       - "${MONITORING_PORT}:${MONITORING_PORT}"
     depends_on:
       - traefik
+      - users
       - restaurant
       - product
+      - order
+      - delivery
     env_file:
       - .env
     stdin_open: true
