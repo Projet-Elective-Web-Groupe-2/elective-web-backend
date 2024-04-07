@@ -85,4 +85,7 @@ orderSchema.virtual('menuDetails', {
     justOne: false
 });
 
+orderSchema.set('toObject', { virtuals: true });
+orderSchema.set('toJSON', { virtuals: true });
+
 module.exports = orderSchema;

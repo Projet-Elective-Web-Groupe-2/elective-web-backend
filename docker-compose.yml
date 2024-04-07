@@ -15,6 +15,7 @@ services:
       - restaurant
       - product
       - order
+      - delivery
       - monitoring
     env_file:
       - .env
