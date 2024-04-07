@@ -175,7 +175,7 @@ services:
       - "traefik.http.services.monitoring-service.loadbalancer.server.port=${MONITORING_PORT}"
     networks:
       microservices_network:
-        ipv4_address: 192.168.16.7
+        ipv4_address: 192.168.16.8
 
   mongoDB:
     image: mongo

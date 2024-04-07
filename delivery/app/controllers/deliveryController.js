@@ -6,10 +6,9 @@
 
 const axios = require('axios');
 const deliveryService = require('../services/deliveryService');
-const decodeToken = require('../utils/decodedToken');
+const decodeToken = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
-const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
 
 const acceptDelivery = async (req, res) => {
     if (!req.body) {
@@ -48,10 +47,13 @@ const acceptDelivery = async (req, res) => {
         const order = await deliveryService.findOrderByID(orderID);
 
         if (!order) {
-            return res.status(404).json({ error: "Order not found" });
+            throw new Error("Order not found" );
         }
         else if (order.status !== "In preparation") {
-            return res.status(400).json({ error: "Order is not pending" });
+            throw new Error("Order is not pending");
+        }
+        else if (order.refusedBy.includes(userID)) {
+            throw new Error("Delivery refused by this user");
         }
 
         await deliveryService.acceptDelivery(orderID, userID);
@@ -68,7 +70,11 @@ const acceptDelivery = async (req, res) => {
         else if (error.message === "Order is not pending") {
             return res.status(400).json({ error: "Order is not pending" });
         }
+        else if (error.message === "Delivery refused by this user") {
+            return res.status(400).json({ error: "Delivery refused by this user" });
+        }
         else {
+            console.error("Unexpected error while accepting delivery : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -132,6 +138,7 @@ const refuseDelivery = async (req, res) => {
             return res.status(400).json({ error: "Order is not pending" });
         }
         else {
+            console.error("Unexpected error while refusing delivery : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -170,7 +177,8 @@ const getAllWithFilter = async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
         else {
-            return res.status(500).json({ error: "Internal server error" });
+            console.error("Unexpected error while getting orders with filter : ", error);
+            return res.status(500).json({ error: error.message });
         }
     }
 };
@@ -231,6 +239,7 @@ const getStatut = async (req, res) => {
             return res.status(403).json({ error: "Forbidden" });
         }
         else {
+            console.error("Unexpected error while getting delivery status : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -254,7 +263,7 @@ const trackDelivery = async (req, res) => {
     const userType = decodedToken.type;
 
     if (userType !== 'LIVREUR') {
-        return res.status(403).json({ error: "Forbidden" });
+        return res.status(403).json({ error: "User is not a deliverer" });
     }
 
     let url;
@@ -278,7 +287,7 @@ const trackDelivery = async (req, res) => {
         if (!order) {
             throw new Error("Order not found");
         }
-        else if (order.clientID !== userID) {
+        else if (order.delivererID !== userID) {
             throw new Error("Delivery does not belong to this user");
         }
         else if (order.status !== "Being delivered") {
@@ -300,12 +309,13 @@ const trackDelivery = async (req, res) => {
             return res.status(404).json({ error: "Order not found" });
         }
         else if (error.message === "Delivery does not belong to this user") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: "Delivery does not belong to this user" });
         }
         else if (error.message === "Order is not being delivered") {
             return res.status(400).json({ error: "Order is not being delivered" });
         }
         else {
+            console.error("Unexpected error while tracking delivery : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -375,6 +385,7 @@ const nearbyDelivery = async (req, res) => {
             return res.status(400).json({ error: "Order is not being delivered" });
         }
         else {
+            console.error("Unexpected error while tracking delivery : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -422,7 +433,7 @@ const validateDelivery = async (req, res) => {
         else if (order.delivererID !== userID) {
             throw new Error("Delivery does not belong to this user");
         }
-        else if (order.status !== "Being delivered" || order.status !== "Delivery near client") {
+        else if (order.status !== "Being delivered" && order.status !== "Delivery near client") {
             throw new Error("Order is not being delivered or nearby");
         }
 
@@ -438,12 +449,13 @@ const validateDelivery = async (req, res) => {
             return res.status(404).json({ error: "Order not found" });
         }
         else if (error.message === "Delivery does not belong to this user") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: "Delivery does not belong to this user"});
         }
         else if (error.message === "Order is not being delivered or nearby") {
             return res.status(400).json({ error: "Order is not being delivered or nearby" });
         }
         else {
+            console.error("Unexpected error while validating delivery : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }
@@ -480,5 +492,6 @@ module.exports = {
     getStatut,
     trackDelivery,
     nearbyDelivery,
+    validateDelivery,
     metrics
 }

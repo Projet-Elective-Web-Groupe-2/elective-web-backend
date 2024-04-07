@@ -53,7 +53,7 @@ const refuseDelivery = async (orderID, delivererID) => {
         const order = await findOrderByID(orderID);
 
         order.refusedBy.push(delivererID);
-        
+
         await order.save();
     }
     catch(error) {

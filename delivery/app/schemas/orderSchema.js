@@ -64,8 +64,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     refusedBy: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: Number,
         unique: false,
         required: false
     }]
