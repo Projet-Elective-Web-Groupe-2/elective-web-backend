@@ -105,6 +105,23 @@ const nearbyDelivery = async (orderID) => {
 };
 
 /**
+ * Fonction permettant de changer le statut d'une livraison à "Delivered".
+ * @param {String} orderID - L'ID de la commande.
+*/
+const validateDelivery = async (orderID) => {
+    try {
+        const order = await findOrderByID(orderID);
+
+        order.status = "Delivered";
+
+        await order.save();
+    }
+    catch(error) {
+        throw new Error("Error while trying to accept a delivery : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -152,5 +169,6 @@ module.exports = {
     refuseDelivery,
     getAllWithFilter,
     nearbyDelivery,
+    validateDelivery,
     getPerformanceMetrics
 };
