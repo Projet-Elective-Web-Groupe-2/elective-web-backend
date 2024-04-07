@@ -6,7 +6,7 @@
 
 const axios = require('axios');
 const deliveryService = require('../services/deliveryService');
-const decodedToken = require('../utils/decodedToken');
+const decodeToken = require('../utils/decodedToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
@@ -17,7 +17,7 @@ const acceptDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodedToken(token);
+    const decodedToken = await decodeToken(token);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
 
@@ -80,7 +80,7 @@ const refuseDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodedToken(token);
+    const decodedToken = await decodeToken(token);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
 
@@ -139,7 +139,7 @@ const refuseDelivery = async (req, res) => {
 
 const getAllWithFilter = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodedToken(token);
+    const decodedToken = await decodeToken(token);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
 
@@ -181,7 +181,7 @@ const getStatut = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodedToken(token);
+    const decodedToken = await decodeToken(token);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
 
@@ -214,6 +214,9 @@ const getStatut = async (req, res) => {
         if (!order) {
             throw new Error("Order not found" );
         }
+        else if (order.clientID !== userID) {
+            throw new Error("Order does not belong to this user");
+        }
 
         return res.status(200).json({ status: order.status });
     }
@@ -223,6 +226,9 @@ const getStatut = async (req, res) => {
         }
         else if (error.message === "Order not found") {
             return res.status(404).json({ error: "Order not found" });
+        }
+        else if (error.message === "Order does not belong to this user") {
+            return res.status(403).json({ error: "Forbidden" });
         }
         else {
             return res.status(500).json({ error: "Internal server error" });
@@ -243,7 +249,7 @@ const trackDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodedToken(token);
+    const decodedToken = await decodeToken(token);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
 
@@ -275,6 +281,9 @@ const trackDelivery = async (req, res) => {
         else if (order.clientID !== userID) {
             throw new Error("Delivery does not belong to this user");
         }
+        else if (order.status !== "Being delivered") {
+            throw new Error("Order is not being delivered");
+        }
 
         return res.status(200).json({ 
             firstName: user.firstName,
@@ -292,6 +301,78 @@ const trackDelivery = async (req, res) => {
         }
         else if (error.message === "Delivery does not belong to this user") {
             return res.status(403).json({ error: "Forbidden" });
+        }
+        else if (error.message === "Order is not being delivered") {
+            return res.status(400).json({ error: "Order is not being delivered" });
+        }
+        else {
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
+const nearbyDelivery = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const orderID = req.body["orderID"];
+
+    if (!orderID) {
+        return res.status(400).json({ error: "Missing mandatory data for tracking delivery" });
+    }
+    
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = await decodeToken(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
+    if (userType !== 'LIVREUR') {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const order = await deliveryService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+        else if (order.delivererID !== userID) {
+            throw new Error("Delivery does not belong to this user");
+        }
+        else if (order.status !== "Being delivered") {
+            throw new Error("Order is not being delivered");
+        }
+
+        await deliveryService.nearbyDelivery(orderID);
+
+        return res.status(200).json({ message: "Delivery is nearby" });
+    }
+    catch(error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: "User not found" });
+        }
+        else if (error.message === "Order not found") {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        else if (error.message === "Delivery does not belong to this user") {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        else if (error.message === "Order is not being delivered") {
+            return res.status(400).json({ error: "Order is not being delivered" });
         }
         else {
             return res.status(500).json({ error: "Internal server error" });
@@ -329,5 +410,6 @@ module.exports = {
     getAllWithFilter,
     getStatut,
     trackDelivery,
+    nearbyDelivery,
     metrics
 }

@@ -61,7 +61,6 @@ const refuseDelivery = async (orderID, delivererID) => {
     }
 };
 
-
 /**
  * Fonction permettant de retrouver toutes les commandes avec un filtre précis.
  * Il faut que la commande soit en cours de préparation et n'ait pas été refusée par le livreur en amont de la requête.
@@ -85,6 +84,23 @@ const getAllWithFilter = async (userID) => {
     }
     catch(error) {
         throw new Error("Error while trying to find orders with filter : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de changer le statut d'une livraison à "Delivery near client".
+ * @param {String} orderID - L'ID de la commande.
+*/
+const nearbyDelivery = async (orderID) => {
+    try {
+        const order = await findOrderByID(orderID);
+
+        order.status = "Delivery near client";
+
+        await order.save();
+    }
+    catch(error) {
+        throw new Error("Error while trying to accept a delivery : " + error.message);
     }
 };
 
@@ -135,5 +151,6 @@ module.exports = {
     acceptDelivery,
     refuseDelivery,
     getAllWithFilter,
+    nearbyDelivery,
     getPerformanceMetrics
 };

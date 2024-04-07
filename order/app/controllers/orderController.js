@@ -100,8 +100,7 @@ const createAndAddOrder = async (req, res) => {
 
                 totalPrice += drink.price;
 
-                // TODO : Potentiellement devoir changer le nom de la route
-                url = `${MENU_URL}addProduct`;
+                url = `${MENU_URL}updateMenu`;
                 response = await axios.post(url, {
                     menuID: itemID,
                     product: drink,
@@ -257,7 +256,7 @@ const updateOrderStatus = async (req, res) => {
         "Delivery near client",
         "Delivered"
     ];
-    
+
     if (!possibleStatuses.includes(newStatus)) {
         return res.status(400).json({ error: "Invalid status" });
     }
