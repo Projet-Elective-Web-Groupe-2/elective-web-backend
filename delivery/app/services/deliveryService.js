@@ -59,7 +59,24 @@ const refuseDelivery = async (orderID, delivererID) => {
     catch(error) {
         throw new Error("Error while trying to refuse a delivery : " + error.message);
     }
-}
+};
+
+
+/**
+ * Fonction permettant de retrouver toutes les commandes avec un filtre précis.
+ * Il faut que la commande soit en cours de préparation et n'ait pas été refusée par le livreur en amont de la requête.
+ * @param {Number} userID - L'ID de l'utilisateur.
+ * @returns {Array} Un tableau contenant les commandes trouvées.
+ */
+const getAllWithFilter = async (userID) => {
+    try {
+        const orders = await Order.find({ status: "In preparation", refusedBy: { $nin: [userID] } });
+        return orders;
+    }
+    catch(error) {
+        throw new Error("Error while trying to find orders with filter : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -107,5 +124,6 @@ module.exports = {
     findOrderByID,
     acceptDelivery,
     refuseDelivery,
+    getAllWithFilter,
     getPerformanceMetrics
 };
