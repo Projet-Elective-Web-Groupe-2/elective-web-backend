@@ -15,7 +15,6 @@ router.post('/addProduct', restaurantController.addProduct);
 router.post('/addOrder', restaurantController.addOrder);
 router.post('/updateOrder', restaurantController.updateOrder);
 router.get('/getOrdersSince', restaurantController.getOrdersSince);
-router.get('/deleteOrder', restaurantController.deleteOrder);
 router.get('/metrics', restaurantController.metrics);
 
 module.exports = router;

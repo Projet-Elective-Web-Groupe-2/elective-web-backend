@@ -76,6 +76,67 @@ const findRestaurant = async (req, res) => {
     }
 };
 
+const deleteRestaurant = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const restaurantID = req.query.id;
+
+    if (!restaurantID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
+    if (userType != "RESTAURATEUR" || userType != "SERVICE COMMERCIAL") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+        else if (restaurant.ownerID !== userID && userType != "SERVICE COMMERCIAL") {
+            throw new Error("Restaurant does not belong to user");
+        }
+
+        await restaurantService.deleteRestaurant(restaurantID);
+
+        return res.status(200).json({ message: "Restaurant successfully deleted" });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant does not belong to user") {
+            return res.status(403).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while deleting a restaurant : ", error.message);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+};
+
 const addProduct = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -226,7 +287,7 @@ const getOrdersSince = async (req, res) => {
             return res.status(500).send({ error: error.message });
         }
     }
-}
+};
 
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
@@ -255,8 +316,10 @@ const metrics = async (req, res) => {
 module.exports = {
     createRestaurant,
     findRestaurant,
+    deleteRestaurant,
     addProduct,
     addOrder,
     updateOrder,
+    getOrdersSince,
     metrics
 };

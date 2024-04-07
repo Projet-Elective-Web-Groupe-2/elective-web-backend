@@ -73,6 +73,19 @@ const createRestaurant = async (name, ownerID, address) => {
 };
 
 /**
+ * Fonction permettant de supprimer un restaurant de la base de données.
+ * @param {String} restaurantID - L'ID du restaurant à supprimer.
+ */
+const deleteRestaurant = async (restaurantID) => {
+    try {
+        await Restaurant.deleteOne({ _id: restaurantID });
+    }
+    catch (error) {
+        throw new Error("Error while trying to delete a restaurant : " + error.message);
+    }
+}
+
+/**
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
  * @param {object} product - Le produit à ajouter.
@@ -208,6 +221,7 @@ module.exports = {
     findRestaurant,
     findRestaurantByID,
     createRestaurant,
+    deleteRestaurant,
     addProduct,
     addOrder,
     updateOrderStatus,
