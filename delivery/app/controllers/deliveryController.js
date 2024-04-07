@@ -176,6 +176,10 @@ const getAllWithFilter = async (req, res) => {
 };
 
 const getStatut = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = await decodedToken(token);
     const userID = decodedToken.id;
@@ -226,6 +230,75 @@ const getStatut = async (req, res) => {
     }
 };
 
+
+const trackDelivery = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const orderID = req.query["orderID"];
+
+    if (!orderID) {
+        return res.status(400).json({ error: "Missing mandatory data for tracking delivery" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = await decodedToken(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
+    if (userType !== 'LIVREUR') {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const user = response.data.user;
+
+        const order = await deliveryService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+        else if (order.clientID !== userID) {
+            throw new Error("Delivery does not belong to this user");
+        }
+
+        return res.status(200).json({ 
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phoneNumber: user.phoneNumber,
+            address: user.address
+        });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: "User not found" });
+        }
+        else if (error.message === "Order not found") {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        else if (error.message === "Delivery does not belong to this user") {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        else {
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -255,5 +328,6 @@ module.exports = {
     refuseDelivery,
     getAllWithFilter,
     getStatut,
+    trackDelivery,
     metrics
 }
