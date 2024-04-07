@@ -135,6 +135,34 @@ const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
 };
 
 /**
+ * Fonction permettant de récupérer les commandes passées depuis un certain nombre de jours.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @param {Number} numberOfDaysBack - Le nombre de jours en arrière à partir duquel on veut récupérer les commandes.
+ * @returns {Array} Les commandes passées depuis un certain nombre de jours.
+ */
+const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (restaurant.orders.length === 0) {
+            return [];
+        }
+        else if (numberOfDaysBack === 0) {
+            return restaurant.orders;
+        }
+        else {
+            const currentDate = new Date();
+            const startDate = new Date(currentDate.getTime() - numberOfDaysBack * 24 * 60 * 60 * 1000);
+            const orders = restaurant.orders.filter((order) => new Date(order.date).getTime() >= startDate.getTime());
+            return orders;
+        }
+    }
+    catch (error) {
+        throw new Error("Error while trying to get orders since a certain number of days : " + error.message);
+    }
+}
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -183,5 +211,6 @@ module.exports = {
     addProduct,
     addOrder,
     updateOrderStatus,
+    getOrdersSince,
     getPerformanceMetrics
 };

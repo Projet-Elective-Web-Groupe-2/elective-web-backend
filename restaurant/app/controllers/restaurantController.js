@@ -1,11 +1,14 @@
 /**
  * Le contrôleur contenant la logique métier associée à chaque route des restaurants.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
+const axios = require('axios');
 const restaurantService = require('../services/restaurantService');
 const decodeJWT = require('../utils/decodeToken');
+
+const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 
 const createRestaurant = async (req, res) => {
     if (!req.body) {
@@ -160,6 +163,66 @@ const updateOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while updating order status : ", error.message);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+};
+
+const getOrdersSince = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
+
+    if (userType != "RESTAURATEUR") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameters are missing" });
+    }
+
+    const restaurantID = req.query.id;
+    const numberOfDaysBack = req.query.daysBack;
+
+    if (!restaurantID || !numberOfDaysBack) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+        else if (restaurant.ownerID !== userID) {
+            throw new Error("Restaurant does not belong to user");
+        }
+
+        const orders = await restaurantService.getOrdersSince(restaurantID, numberOfDaysBack);
+
+        return res.status(200).json({ orders });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant does not belong to user") {
+            return res.status(403).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting orders : ", error.message);
             return res.status(500).send({ error: error.message });
         }
     }
