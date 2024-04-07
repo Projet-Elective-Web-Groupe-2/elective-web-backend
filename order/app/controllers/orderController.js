@@ -175,6 +175,62 @@ const createAndAddOrder = async (req, res) => {
     }
 };
 
+const getOrder = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
+    if (userType != "RESTAURATEUR" && userType != "LIVREUR") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const orderID = req.query["orderID"];
+
+    if (!orderID) {
+        return res.status(400).json({ error: "Missing mandatory data for order retrieval" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
+        const order = await orderService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+
+        return res.status(200).json({ order });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Order not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Missing mandatory data for order retrieval") {
+            return res.status(400).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting order : ", error);
+            return res.status(500).json({ error: "Order fetching failed" });
+        }
+    }
+};
+
 const updateOrderStatus = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -197,11 +253,11 @@ const updateOrderStatus = async (req, res) => {
         "Payment refused",
         "Order refused by restaurateur",
         "In preparation",
-        "Order refused by deliverer",
         "Being delivered",
+        "Delivery near client",
         "Delivered"
     ];
-
+    
     if (!possibleStatuses.includes(newStatus)) {
         return res.status(400).json({ error: "Invalid status" });
     }
@@ -345,6 +401,7 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddOrder,
+    getOrder,
     updateOrderStatus,
     getAllFromUser,
     metrics
