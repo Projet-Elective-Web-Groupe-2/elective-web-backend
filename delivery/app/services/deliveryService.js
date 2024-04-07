@@ -71,6 +71,16 @@ const refuseDelivery = async (orderID, delivererID) => {
 const getAllWithFilter = async (userID) => {
     try {
         const orders = await Order.find({ status: "In preparation", refusedBy: { $nin: [userID] } });
+
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found for this deliverer.");
+        }
+
+        for (let order of orders) {
+            await Order.populate(order, { path: 'menus', model: 'Menu' });
+            await Order.populate(order, { path: 'products', model: 'Product' });
+        }
+
         return orders;
     }
     catch(error) {

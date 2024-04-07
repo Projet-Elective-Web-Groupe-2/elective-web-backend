@@ -173,7 +173,58 @@ const getAllWithFilter = async (req, res) => {
             return res.status(500).json({ error: "Internal server error" });
         }
     }
-}
+};
+
+const getStatut = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = await decodedToken(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+
+    if (userType !== 'CLIENT') {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const orderID = req.query["orderID"];
+
+    if (!orderID) {
+        return res.status(400).json({ error: "Missing mandatory data for tracking delivery status" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const order = await deliveryService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found" );
+        }
+
+        return res.status(200).json({ status: order.status });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: "User not found" });
+        }
+        else if (error.message === "Order not found") {
+            return res.status(404).json({ error: "Order not found" });
+        }
+        else {
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
 
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
@@ -203,5 +254,6 @@ module.exports = {
     acceptDelivery,
     refuseDelivery,
     getAllWithFilter,
+    getStatut,
     metrics
 }
