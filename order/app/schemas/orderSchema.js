@@ -38,8 +38,8 @@ const orderSchema = new mongoose.Schema({
             "Payment refused",
             "Order refused by restaurateur",
             "In preparation",
-            "Order refused by deliverer",
             "Being delivered",
+            "Delivery near client",
             "Delivered"
         ],
         unique: false,
@@ -62,7 +62,13 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true,
-    }
+    },
+    refusedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        unique: false,
+        required: false
+    }]
 });
 
 orderSchema.virtual('productDetails', {
