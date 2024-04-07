@@ -27,7 +27,7 @@ const findOrderByID = async (id) => {
 /**
  * Fonction permettant d'accepter une livraison.
  * @param {String} orderID - L'ID de la commande.
- * @param {String} delivererID - L'ID du livreur.
+ * @param {Number} delivererID - L'ID du livreur.
 */
 const acceptDelivery = async (orderID, delivererID) => {
     try {
@@ -40,6 +40,24 @@ const acceptDelivery = async (orderID, delivererID) => {
     }
     catch(error) {
         throw new Error("Error while trying to accept a delivery : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de refuser une livraison.
+ * @param {String} orderID - L'ID de la commande.
+ * @param {Number} delivererID - L'ID du livreur.
+ */
+const refuseDelivery = async (orderID, delivererID) => {
+    try {
+        const order = await findOrderByID(orderID);
+
+        order.refusedBy.push(delivererID);
+        
+        await order.save();
+    }
+    catch(error) {
+        throw new Error("Error while trying to refuse a delivery : " + error.message);
     }
 }
 
@@ -88,5 +106,6 @@ function getCpuUsage() {
 module.exports = {
     findOrderByID,
     acceptDelivery,
+    refuseDelivery,
     getPerformanceMetrics
 };
