@@ -1,3 +1,14 @@
+## [5.4.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.1...v5.4.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* added traefik to the same network as others ([f422931](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f42293179d61a8ddbee5cfcab74d8fedc76fa73d))
+* config file mounted with bind ([c074de1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c074de1fc5b5dbb8f410f0b77c95d300a4204e30))
+* motherfu- traefik ([a3791a7](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/a3791a735370b7781c96fd85651121ce4e4e13c3))
+* traefik again ([4f6bb00](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/4f6bb0026af372b075d97d57d964939fcb90b6b3))
+* traefik fixed and working ([b7b178f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b7b178fe389787c0391191dd80ad706d6f22a088))
+
 ## [5.4.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.0...v5.4.1) (2024-04-06)
 
 
