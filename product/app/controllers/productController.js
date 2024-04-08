@@ -7,7 +7,6 @@
 const axios = require('axios');
 const mongoose = require('mongoose');
 const productService = require('../services/productService');
-const decodeJWT = require('../utils/decodeToken');
 
 const createAndAddProduct = async (req, res) => {
     if (!req.body) {
@@ -15,7 +14,7 @@ const createAndAddProduct = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     const name = req.body["name"];
     const description = req.body["description"];
@@ -112,8 +111,7 @@ const findProduct = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {

@@ -15,24 +15,20 @@ const jwt = require('jsonwebtoken');
 function verifyToken(req, res, next) {
     // Exclusion de certaines routes
     const authorizedRoutes = [
-        '/test',
-        '/mongo',
         '/docs',
         '/healthcheck',
-        '/metrics',
-        '/favicon.ico',
-        '/product'
+        '/favicon.ico'
     ];
 
     if (authorizedRoutes.some(route => route === req.path)) {
         return next();
     }
 
-    const token = req.headers.authorization.split(' ')[1];
-
-    if (!token) {
+    if (!req.headers.authorization) {
         return res.status(401).send({ message: "Missing token" });
     }
+
+    const token = req.headers.authorization.split(' ')[1];
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {

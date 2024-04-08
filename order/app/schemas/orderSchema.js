@@ -38,8 +38,8 @@ const orderSchema = new mongoose.Schema({
             "Payment refused",
             "Order refused by restaurateur",
             "In preparation",
-            "Order refused by deliverer",
             "Being delivered",
+            "Delivery near client",
             "Delivered"
         ],
         unique: false,
@@ -62,7 +62,12 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true,
-    }
+    },
+    refusedBy: [{
+        type: Number,
+        unique: false,
+        required: false
+    }]
 });
 
 orderSchema.virtual('productDetails', {
@@ -78,5 +83,8 @@ orderSchema.virtual('menuDetails', {
     foreignField: '_id',
     justOne: false
 });
+
+orderSchema.set('toObject', { virtuals: true });
+orderSchema.set('toJSON', { virtuals: true });
 
 module.exports = orderSchema;
