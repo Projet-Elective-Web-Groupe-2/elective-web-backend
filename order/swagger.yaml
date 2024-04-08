@@ -1,37 +1,484 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: >
+    Project "Élective Logiciel" - Order microservice API documentation
+servers:
+  - url: 'http://localhost:3005'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
-        '200':
-          description: it will return a success message
-          content: 
+  /create:
+    post:
+      summary: Create and add a new order
+      description: |
+        This endpoint allows a client to create and add a new order. It requires authentication with a valid token.
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  description: List of items to be included in the order
+                  items:
+                    type: object
+                    properties:
+                      idProduit:
+                        type: string
+                        description: The ID of the product or menu item
+                      isMenu:
+                        type: boolean
+                        description: Indicates if the item is a menu item
+                      drink:
+                        type: string
+                        description: The ID of the drink (if applicable)
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant where the order is placed
+      responses:
+        '201':
+          description: Order created successfully
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
+        '400':
+          description: Bad request, missing mandatory data or invalid item type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '403':
+          description: Forbidden, user does not have permission to create orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '404':
+          description: Not found, user, restaurant, item, or menu not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+
+  /getOrder:
+    get:
+      summary: Retrieve an order by its ID
+      description: |
+        This endpoint allows a restaurateur or a delivery person to retrieve an order by its ID. It requires authentication with a valid token.
+      tags:
+        - Orders
+      parameters:
+        - in: query
+          name: orderID
+          schema:
+            type: string
+          required: true
+          description: The ID of the order to retrieve
+      responses:
+        '200':
+          description: Order retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
+        '400':
+          description: Bad request, missing mandatory data for order retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '403':
+          description: Forbidden, user does not have permission to retrieve orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '404':
+          description: Not found, user or order not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+
+  /update:
+    post:
+      summary: Update the status of an order
+      description: |
+        This endpoint allows a restaurant or delivery person to update the status of an order. It requires authentication with a valid token.
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderID:
+                  type: string
+                  description: The ID of the order to update
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant associated with the order
+                statut:
+                  type: string
+                  description: The new status for the order
+      responses:
+        '200':
+          description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Confirmation message
+        '400':
+          description: Bad request, missing mandatory data or invalid status
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message describing the issue
+        '404':
+          description: Not found, user, restaurant, or order not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the issue
+
+  /getAllFromUser:
+    get:
+      summary: Get all orders from a user
+      description: |
+        This endpoint retrieves all orders associated with a client user. It requires authentication with a valid token.
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                    description: List of orders associated with the user
+        '403':
+          description: Forbidden, user is not a client
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '404':
+          description: Not found, user not found or no orders found for the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+
+  /getOrdersCountByDay:
+    post:
+      summary: Count orders by day
+      description: |
+        This endpoint counts the number of orders by day. It requires authentication with a valid token, and the user must be a restaurateur.
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Order'
+                  description: List of orders to count
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ordersByDay:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    description: Number of orders for each day
+        '400':
+          description: Bad request, missing mandatory data for order counting
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '403':
+          description: Forbidden, user is not a restaurateur
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '404':
+          description: Not found, user not found or no orders found for the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        clientID:
+          type: number
+          description: The ID of the client who placed the order
+        delivererID:
+          type: number
+          description: The ID of the deliverer assigned to the order (optional)
+        address:
+          type: string
+          description: The delivery address for the order
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the order was created
+        status:
+          type: string
+          description: The status of the order
+          enum:
+            - Created
+            - Payment refused
+            - Order refused by restaurateur
+            - In preparation
+            - Being delivered
+            - Delivery near client
+            - Delivered
+        menus:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
+          description: List of menu items included in the order
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          description: List of products included in the order
+        totalPrice:
+          type: number
+          description: The total price of the order
+        refusedBy:
+          type: array
+          items:
+            type: number
+          description: List of user IDs who refused the order (optional)
+  Product:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the product
+      image:
+        type: string
+        description: URL of the image representing the product
+      description:
+        type: string
+        description: Description of the product
+      price:
+        type: number
+        description: The price of the product
+    required:
+      - name
+      - description
+      - price
+
+  Menu:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the menu
+      image:
+        type: string
+        description: URL of the image representing the menu
+      products:
+        type: array
+        items:
+          $ref: '#/components/schemas/Product'
+        description: List of products included in the menu
+      totalPrice:
+        type: number
+        description: The total price of the menu
+    required:
+      - name
+      - products
+      - totalPrice
