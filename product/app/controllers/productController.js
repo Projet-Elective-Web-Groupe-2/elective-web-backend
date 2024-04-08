@@ -1,6 +1,6 @@
 /**
  * Le contrôleur contenant la logique métier associée à chaque route de produits.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 

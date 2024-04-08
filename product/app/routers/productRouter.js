@@ -1,6 +1,6 @@
 /**
  * Le routeur pour les articles
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 

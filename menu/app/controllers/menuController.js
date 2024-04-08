@@ -1,3 +1,9 @@
+/**
+ * Le contrôleur contenant la logique métier associée à chaque route de menu.
+ * @author AMARA Ahmed
+ * @version 1.0
+*/
+
 const axios = require('axios');
 const mongoose = require('mongoose');
 const menuService = require('../services/menuService');

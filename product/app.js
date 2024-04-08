@@ -13,8 +13,8 @@ const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDoc = YAML.load('./swagger.yaml');
 
-//const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
-//const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
+const loggerMiddleware = require('./app/middlewares/loggerMiddleware');
+const authenticationMiddleware = require('./app/middlewares/authenticationMiddleware');
 
 const productRouter = require('./app/routers/productRouter');
 
@@ -39,8 +39,8 @@ app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
-//app.use(loggerMiddleware);
-//app.use(authenticationMiddleware);
+app.use(loggerMiddleware);
+app.use(authenticationMiddleware);
 
 app.use('/product', productRouter); 
 
