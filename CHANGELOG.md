@@ -1,3 +1,11 @@
+## [5.4.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.2...v5.4.3) (2024-04-08)
+
+
+### Bug Fixes
+
+* testing done ([46a575d](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/46a575d916993d5d1e27a18512bcf34afe9ec862))
+* those fucking middlewares ([de207ff](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/de207ff6af97b5be543ab23ea240bf57169c870d))
+
 ## [5.4.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.1...v5.4.2) (2024-04-07)
 
 
