@@ -40,7 +40,7 @@ const createRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while creating a restaurant : ", error.message);
-            return res.status(400).send({ error: "Internal server error" });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
