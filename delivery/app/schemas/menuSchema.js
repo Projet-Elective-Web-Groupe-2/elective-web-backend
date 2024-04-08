@@ -39,7 +39,4 @@ menuSchema.virtual('productDetails', {
     justOne: false
 });
 
-menuSchema.set('toObject', { virtuals: true });
-menuSchema.set('toJSON', { virtuals: true });
-
 module.exports = menuSchema;

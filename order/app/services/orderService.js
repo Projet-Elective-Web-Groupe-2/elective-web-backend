@@ -111,6 +111,27 @@ const getAllOrdersFromUser = async (userID) => {
 };
 
 /**
+ * Fonction permettant de compter le nombre de commandes par jour avec un tableau de commandes.
+ * @param {Array} orders - Les commandes à traiter.
+ * @returns {Array} Le nombre de commandes par jour.
+ */
+const countOrdersByDay = (orders) => {
+    const ordersByDay = {};
+
+    for (let order of orders) {
+        const date = order.date.split('T')[0];
+
+        if (!ordersByDay[date]) {
+            ordersByDay[date] = 0;
+        }
+
+        ordersByDay[date]++;
+    }
+
+    return ordersByDay;
+};
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -157,5 +178,6 @@ module.exports = {
     findOrderByID,
     updateOrderStatus,
     getAllOrdersFromUser,
+    countOrdersByDay,
     getPerformanceMetrics
 };

@@ -5,6 +5,9 @@
 */
 
 const mongoose = require('mongoose');
+const Product = require('../models/productModel');
+const Menu = require('../models/menuModel');
+const Order = require('../models/orderModel');
 
 // Définition du schéma pour un restaurant.
 const restaurantSchema = new mongoose.Schema({
@@ -58,5 +61,29 @@ const restaurantSchema = new mongoose.Schema({
         required: false
     }]
 });
+
+restaurantSchema.virtual('menuDetails', {
+    ref: 'Menu',
+    localField: 'menus',
+    foreignField: '_id',
+    justOne: false
+});
+
+restaurantSchema.virtual('productDetails', {
+    ref: 'Product',
+    localField: 'products',
+    foreignField: '_id',
+    justOne: false
+});
+
+restaurantSchema.virtual('orderDetails', {
+    ref: 'Order',
+    localField: 'orders',
+    foreignField: '_id',
+    justOne: false
+});
+
+restaurantSchema.set('toObject', { virtuals: true });
+restaurantSchema.set('toJSON', { virtuals: true });
 
 module.exports = restaurantSchema;

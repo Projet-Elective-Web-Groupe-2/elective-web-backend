@@ -113,7 +113,8 @@ const register = async (req, res) => {
             case "CLIENT":
             case "LIVREUR":
             // For testing purposes
-            /*case "SERVICE TECHNIQUE":*/ {
+            case "SERVICE TECHNIQUE":
+            /*case "SERVICE COMMERCIAL":*/ {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -295,8 +296,12 @@ const token = async (req, res) => {
 };
 
 const logs = async (req, res) => {
-    const accessToken = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(accessToken).type;
+    if (!req.headers.authorization) {
+        return res.status(401).send({ message: "Missing token" });
+    }
+    
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {
@@ -317,8 +322,12 @@ const logs = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const accessToken = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(accessToken).type;
+    if (!req.headers.authorization) {
+        return res.status(401).send({ message: "Missing token" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {

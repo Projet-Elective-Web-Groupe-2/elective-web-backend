@@ -6,7 +6,6 @@
 
 const axios = require('axios');
 const orderService = require('../services/orderService');
-const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
@@ -19,9 +18,8 @@ const createAndAddOrder = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
     
     if (userType != "CLIENT") {
         return res.status(403).json({ error: "Forbidden" });
@@ -100,8 +98,7 @@ const createAndAddOrder = async (req, res) => {
 
                 totalPrice += drink.price;
 
-                // TODO : Potentiellement devoir changer le nom de la route
-                url = `${MENU_URL}addProduct`;
+                url = `${MENU_URL}updateMenu`;
                 response = await axios.post(url, {
                     menuID: itemID,
                     product: drink,
@@ -175,14 +172,68 @@ const createAndAddOrder = async (req, res) => {
     }
 };
 
+const getOrder = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURATEUR" && userType != "LIVREUR") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const orderID = req.query["orderID"];
+
+    if (!orderID) {
+        return res.status(400).json({ error: "Missing mandatory data for order retrieval" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
+        const order = await orderService.findOrderByID(orderID);
+
+        if (!order) {
+            throw new Error("Order not found");
+        }
+
+        return res.status(200).json({ order });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Order not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Missing mandatory data for order retrieval") {
+            return res.status(400).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting order : ", error);
+            return res.status(500).json({ error: "Order fetching failed" });
+        }
+    }
+};
+
 const updateOrderStatus = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
+    const userID = req.decoded.id;
 
     const orderID = req.body["orderID"];
     const restaurantID = req.body["restaurantID"];
@@ -197,8 +248,8 @@ const updateOrderStatus = async (req, res) => {
         "Payment refused",
         "Order refused by restaurateur",
         "In preparation",
-        "Order refused by deliverer",
         "Being delivered",
+        "Delivery near client",
         "Delivered"
     ];
 
@@ -279,9 +330,8 @@ const updateOrderStatus = async (req, res) => {
 
 const getAllFromUser = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType != "CLIENT") {
         return res.status(403).json({ error: "Forbidden" });
@@ -319,9 +369,59 @@ const getAllFromUser = async (req, res) => {
     }
 };
 
-const metrics = async (req, res) => {
+const countOrdersByDay = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
+    const userID = req.decoded.id;
+
+    if (!userType === "RESTAURATEUR") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+    
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const orders = req.body["orders"];
+
+    if (!orders) {
+        return res.status(400).json({ error: "Missing mandatory data for order counting" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
+        const ordersByDay = orderService.countOrdersByDay(orders);
+
+        return res.status(200).json({ ordersByDay });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "No orders found for this user") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting user's orders : ", error);
+            return res.status(500).json({ error: "Orders fetching failed" });
+        }
+    }
+};
+
+const metrics = async (req, res) => {
+    const userType = req.decoded.type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {
@@ -345,7 +445,9 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddOrder,
+    getOrder,
     updateOrderStatus,
     getAllFromUser,
+    countOrdersByDay,
     metrics
 };

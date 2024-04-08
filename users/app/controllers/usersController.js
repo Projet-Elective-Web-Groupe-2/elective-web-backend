@@ -281,9 +281,6 @@ const deleteUser = async (req, res) => {
         else if (targetUserID === userID && (userType === "SERVICE COMMERCIAL" || userType === "SERVICE TECHNIQUE")) {
             throw new Error("User trying to change their own type");
         }
-        else if (targetUserID === userID && edits["isSuspended"]) {
-            throw new Error("User trying to change their own suspension status");
-        }
 
         await usersService.editUser(targetUserID);
 

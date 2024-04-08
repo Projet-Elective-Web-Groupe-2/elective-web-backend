@@ -11,8 +11,11 @@ services:
     depends_on:
       - traefik
       - mysql
+      - users
       - restaurant
       - product
+      - order
+      - delivery
       - monitoring
     env_file:
       - .env
@@ -23,9 +26,7 @@ services:
       - "traefik.http.routers.authentication-service.rule=Host(`authentication.localhost`)"
       - "traefik.http.services.authentication-service.loadbalancer.server.port=${AUTH_PORT}"
     networks:
-      mysql_network:
-        ipv4_address: 182.168.16.3
-      microservices_network:
+      backend_network:
         ipv4_address: 192.168.16.2
 
   users:
@@ -47,9 +48,7 @@ services:
       - "traefik.http.routers.users-service.rule=Host(`users.localhost`)"
       - "traefik.http.services.users-service.loadbalancer.server.port=${USERS_PORT}"
     networks:
-      mysql_network:
-        ipv4_address: 182.168.16.4
-      microservices_network:
+      backend_network:
         ipv4_address: 192.168.16.3
 
   restaurant:
@@ -71,9 +70,7 @@ services:
       - "traefik.http.routers.restaurant-service.rule=Host(`restaurant.localhost`)"
       - "traefik.http.services.restaurant-service.loadbalancer.server.port=${RESTAURANT_PORT}"
     networks:
-      mongodb_network:
-        ipv4_address: 172.168.16.3
-      microservices_network:
+      backend_network:
         ipv4_address: 192.168.16.4
   
   product:
@@ -95,9 +92,7 @@ services:
       - "traefik.http.routers.product-service.rule=Host(`product.localhost`)"
       - "traefik.http.services.product-service.loadbalancer.server.port=${PRODUCT_PORT}"
     networks:
-      mongodb_network:
-        ipv4_address: 172.168.16.4
-      microservices_network:
+      backend_network:
         ipv4_address: 192.168.16.5
   
   order:
@@ -119,11 +114,31 @@ services:
       - "traefik.http.routers.order-service.rule=Host(`order.localhost`)"
       - "traefik.http.services.order-service.loadbalancer.server.port=${ORDER_PORT}"
     networks:
-      mongodb_network:
-        ipv4_address: 172.168.16.5
-      microservices_network:
+      backend_network:
         ipv4_address: 192.168.16.6
   
+  delivery:
+    build:
+      context: ./delivery
+    hostname: ${DELIVERY_HOST}
+    container_name: ${DELIVERY_HOST}
+    ports:
+      - "${DELIVERY_PORT}:${DELIVERY_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.delivery-service.rule=Host(`delivery.localhost`)"
+      - "traefik.http.services.delivery-service.loadbalancer.server.port=${DELIVERY_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.7
+
   monitoring:
     build:
       context: ./monitoring
@@ -133,8 +148,11 @@ services:
       - "${MONITORING_PORT}:${MONITORING_PORT}"
     depends_on:
       - traefik
+      - users
       - restaurant
       - product
+      - order
+      - delivery
     env_file:
       - .env
     stdin_open: true
@@ -144,8 +162,8 @@ services:
       - "traefik.http.routers.monitoring-service.rule=Host(`monitoring.localhost`)"
       - "traefik.http.services.monitoring-service.loadbalancer.server.port=${MONITORING_PORT}"
     networks:
-      microservices_network:
-        ipv4_address: 192.168.16.7
+      backend_network:
+        ipv4_address: 192.168.16.8
 
   mongoDB:
     image: mongo
@@ -157,8 +175,8 @@ services:
     volumes:
       - ./volumes/mongodb:/data/database
     networks:
-      mongodb_network:
-        ipv4_address: 172.168.16.2
+      backend_network:
+        ipv4_address: 192.168.16.9
 
   mysql:
     image: mysql:5.7
@@ -171,8 +189,8 @@ services:
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
     networks:
-      mysql_network:
-        ipv4_address: 182.168.16.2
+      backend_network:
+        ipv4_address: 192.168.16.10
 
   phpmyadmin:
     image: phpmyadmin
@@ -192,7 +210,7 @@ services:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.endpoint=unix:///var/run/docker.sock
-      - --providers.docker.network=microservices_network
+      - --providers.docker.network=backend_network
       - --providers.file.filename=/etc/traefik/traefik.yml
       - --providers.file.watch=true
       - --log.level=DEBUG
@@ -206,11 +224,11 @@ services:
         source: ./traefik.yml
         target: /etc/traefik/traefik.yml
     networks:
-      microservices_network:
-        ipv4_address: 192.168.16.10
+      backend_network:
+        ipv4_address: 192.168.16.11
 
 networks:
-  microservices_network:
+  backend_network:
     driver: bridge
     ipam:
       driver: default
@@ -218,22 +236,6 @@ networks:
         - subnet: 192.168.16.0/20
           gateway: 192.168.16.1
           ip_range: 192.168.16.0/20
-  mongodb_network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.168.16.0/20
-          gateway: 172.168.16.1
-          ip_range: 172.168.16.0/20
-  mysql_network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 182.168.16.0/20
-          gateway: 182.168.16.1
-          ip_range: 182.168.16.0/20
 
 volumes:
   mongodb:
