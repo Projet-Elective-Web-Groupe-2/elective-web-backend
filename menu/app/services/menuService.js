@@ -1,5 +1,6 @@
 const menuModel = require('../models/menuModel');
 const menu = require('../models/menuModel');
+const axios = require('axios');
 
 const getPerformanceMetrics = async () => {
     const startTime = Date.now();
@@ -60,25 +61,26 @@ const findMenuByID = async (id) => {
         throw new Error("Error while trying to find a menu by ID : " + error.message);
     }
 };
-const updateMenu = async (menuID, productIds) => { 
+const updateMenu = async (menuID, productIds, token) => { 
     try {
-        const productResponse = await axios.get(`http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`);
-        const productsResponse = await axios.get(productResponse, {
+        const productResponse = await axios.get(`http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`, {
             data: { productIds }, 
             headers: { Authorization: `Bearer ${token}` }
         });
+
         if (productResponse.status !== 200) {
             throw new Error("Product not found");
         }
 
-        const products = productsResponse.data.productsInfo;
+        const products = productResponse.data.productsInfo;
+
         const menu = await menuModel.findById(menuID);
 
         if (!menu) {
             throw new Error("Menu not found");
         }
 
-        menu.products.push(products);
+        menu.products.push(...products);
 
         await menu.save();
 
@@ -87,7 +89,6 @@ const updateMenu = async (menuID, productIds) => {
         throw new Error("Error while adding product to menu: " + error.message);
     }
 }
-
 module.exports = {
     createAndAddMenu,
     getPerformanceMetrics,
