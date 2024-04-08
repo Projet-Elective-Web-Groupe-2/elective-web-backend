@@ -6,7 +6,6 @@
 
 const axios = require('axios');
 const restaurantService = require('../services/restaurantService');
-const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
@@ -306,7 +305,6 @@ const getOrdersSince = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
     const userType = req.decoded.type;
 
     try {
@@ -324,7 +322,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };

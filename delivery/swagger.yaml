@@ -5,7 +5,7 @@ info:
   description: >
     Project "Élective Logiciel" - Delivery microservice API documentation
 servers:
-  - url: 'http://localhost:3002'
+  - url: 'http://localhost:3006'
     description: Development server
 paths:
   /accept:
