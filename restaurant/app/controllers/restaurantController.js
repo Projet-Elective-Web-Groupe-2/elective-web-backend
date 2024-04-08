@@ -6,7 +6,6 @@
 
 const axios = require('axios');
 const restaurantService = require('../services/restaurantService');
-const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
