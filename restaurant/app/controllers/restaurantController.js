@@ -41,7 +41,7 @@ const createRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while creating a restaurant : ", error.message);
-            return res.status(400).send({ error: error.message });
+            return res.status(400).send({ error: "Internal server error" });
         }
     }
 };
@@ -72,7 +72,7 @@ const findRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while finding a restaurant : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
@@ -89,9 +89,8 @@ const deleteRestaurant = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType != "RESTAURATEUR" || userType != "SERVICE COMMERCIAL") {
         return res.status(403).json({ error: "Forbidden" });
@@ -133,7 +132,7 @@ const deleteRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while deleting a restaurant : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
@@ -161,7 +160,7 @@ const addProduct = async (req, res) => {
         }
         else {
             console.error("Unexpected error while adding a product to a restaurant : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
@@ -178,8 +177,7 @@ const addOrder = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data for order adding" });
     }
 
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     if (userType != "CLIENT") {
         return res.status(403).json({ error: "Forbidden" });
@@ -196,7 +194,7 @@ const addOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while adding an order to a restaurant : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
@@ -225,16 +223,15 @@ const updateOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while updating order status : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
 
 const getOrdersSince = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType != "RESTAURATEUR") {
         return res.status(403).json({ error: "Forbidden" });
@@ -278,8 +275,12 @@ const getOrdersSince = async (req, res) => {
 
         url = `${ORDER_URL}getOrdersCountByDay`;
         response = await axios.post(url, {
-            params: { orders: orders },
-            headers: { Authorization: `Bearer ${token}` }
+            orders: orders 
+        },
+        {
+            headers: { 
+                Authorization: `Bearer ${token}` 
+            }
         });
 
         if (response.status !== 200) {
@@ -299,14 +300,14 @@ const getOrdersSince = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting orders : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
 
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {

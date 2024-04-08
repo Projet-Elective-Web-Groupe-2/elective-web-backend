@@ -6,7 +6,6 @@
 
 const axios = require('axios');
 const orderService = require('../services/orderService');
-const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
@@ -19,9 +18,8 @@ const createAndAddOrder = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
     
     if (userType != "CLIENT") {
         return res.status(403).json({ error: "Forbidden" });
@@ -180,9 +178,8 @@ const getOrder = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType != "RESTAURATEUR" && userType != "LIVREUR") {
         return res.status(403).json({ error: "Forbidden" });
@@ -236,8 +233,7 @@ const updateOrderStatus = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
+    const userID = req.decoded.id;
 
     const orderID = req.body["orderID"];
     const restaurantID = req.body["restaurantID"];
@@ -334,9 +330,8 @@ const updateOrderStatus = async (req, res) => {
 
 const getAllFromUser = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = decodeJWT(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType != "CLIENT") {
         return res.status(403).json({ error: "Forbidden" });
@@ -376,7 +371,8 @@ const getAllFromUser = async (req, res) => {
 
 const countOrdersByDay = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
+    const userID = req.decoded.id;
 
     if (!userType === "RESTAURATEUR") {
         return res.status(403).json({ error: "Forbidden" });
@@ -425,8 +421,7 @@ const countOrdersByDay = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {

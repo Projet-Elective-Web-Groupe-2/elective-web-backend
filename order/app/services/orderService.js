@@ -119,7 +119,7 @@ const countOrdersByDay = (orders) => {
     const ordersByDay = {};
 
     for (let order of orders) {
-        const date = order.date.toDateString();
+        const date = order.date.split('T')[0];
 
         if (!ordersByDay[date]) {
             ordersByDay[date] = 0;

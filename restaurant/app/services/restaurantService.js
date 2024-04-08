@@ -157,6 +157,8 @@ const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
     try {
         const restaurant = await findRestaurantByID(restaurantID);
 
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+
         if (restaurant.orders.length === 0) {
             return [];
         }

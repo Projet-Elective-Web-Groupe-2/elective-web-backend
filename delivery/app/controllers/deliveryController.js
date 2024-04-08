@@ -6,7 +6,6 @@
 
 const axios = require('axios');
 const deliveryService = require('../services/deliveryService');
-const decodeToken = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 
@@ -16,9 +15,8 @@ const acceptDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "Forbidden" });
@@ -86,9 +84,8 @@ const refuseDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "Forbidden" });
@@ -146,9 +143,8 @@ const refuseDelivery = async (req, res) => {
 
 const getAllWithFilter = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "Forbidden" });
@@ -192,9 +188,8 @@ const getStatut = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'CLIENT') {
         return res.status(403).json({ error: "Forbidden" });
@@ -261,9 +256,8 @@ const trackDelivery = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "User is not a deliverer" });
@@ -336,9 +330,8 @@ const nearbyDelivery = async (req, res) => {
     }
     
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "Forbidden" });
@@ -406,9 +399,8 @@ const validateDelivery = async (req, res) => {
     }
     
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = await decodeToken(token);
-    const userID = decodedToken.id;
-    const userType = decodedToken.type;
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
 
     if (userType !== 'LIVREUR') {
         return res.status(403).json({ error: "Forbidden" });
@@ -465,15 +457,14 @@ const validateDelivery = async (req, res) => {
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     try {
         if (userType != "SERVICE TECHNIQUE") {
             throw new Error("Invalid user type");
         }
 
-        const metrics = await orderService.getPerformanceMetrics();
+        const metrics = await deliveryService.getPerformanceMetrics();
 
         return res.status(200).json({ metrics });
     }

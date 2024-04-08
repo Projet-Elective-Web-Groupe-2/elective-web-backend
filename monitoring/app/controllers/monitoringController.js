@@ -5,14 +5,13 @@
 */
 
 const monitoringService = require('../services/monitoringService');
-const decodeJWT = require('../utils/decodeToken');
 
 const getMetrics = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = decodeJWT(token);
+        const userType = req.decoded.type;
 
-        if (decodedToken.type !== "SERVICE TECHNIQUE") {
+        if (userType !== "SERVICE TECHNIQUE") {
             throw new Error("Invalid user type");
         }
 
