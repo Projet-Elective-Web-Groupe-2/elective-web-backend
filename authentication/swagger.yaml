@@ -1,37 +1,464 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: |
+    Projet Élective Logiciel FISA A4 INFO
+servers:
+  - url: 'http://localhost:3000'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user credentials and generate access token.
+      description: >-
+        This endpoint is used for user authentication. It verifies user
+        credentials (email and password), generates an access token upon
+        successful authentication, and logs the user activity.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User's email address.
+                password:
+                  type: string
+                  description: User's password.
+              required:
+                - email
+                - password
+      responses:
         '200':
-          description: it will return a success message
-          content: 
+          description: Successful authentication.
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access token.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Error message indicating missing request body or mandatory
+                      data.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Error message indicating invalid password or expired refresh
+                      token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user suspension.
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: Invalidate access token and log out user.
+      description: This endpoint is used to invalidate the access token and log out the user.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logged out successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Message indicating successful logout.
+        '500':
+          description: Internal server error.
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating unexpected server error.
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user.
+      description: This endpoint is used to register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User's email address.
+                password:
+                  type: string
+                  description: User's password.
+                userType:
+                  type: string
+                  enum: [CLIENT, DELIVERY, RESTAURANT, DEVELOPER]
+                  description: Type of user to be registered.
+                phoneNumber:
+                  type: string
+                  description: User's phone number.
+                firstName:
+                  type: string
+                  description: User's first name (required for CLIENT and DELIVERY users).
+                lastName:
+                  type: string
+                  description: User's last name (required for CLIENT and DELIVERY users).
+                address:
+                  type: string
+                  description: User's address (required for CLIENT and DELIVERY users).
+                restaurantName:
+                  type: string
+                  description: Name of the restaurant (required for RESTAURANT users).
+                restaurantAddress:
+                  type: string
+                  description: Address of the restaurant (required for RESTAURANT users).
+                apiKey:
+                  type: string
+                  description: API key for developer registration (required for DEVELOPER users).
+      responses:
+        '200':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating successful user registration.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data or invalid user type.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid API key.
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user already exists.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+  /find:
+    get:
+      tags:
+        - User Management
+      summary: Find user by ID.
+      description: This endpoint is used to find a user by their ID.
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to be found.
+      responses:
+        '200':
+          description: User found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    description: Details of the user found.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+  /refreshToken:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token using refresh token.
+      description: This endpoint is used to refresh the access token using a refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token for token renewal.
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: Access token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Newly generated access token.
+                  refreshToken:
+                    type: string
+                    description: Newly generated refresh token (if the previous one has expired).
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid refresh token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user suspension.
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating user not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+  /logs:
+    get:
+      tags:
+        - Logs
+      summary: Retrieve logs.
+      description: This endpoint is used to retrieve logs.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logs retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    description: Array of logs.
+                    items:
+                      type: object
+                      properties:
+                        log:
+                          type: string
+                          description: Log message.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
