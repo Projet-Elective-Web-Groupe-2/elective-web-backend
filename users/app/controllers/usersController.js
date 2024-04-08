@@ -168,8 +168,6 @@ const editUser = async (req, res) => {
         else if (targetUserID !== userID && userType !== "SALES") {
             throw new Error("User trying to edit another user without permission");
         }
-
-        console.log(userType);
         if (userType === "CLIENT" || userType === "DELIVERY") {
             editedUser = await usersService.editUser(targetUserID, firstName, lastName, address, email, phoneNumber, encryptedPassword);
         }
@@ -181,8 +179,6 @@ const editUser = async (req, res) => {
             editedUser = await usersService.editUser(targetUserID, email, phoneNumber, encryptedPassword);
         }
         
-
-        console.log(editedUser);
         return res.status(200).json({ editedUser });
     }
     catch (error) {
