@@ -31,7 +31,7 @@ const createAndAddMenu = async (req, res) => {
         console.log(productIds);
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        const url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; // testé et fonctionnel
+        let url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; // testé et fonctionnel
         const restaurantResponse = await axios.get(url, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
