@@ -12,5 +12,6 @@ router.post('/create', restaurantController.createRestaurant);
 router.get('/find', restaurantController.findRestaurant);
 router.post('/addProduct', restaurantController.addProduct);
 router.get('/metrics', restaurantController.metrics);
+router.post('/addMenu', restaurantController.addMenu);
 
 module.exports = router;

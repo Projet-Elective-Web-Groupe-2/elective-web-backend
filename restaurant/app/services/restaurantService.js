@@ -110,6 +110,18 @@ const addProduct = async (restaurantID, product) => {
 };
 
 
+const addMenu = async (restaurantID, menu) => {
+    try {
+        Restaurant.findByIdAndUpdate(restaurantID, {
+            $addToSet: { menu: menu }
+        });
+    }
+    catch (error) {
+        throw new Error("Error while trying to add a product to a restaurant : " + error.message);
+    }
+};
+
+
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
@@ -157,5 +169,6 @@ module.exports = {
     findRestaurantByID,
     createRestaurant,
     addProduct,
+    addMenu,
     getPerformanceMetrics
 };

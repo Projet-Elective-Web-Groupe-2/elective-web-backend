@@ -107,6 +107,34 @@ const addProduct = async (req, res) => {
     }
 };
 
+const addMenu = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const menu = req.body["menu"];
+
+    if (!restaurantID || !menu) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        await restaurantService.addMenu(restaurantID, menu);
+
+        return res.status(201).json({ message: "Menu successfully added to restaurant" });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found" || error.message === "Menu not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while adding a menu to a restaurant : ", error.message);
+            return res.status(500).send({ error: error.message });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -135,5 +163,6 @@ module.exports = {
     createRestaurant,
     findRestaurant,
     addProduct,
+    addMenu,
     metrics
 };
