@@ -131,6 +131,7 @@ const updatedMenu = async (req, res) => {
         return res.status(500).json({ error: "Failed to add product to menu" });
     }
 };
+
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
