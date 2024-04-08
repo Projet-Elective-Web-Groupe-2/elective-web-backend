@@ -1,6 +1,6 @@
 /**
  * Le fichier contenant les traitements liés aux articles.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
@@ -14,7 +14,7 @@ const Product = require('../models/productModel');
  * @param {String} description - La description de l'article.
  * @param {Number} price - Le prix de l'article.
  * @returns {object} L'article créé.
- */
+*/
 const createProduct = async (name, description, price) => {
     try {
         const newProduct = new Product({ 

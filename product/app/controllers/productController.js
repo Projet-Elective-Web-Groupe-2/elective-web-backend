@@ -1,6 +1,6 @@
 /**
  * Le contrôleur contenant la logique métier associée à chaque route de produits.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
@@ -74,7 +74,7 @@ const createAndAddProduct = async (req, res) => {
         }
         else {
             console.error("Unexpected error while adding a product : ", error);
-            res.status(500).json({ error: 'Product adding failed' });
+            res.status(500).json({ error: 'Internal server error' });
         }
     }
 };
@@ -105,7 +105,7 @@ const findProduct = async (req, res) => {
         }
         else {
             console.error("Unexpected error while finding a product : ", error);
-            return res.status(500).json({ error: "Product finding failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -128,7 +128,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };
