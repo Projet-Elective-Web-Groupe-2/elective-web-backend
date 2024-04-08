@@ -139,6 +139,33 @@ const deleteRestaurant = async (req, res) => {
     }
 };
 
+const getAllRestaurants = async (req, res) => {
+    const userType = req.decoded.type;
+
+    if (userType != "CLIENT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    try {
+        const restaurants = await restaurantService.getAllRestaurants();
+
+        if (restaurants.length === 0) {
+            throw new Error("No restaurants found");
+        }
+
+        return res.status(200).json({ restaurants });
+    }
+    catch (error) {
+        if (error.message === "No restaurants found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting all restaurants : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
 const addProduct = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -363,6 +390,7 @@ module.exports = {
     createRestaurant,
     findRestaurant,
     deleteRestaurant,
+    getAllRestaurants,
     addProduct,
     addMenu,
     addOrder,
