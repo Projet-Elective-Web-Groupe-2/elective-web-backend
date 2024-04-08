@@ -24,13 +24,29 @@ const createProduct = async (name, description, price) => {
         });
 
         await newProduct.save();
-
+        console.log("Product created : " + newProduct._id);
         return newProduct;
     }
     catch (error) {
         throw new Error("Error while trying to create a product : " + error.message)
     }
 }
+
+/**
+ * Fonction permettant de retrouver un produit dans la base de données grâce à son ID.
+ * @param {String} id - L'ID du produit.
+ * @returns {object} Le produit trouvé.
+*/
+const findProductByID = async (id) => {
+    try {
+        const product = await Product.findById(id);
+
+        return product;
+    }
+    catch(error) {
+        throw new Error("Error while trying to find a product by ID : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -91,6 +107,6 @@ const getProductsByIds = async (productIds) => {
 
 module.exports = {
     createProduct,
-    getPerformanceMetrics,
-    getProductsByIds
+    findProductByID,
+    getPerformanceMetrics
 };

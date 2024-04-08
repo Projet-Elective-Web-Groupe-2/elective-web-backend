@@ -94,21 +94,124 @@ const createRestaurant = async (name, ownerID, address) => {
 };
 
 /**
+ * Fonction permettant de supprimer un restaurant de la base de données.
+ * @param {String} restaurantID - L'ID du restaurant à supprimer.
+ */
+const deleteRestaurant = async (restaurantID) => {
+    try {
+        await Restaurant.deleteOne({ _id: restaurantID });
+    }
+    catch (error) {
+        throw new Error("Error while trying to delete a restaurant : " + error.message);
+    }
+}
+
+/**
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
  * @param {object} product - Le produit à ajouter.
- */
+*/
 const addProduct = async (restaurantID, product) => {
     try {
-        Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { products: product }
-        });
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.products.push(product);
+
+        await restaurant.save();
     }
     catch (error) {
         throw new Error("Error while trying to add a product to a restaurant : " + error.message);
     }
 };
 
+/**
+ * Fonction permettant d'ajouter une commande à un restaurant.
+ * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter une commande.
+ * @param {object} order - La commande à ajouter.
+*/
+const addOrder = async (restaurantID, order) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.orders.push(order);
+
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to add an order to a restaurant : " + error.message);
+    }
+}
+
+/**
+ * Fonction permettant de mettre à jour le statut d'une commande.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @param {String} orderID - L'ID de la commande.
+ * @param {String} newStatus - Le nouveau statut de la commande.
+*/
+const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
+    try {
+        const restaurant = await Restaurant.findById(restaurantID);
+        const index = restaurant.orders.findIndex((o) => o._id.toString() === orderID.toString());
+        restaurant.orders[index].status = newStatus;
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to update an order status : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les commandes passées depuis un certain nombre de jours.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @param {Number} numberOfDaysBack - Le nombre de jours en arrière à partir duquel on veut récupérer les commandes.
+ * @returns {Array} Les commandes passées depuis un certain nombre de jours.
+ */
+const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+
+        if (restaurant.orders.length === 0) {
+            return [];
+        }
+        else if (numberOfDaysBack === 0) {
+            return restaurant.orders;
+        }
+        else {
+            const currentDate = new Date();
+            const startDate = new Date(currentDate.getTime() - numberOfDaysBack * 24 * 60 * 60 * 1000);
+            const orders = restaurant.orders.filter((order) => new Date(order.date).getTime() >= startDate.getTime());
+            return orders;
+        }
+    }
+    catch (error) {
+        throw new Error("Error while trying to get orders since a certain number of days : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de calculer le revenu total d'un restaurant à partir d'un tableau de commandes.
+ * @param {Array} orders - Les commandes pour lesquelles on veut calculer le revenu total.
+ * @returns {Number} Le revenu total.
+ */
+const getTotalRevenue = async (orders) => {
+    let totalRevenue = 0;
+
+    for (let order of orders) {
+        totalRevenue += order.totalPrice;
+    }
+
+    return totalRevenue;
+};
 
 const addMenu = async (restaurantID, menu) => {
     try {
@@ -168,7 +271,12 @@ module.exports = {
     findRestaurant,
     findRestaurantByID,
     createRestaurant,
+    deleteRestaurant,
     addProduct,
     addMenu,
+    addOrder,
+    updateOrderStatus,
+    getOrdersSince,
+    getTotalRevenue,
     getPerformanceMetrics
 };

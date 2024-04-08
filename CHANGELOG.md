@@ -1,3 +1,86 @@
+## [5.4.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.2...v5.4.3) (2024-04-08)
+
+
+### Bug Fixes
+
+* testing done ([46a575d](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/46a575d916993d5d1e27a18512bcf34afe9ec862))
+* those fucking middlewares ([de207ff](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/de207ff6af97b5be543ab23ea240bf57169c870d))
+
+## [5.4.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.1...v5.4.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* added traefik to the same network as others ([f422931](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f42293179d61a8ddbee5cfcab74d8fedc76fa73d))
+* config file mounted with bind ([c074de1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c074de1fc5b5dbb8f410f0b77c95d300a4204e30))
+* motherfu- traefik ([a3791a7](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/a3791a735370b7781c96fd85651121ce4e4e13c3))
+* traefik again ([4f6bb00](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/4f6bb0026af372b075d97d57d964939fcb90b6b3))
+* traefik fixed and working ([b7b178f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b7b178fe389787c0391191dd80ad706d6f22a088))
+
+## [5.4.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.0...v5.4.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* fixed some small issues ([897b000](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/897b000e55a40c6447317ee0a4694b1187fe3e04))
+
+## [5.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.1...v5.4.0) (2024-04-05)
+
+
+### Features
+
+* order microservice done ([6cd5e01](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6cd5e010a3840fa76b226a53529e1dd20d93ab9b))
+
+
+### Bug Fixes
+
+* ameliorated docker-compose and removed connection to mongo ([67d2f9b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/67d2f9b72f94fbf4ae8861d199d0696ea1c2ea16))
+* display product and menu ([16ef871](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/16ef8719e5a982ac7e7eafd96f8a7edf91deddbf))
+* fixed CI ([42a6651](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/42a6651da4ccd942141a849ec273a8e7f5c52c58))
+* fixed some issues ([5998b59](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5998b59cb7fba5ce21c09148307d0eef708d8a01))
+
+## [5.3.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.0...v5.3.1) (2024-04-04)
+
+
+### Bug Fixes
+
+* authentication fixed (thanks Nicholas) ([48d9179](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/48d9179f466a8dd20d24ba58951a39882bff8f28))
+* tried fixing ([877f116](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/877f1169a1151b5e83f965461865b048a33596df))
+
+## [5.3.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.1...v5.3.0) (2024-04-04)
+
+
+### Features
+
+* tried to add MySQL ([8dad74d](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8dad74dd890b5c7e17c1b3312a0ca48f31909522))
+
+
+### Bug Fixes
+
+* Added MySQL routes ! ([3f3e21f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/3f3e21fb9c1b481809668f4174c7d9af51a7b33a))
+* Added refrashToken to SQL ([8096c77](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8096c77589e316309ff21f05b301145b05cf7eeb))
+* changed MongoDB to MySQL for users ([8c1ef9b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/8c1ef9b2fc06ef4da355232f753353478f0bc0c5))
+* Fixed bugs ([54ded6e](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/54ded6e04625d1f38456f658c6f146ea0989c4b6))
+* fixed minor things ([52a496a](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/52a496ada07a3d42966d51dc69f1dc59a3826ede))
+* Removed every bug from MySQL (hopefully) ([71491ab](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/71491abd5c91cda9eaf46974cf0fa86eea400260))
+* tried to fix MySQL, didn't work ([561dd74](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/561dd743d71cc1239b2a46a7a64a31f0541d505d))
+* undid rebase ([f3bc614](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f3bc614293744640ff35b2051219eb940409b47a))
+
+## [5.2.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.2.0...v5.2.1) (2024-04-03)
+
+
+### Bug Fixes
+
+* traefik issues ([6c20ae1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6c20ae15e29fc15c18db37a464efb07dcd4103d9))
+
+## [5.2.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.1.0...v5.2.0) (2024-04-03)
+
+
+### Features
+
+* connection logs working perfectly ([e34ee40](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/e34ee4017a9e34e48f51a3f253052d5201b11e3f))
+* refresh token implemented ([2d95ddc](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2d95ddc37669868dd658c7b4258da3d084da7afb))
+
 ## [5.1.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.0.0...v5.1.0) (2024-04-03)
 
 

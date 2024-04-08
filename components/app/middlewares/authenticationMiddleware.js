@@ -15,11 +15,8 @@ const jwt = require('jsonwebtoken');
 function verifyToken(req, res, next) {
     // Exclusion de certaines routes
     const authorizedRoutes = [
-        '/test',
-        '/mongo',
         '/docs',
         '/healthcheck',
-        '/metrics',
         '/favicon.ico'
     ];
 
@@ -27,13 +24,13 @@ function verifyToken(req, res, next) {
         return next();
     }
 
-    const token = req.headers.authorization.split(' ')[1];
-
-    if (!token) {
+    if (!req.headers.authorization) {
         return res.status(401).send({ message: "Missing token" });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    const token = req.headers.authorization.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).send({ message: "Authentication failed" });
         }
