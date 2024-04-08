@@ -110,7 +110,27 @@ const findMenu = async (req, res) => {
         }
     }
 };
+const updatedMenu = async (req, res) => {
+    const { menuID, productID } = req.body;
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = decodeJWT(token).type;
 
+    try {
+        if (userType !== "RESTAURATEUR" && userType !== "CLIENT") {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+
+        if (!menuID || !productID) {
+            return res.status(400).json({ error: "MenuID and productID are required" });
+        }
+
+        const updatedMenu = await menuService.updateMenu(menuID, productID);
+        return res.status(200).json({ message: "Product added to menu successfully", menu: updatedMenu });
+    } catch (error) {
+        console.error("Error while adding product to menu: ", error);
+        return res.status(500).json({ error: "Failed to add product to menu" });
+    }
+};
 const metrics = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = decodeJWT(token).type;
@@ -135,6 +155,7 @@ const metrics = async (req, res) => {
 
 module.exports = {
     createAndAddMenu,
+    updatedMenu,
     findMenu,
     metrics,
 };
