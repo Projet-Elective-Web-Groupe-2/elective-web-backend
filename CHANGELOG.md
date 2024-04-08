@@ -1,3 +1,36 @@
+## [5.4.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.1...v5.4.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* added traefik to the same network as others ([f422931](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/f42293179d61a8ddbee5cfcab74d8fedc76fa73d))
+* config file mounted with bind ([c074de1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c074de1fc5b5dbb8f410f0b77c95d300a4204e30))
+* motherfu- traefik ([a3791a7](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/a3791a735370b7781c96fd85651121ce4e4e13c3))
+* traefik again ([4f6bb00](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/4f6bb0026af372b075d97d57d964939fcb90b6b3))
+* traefik fixed and working ([b7b178f](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b7b178fe389787c0391191dd80ad706d6f22a088))
+
+## [5.4.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.0...v5.4.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* fixed some small issues ([897b000](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/897b000e55a40c6447317ee0a4694b1187fe3e04))
+
+## [5.4.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.1...v5.4.0) (2024-04-05)
+
+
+### Features
+
+* order microservice done ([6cd5e01](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/6cd5e010a3840fa76b226a53529e1dd20d93ab9b))
+
+
+### Bug Fixes
+
+* ameliorated docker-compose and removed connection to mongo ([67d2f9b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/67d2f9b72f94fbf4ae8861d199d0696ea1c2ea16))
+* display product and menu ([16ef871](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/16ef8719e5a982ac7e7eafd96f8a7edf91deddbf))
+* fixed CI ([42a6651](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/42a6651da4ccd942141a849ec273a8e7f5c52c58))
+* fixed some issues ([5998b59](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5998b59cb7fba5ce21c09148307d0eef708d8a01))
+
 ## [5.3.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.3.0...v5.3.1) (2024-04-04)
 
 

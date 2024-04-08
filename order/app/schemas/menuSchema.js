@@ -5,6 +5,7 @@
 */
 
 const mongoose = require('mongoose');
+const Product = require('../models/productModel');
 
 // Définition du schéma pour une livraison.
 const menuSchema = new mongoose.Schema({
@@ -29,6 +30,13 @@ const menuSchema = new mongoose.Schema({
         unique: false,
         required: true
     }
+});
+
+menuSchema.virtual('productDetails', {
+    ref: 'Product',
+    localField: 'products',
+    foreignField: '_id',
+    justOne: false
 });
 
 module.exports = menuSchema;
