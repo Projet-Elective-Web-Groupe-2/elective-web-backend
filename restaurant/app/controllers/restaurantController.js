@@ -92,7 +92,7 @@ const deleteRestaurant = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURATEUR" || userType != "SERVICE COMMERCIAL") {
+    if (userType != "RESTAURANT" || userType != "SALES") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -115,7 +115,7 @@ const deleteRestaurant = async (req, res) => {
         if (!restaurant) {
             throw new Error("Restaurant not found");
         }
-        else if (restaurant.ownerID !== userID && userType != "SERVICE COMMERCIAL") {
+        else if (restaurant.ownerID !== userID && userType != "SALES") {
             throw new Error("Restaurant does not belong to user");
         }
 
@@ -233,7 +233,7 @@ const getOrdersSince = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURATEUR") {
+    if (userType != "RESTAURANT") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -310,7 +310,7 @@ const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 

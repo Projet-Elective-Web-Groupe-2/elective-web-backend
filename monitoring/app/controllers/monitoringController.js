@@ -11,7 +11,7 @@ const getMetrics = async (req, res) => {
         const token = req.headers.authorization.split(' ')[1];
         const userType = req.decoded.type;
 
-        if (userType !== "SERVICE TECHNIQUE") {
+        if (userType !== "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 

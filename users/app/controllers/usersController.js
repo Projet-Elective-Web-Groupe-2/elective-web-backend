@@ -17,13 +17,13 @@ const getUser = async (req, res) => {
 
     try {
 
-        if (userType === "SERVICE TECHNIQUE") {
+        if (userType === "TECHNICAL") {
             throw new Error("Forbidden");
         }
-        else if (userType === "SERVICE COMMERCIAL" && (userID === targetUserID)) {
+        else if (userType === "SALES" && (userID === targetUserID)) {
             throw new Error("Forbidden");
         }
-        else if (userType === "SERVICE COMMERCIAL") {
+        else if (userType === "SALES") {
             userID = targetUserID;
         }
         const user = await usersService.getUser(userID);
@@ -65,7 +65,7 @@ const getUserByEmail = async (req, res) => {
 
     try {
 
-        if (userType === "SERVICE TECHNIQUE") {
+        if (userType === "TECHNICAL") {
             throw new Error("Forbidden");
         }
         const user = await usersService.getUserByEmail(email);
@@ -97,10 +97,10 @@ const getAllUsers = async (req, res) => {
     const userType = decodeToken.type;
 
     try {
-        if (userType != "SERVICE COMMERCIAL") {
+        if (userType != "SALES") {
             throw new Error("Invalid user type");
         }
-        else if (userType === "SERVICE TECHNIQUE") {
+        else if (userType === "TECHNICAL") {
             throw new Error("Forbidden");
         }
 
@@ -150,6 +150,7 @@ const editUser = async (req, res) => {
     const decodedToken = decodeJWT(accessToken);
     const userID = decodedToken.id;
     const userType = decodedToken.type;
+    let editedUser;
 
     try {
         const userToEdit = await usersService.getUser(targetUserID);
@@ -158,18 +159,30 @@ const editUser = async (req, res) => {
         if (!userToEdit) {
             throw new Error("User not found");
         }
-        else if (userType === "SERVICE TECHNIQUE") {
+        else if (userType === "TECHNICAL") {
             throw new Error("Forbidden");
         }
         else if (userToEdit.userID !== targetUserID) {
             throw new Error("Wrong user ID in request body");
         }
-        else if (targetUserID !== userID && userType !== "SERVICE COMMERCIAL") {
+        else if (targetUserID !== userID && userType !== "SALES") {
             throw new Error("User trying to edit another user without permission");
         }
 
-        const editedUser = await usersService.editUser(targetUserID, firstName, lastName, address, email, phoneNumber, encryptedPassword);
+        console.log(userType);
+        if (userType === "CLIENT" || userType === "DELIVERY") {
+            editedUser = await usersService.editUser(targetUserID, firstName, lastName, address, email, phoneNumber, encryptedPassword);
+        }
+        else if (userType === "RESTAURANT") {
+            editedUser = await usersService.editUser(targetUserID, email, phoneNumber, encryptedPassword);
+            // MEttre la route vers le truc Mongo
+        }
+        else if (userType === "DEVELOPER") {
+            editedUser = await usersService.editUser(targetUserID, email, phoneNumber, encryptedPassword);
+        }
+        
 
+        console.log(editedUser);
         return res.status(200).json({ editedUser });
     }
     catch (error) {
@@ -213,7 +226,7 @@ const suspendUser = async (req, res) => {
     const userType = decodeJWT(accessToken).type;
 
     try {
-        if (userType != "SERVICE COMMERCIAL") {
+        if (userType != "SALES") {
             throw new Error("Invalid user type");
         }
 
@@ -225,10 +238,10 @@ const suspendUser = async (req, res) => {
         else if (userToSuspend.id === targetUserID) {
             throw new Error("Wrong user ID in request body");
         }
-        else if (userToSuspend.userType === "SERVICE COMMERCIAL") {
+        else if (userToSuspend.userType === "SALES") {
             throw new Error("User trying to suspend another commercial service user");
         }
-        else if (userToSuspend.userType === "SERVICE TECHNIQUE") {
+        else if (userToSuspend.userType === "TECHNICAL") {
             throw new Error("User trying to suspend a technical service user");
         }
 
@@ -277,7 +290,7 @@ const unsuspendUser = async (req, res) => {
     const userType = decodeJWT(accessToken).type;
 
     try {
-        if (userType != "SERVICE COMMERCIAL") {
+        if (userType != "SALES") {
             throw new Error("Invalid user type");
         }
 
@@ -322,7 +335,7 @@ const deleteUser = async (req, res) => {
     const userType = decodedToken.type;
 
     try {
-        if (userType === "SERVICE TECHNIQUE") {
+        if (userType === "TECHNICAL") {
             throw new Error("Invalid user type");
         }
         const targetUser = await usersService.getUser(targetUserID);
@@ -333,20 +346,20 @@ const deleteUser = async (req, res) => {
         else if (targetUserID !== targetUser.userID) {
             throw new Error("Wrong user ID in request body");
         }
-        else if (targetUserID !== userID && userType !== "SERVICE COMMERCIAL") {
+        else if (targetUserID !== userID && userType !== "SALES") {
             throw new Error("User trying to delete another user without permission");
         }
-        else if (targetUserID === userID && targetUser.userType === userType && targetUser.userType === "SERVICE COMMERCIAL") {
+        else if (targetUserID === userID && targetUser.userType === userType && targetUser.userType === "SALES") {
             throw new Error("Commercial trying to delete themselves");
         }
-        else if (targetUserID === userID && targetUser.userType === userType && targetUser.userType === "SERVICE TECHNIQUE") {
+        else if (targetUserID === userID && targetUser.userType === userType && targetUser.userType === "TECHNICAL") {
             throw new Error("Technical trying to delete themselves");
         }
 
         await usersService.deleteUser(targetUserID);
 
         // Delete le restaurant si delete le restaurateur
-        if (targetUser.userType === "RESTAURATEUR") {
+        if (targetUser.userType === "RESTAURANT") {
             // appelle a la route
             url = `${RESTAURANT_URL}find`;
             response = await axios.get(url, {
@@ -390,7 +403,7 @@ const metrics = async (req, res) => {
     const userType = decodeJWT(accessToken).type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
