@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
   description: |
-    Projet Élective Logiciel FISA A4 INFO
+    Project "Élective Logiciel" - Authentication microservice API documentation
 servers:
   - url: 'http://localhost:3000'
     description: Development server

@@ -91,7 +91,7 @@ const createAndAddOrder = async (req, res) => {
                 }
 
                 if (response.status != 200) {
-                    throw new Error("Menu not found");
+                    throw new Error("Drink not found");
                 }
 
                 const drink = response.data.product;
@@ -153,8 +153,12 @@ const createAndAddOrder = async (req, res) => {
             || error.message === "Item not found"
             || error.message === "Menu not found"
             || error.message === "Drink not found"
+            || error.message === "Product not found"
             || error.message === "Drink not added to menu") {
             return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Order creation failed") {
+            return res.status(500).json({ error: error.message });
         }
         else if (error.message === "Missing mandatory data for order creation") {
             return res.status(400).json({ error: error.message });
@@ -167,7 +171,7 @@ const createAndAddOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while creating an order : ", error);
-            return res.status(500).json({ error: "Order creation failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -222,7 +226,7 @@ const getOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting order : ", error);
-            return res.status(500).json({ error: "Order fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -322,7 +326,7 @@ const updateOrderStatus = async (req, res) => {
         }
         else {
             console.error("Unexpected error while updating order status : ", error);
-            return res.status(500).json({ error: "Order status update failed" });
+            return res.status(500).json({ error: "Internal server" });
         }
     }
 
@@ -364,7 +368,7 @@ const getAllFromUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting user's orders : ", error);
-            return res.status(500).json({ error: "Orders fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -413,9 +417,12 @@ const countOrdersByDay = async (req, res) => {
         else if (error.message === "No orders found for this user") {
             return res.status(404).json({ error: error.message });
         }
+        else if (error.message === "Missing mandatory data for order counting") {
+            return res.status(400).json({ error: error.message });
+        }
         else {
             console.error("Unexpected error while getting user's orders : ", error);
-            return res.status(500).json({ error: "Orders fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

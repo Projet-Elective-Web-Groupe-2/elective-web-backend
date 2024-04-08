@@ -43,7 +43,7 @@ const getMetrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Failed to get metrics" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };
