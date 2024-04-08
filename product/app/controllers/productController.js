@@ -110,6 +110,31 @@ const findProduct = async (req, res) => {
     }
 };
 
+const getProductsByIds = async (req, res) => {
+    const productIds  = req.body["productIds"];
+
+    if (!productIds || !Array.isArray(productIds)) {
+        return res.status(400).json({ error: "Product IDs are missing or invalid" });
+    }
+
+    try {
+        const productsInfo = await productService.getProductsByIds(productIds);
+
+        if (productsInfo.length === 0) {
+            throw new Error("No products found with the provided IDs");
+        }
+
+        return res.status(200).json({ productsInfo });
+    }
+    catch (error) {
+        if (error.message === "No products found with the provided IDs") {
+            return res.status(404).json({ error: "No products found with the provided IDs" });
+        }
+        console.error("Unexpected error while fetching products: ", error);
+        return res.status(500).json({ error: "Failed to fetch products" });
+    }
+};
+
 const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
@@ -128,37 +153,14 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };
-
-const getProductsByIds = async (req, res) => {
-    const { productIds } = req.body;
-
-    if (!productIds || !Array.isArray(productIds)) {
-        return res.status(400).json({ error: "Product IDs are missing or invalid" });
-    }
-
-    try {
-        const productsInfo = await productService.getProductsByIds(productIds);
-
-        if (productsInfo.length === 0) {
-            return res.status(404).json({ error: "No products found with the provided IDs" });
-        }
-
-        return res.status(200).json({ productsInfo });
-    } catch (error) {
-        console.error("Unexpected error while fetching products: ", error);
-        return res.status(500).json({ error: "Failed to fetch products" });
-    }
-};
-
 
 module.exports = {
     createAndAddProduct,
     findProduct,
-    metrics,
-    getProductsByIds
-
+    getProductsByIds,
+    metrics
 };

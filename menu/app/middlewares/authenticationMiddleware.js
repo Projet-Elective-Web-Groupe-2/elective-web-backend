@@ -17,9 +17,7 @@ function verifyToken(req, res, next) {
     const authorizedRoutes = [
         '/docs',
         '/healthcheck',
-        '/metrics',
-        '/favicon.ico',
-        '/menu'
+        '/favicon.ico'
     ];
 
     if (authorizedRoutes.some(route => route === req.path)) {

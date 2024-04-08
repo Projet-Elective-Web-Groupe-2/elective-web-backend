@@ -73,6 +73,28 @@ services:
       backend_network:
         ipv4_address: 192.168.16.4
   
+  menu:
+    build:
+      context: ./menu
+    hostname: ${MENU_HOST}
+    container_name: ${MENU_HOST}
+    ports:
+      - "${MENU_PORT}:${MENU_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.menu-service.rule=Host(`menu.localhost`)"
+      - "traefik.http.services.menu-service.loadbalancer.server.port=${MENU_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.5
+
   product:
     build:
       context: ./product
@@ -93,7 +115,7 @@ services:
       - "traefik.http.services.product-service.loadbalancer.server.port=${PRODUCT_PORT}"
     networks:
       backend_network:
-        ipv4_address: 192.168.16.5
+        ipv4_address: 192.168.16.6
   
   order:
     build:
@@ -115,7 +137,7 @@ services:
       - "traefik.http.services.order-service.loadbalancer.server.port=${ORDER_PORT}"
     networks:
       backend_network:
-        ipv4_address: 192.168.16.6
+        ipv4_address: 192.168.16.7
   
   delivery:
     build:
@@ -137,27 +159,7 @@ services:
       - "traefik.http.services.delivery-service.loadbalancer.server.port=${DELIVERY_PORT}"
     networks:
       backend_network:
-        ipv4_address: 192.168.16.7
-
-  menu:
-    build:
-      context: ./menu
-    hostname: menu-service
-    container_name: menu-service
-    ports:
-      - "3003:3003"
-    depends_on:
-      - mongoDB
-      - traefik
-    env_file:
-      - .env
-    stdin_open: true
-    tty: true
-    labels:
-      - "traefik.http.routers.menu.rule=Host(`menu.localhost`)"
-    networks:
-      - microservices_network
-      - mongodb_network    
+        ipv4_address: 192.168.16.8
 
   monitoring:
     build:
@@ -183,7 +185,7 @@ services:
       - "traefik.http.services.monitoring-service.loadbalancer.server.port=${MONITORING_PORT}"
     networks:
       backend_network:
-        ipv4_address: 192.168.16.8
+        ipv4_address: 192.168.16.9
 
   mongoDB:
     image: mongo
@@ -196,7 +198,7 @@ services:
       - ./volumes/mongodb:/data/database
     networks:
       backend_network:
-        ipv4_address: 192.168.16.9
+        ipv4_address: 192.168.16.10
 
   mysql:
     image: mysql:5.7
@@ -210,16 +212,7 @@ services:
       - ./volumes/mysql-data:/var/lib/mysql
     networks:
       backend_network:
-        ipv4_address: 192.168.16.10
-
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: mysql
-    ports:
-      - "8081:80"
+        ipv4_address: 192.168.16.11
 
   traefik:
     image: traefik:v3.0
@@ -245,7 +238,16 @@ services:
         target: /etc/traefik/traefik.yml
     networks:
       backend_network:
-        ipv4_address: 192.168.16.11
+        ipv4_address: 192.168.16.12
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+    ports:
+      - "8081:80"
 
 networks:
   backend_network:

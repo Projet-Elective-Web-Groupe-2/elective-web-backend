@@ -33,12 +33,9 @@ const createRestaurant = async (req, res) => {
 
         await restaurantService.createRestaurant(name, ownerID, address);
 
-        // Fetch the newly created restaurant
         const createdRestaurant = await restaurantService.findRestaurant(name, ownerID, address);
-        console.log("Newly created restaurant ID:", createdRestaurant._id);
 
         return res.status(201).json({ message: "Restaurant created", restaurant: createdRestaurant });
-
     }
     catch (error) {
         if (error.message === "Restaurant already exists") {

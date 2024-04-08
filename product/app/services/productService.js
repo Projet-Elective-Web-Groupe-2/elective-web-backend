@@ -1,6 +1,6 @@
 /**
  * Le fichier contenant les traitements liés aux articles.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
@@ -14,7 +14,7 @@ const Product = require('../models/productModel');
  * @param {String} description - La description de l'article.
  * @param {Number} price - Le prix de l'article.
  * @returns {object} L'article créé.
- */
+*/
 const createProduct = async (name, description, price) => {
     try {
         const newProduct = new Product({ 
@@ -45,6 +45,29 @@ const findProductByID = async (id) => {
     }
     catch(error) {
         throw new Error("Error while trying to find a product by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les informations des produits à partir de leurs IDs.
+ * @param {Array} productIds - Les IDs des produits.
+ * @returns Les informations des produits.
+*/
+const getProductsByIds = async (productIds) => {
+    try {
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        const productsInfo = products.map(product => ({
+            name: product.name,
+            price: product.price,
+            //description: product.description
+            // Pas besoin de ça pour le moment. On a juste besoin de prix pour faire la somme et le nom.
+        }));
+
+        return productsInfo;
+    }
+    catch (error) {
+        throw new Error("Erreur lors de la récupération des produits : " + error.message);
     }
 };
 
@@ -89,24 +112,10 @@ function getCpuUsage() {
         });
     });
 };
-const getProductsByIds = async (productIds) => {
-    try {
-        const products = await Product.find({ _id: { $in: productIds } });
-
-        const productsInfo = products.map(product => ({
-            name: product.name,
-            price: product.price,
-           // description: product.description // pas besoin de ca pour le moment on a juste besoin de prix pour faire la somme et le nom
-        }));
-
-        return productsInfo;
-    } catch (error) {
-        throw new Error("Erreur lors de la récupération des produits : " + error.message);
-    }
-};
 
 module.exports = {
     createProduct,
     findProductByID,
+    getProductsByIds,
     getPerformanceMetrics
 };

@@ -7,8 +7,6 @@
 const axios = require('axios');
 const mongoose = require('mongoose');
 const menuService = require('../services/menuService');
-const decodeJWT = require('../utils/decodeToken');
-
 
 const createAndAddMenu = async (req, res) => {
     if (!req.body) {
@@ -16,7 +14,7 @@ const createAndAddMenu = async (req, res) => {
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     const productIds = req.body["productIds"];
     let restaurantID = req.body["restaurantID"];
@@ -24,6 +22,7 @@ const createAndAddMenu = async (req, res) => {
     const image = req.body["image"];
     const drinkButtonClicked = req.body["drinkButtonClicked"]; 
     const drink = drinkButtonClicked ? true : false;
+    
     console.log(req.body);
 
     if (!name || !restaurantID || !productIds || !image) {
@@ -34,7 +33,7 @@ const createAndAddMenu = async (req, res) => {
         if (userType !== "RESTAURATEUR") {
             throw new Error("Invalid user type");
         }
-        console.log(productIds);
+
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
         let url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
@@ -42,7 +41,7 @@ const createAndAddMenu = async (req, res) => {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
         });
-        console.log(restaurantID);
+
         if (restaurantResponse.status !== 200) {
             throw new Error("Restaurant not found");
         }
@@ -73,15 +72,31 @@ const createAndAddMenu = async (req, res) => {
             }
         });
 
-        res.status(201).json({ message: 'Menu added successfully', menu: menu.toJSON() }); // for test
-    } catch (error) {
+        if (response.status !== 201) {
+            throw new Error("Menu not added");
+        }
+
+        return res.status(201).json({ message: 'Menu added successfully' });
+    }
+    catch (error) {
         if (error.message === "Invalid user type") {
             return res.status(403).json({ error: "Forbidden" });
-        } else if (error.message === "Restaurant not found") {
+        }
+        else if (error.message === "Restaurant not found") {
             return res.status(404).json({ error: "Restaurant not found" });
-        } else {
+        }
+        else if (error.message === "Failed to fetch products") {
+            return res.status(500).json({ error: "Failed to fetch products" });
+        }
+        else if (error.message === "Menu not added") {
+            return res.status(500).json({ error: "Menu not added" });
+        }
+        else if (error.message === "Menu not found") {
+            return res.status(404).json({ error: "Menu not found" });
+        }
+        else {
             console.error("Unexpected error while adding a menu : ", error);
-            res.status(500).json({ error: 'Menu adding failed'});
+            res.status(500).json({ error: 'Internal server error'});
         }
     }
 };
@@ -112,35 +127,63 @@ const findMenu = async (req, res) => {
         }
         else {
             console.error("Unexpected error while finding a menu : ", error);
-            return res.status(500).json({ error: "Menu finding failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
+
 const updatedMenu = async (req, res) => {
-    const { menuID, productID } = req.body;
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const menuID = req.body["menuID"];
+    const productID = req.body["productID"];
+    const userType = req.decoded.type;
 
     try {
         if (userType !== "RESTAURATEUR" && userType !== "CLIENT") {
-            return res.status(403).json({ error: "Forbidden" });
+            throw new Error("Invalid user type");
         }
 
         if (!menuID || !productID) {
-            return res.status(400).json({ error: "MenuID and productID are required" });
+            throw new Error("Missing mandatory data");
         }
 
-        const updatedMenu = await menuService.updateMenu(menuID, productID);
+        const productResponse = await axios.get(`http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`, {
+            data: { productIds }, 
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (productResponse.status !== 200) {
+            throw new Error("Product not found");
+        }
+
+        const products = productResponse.data.productsInfo;
+
+        const updatedMenu = await menuService.updateMenu(menuID, products);
+        
         return res.status(200).json({ message: "Product added to menu successfully", menu: updatedMenu });
-    } catch (error) {
-        console.error("Error while adding product to menu: ", error);
-        return res.status(500).json({ error: "Failed to add product to menu" });
+    }
+    catch (error) {
+        if (error.message === "Invalid user type") {
+            return res.status(403).json({ error: "Forbidden" });
+        }
+        else if (error.message === "Missing mandatory data") {
+            return res.status(400).json({ error: "Missing mandatory data" });
+        }
+        else if (error.message === "Product not found") {
+            return res.status(404).json({ error: "Product not found" });
+        }
+        else if (error.message === "Menu not found") {
+            return res.status(404).json({ error: "Menu not found" });
+        }
+        else {
+            console.error("Error while adding product to menu: ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const userType = req.decoded.type;
 
     try {
         if (userType !== "SERVICE TECHNIQUE") {
@@ -150,19 +193,20 @@ const metrics = async (req, res) => {
         const metrics = await menuService.getPerformanceMetrics();
 
         return res.status(200).json({ metrics });
-    } catch (error) {
+    }
+    catch (error) {
         if (error.message === "Invalid user type") {
             res.status(403).json({ error: "Forbidden" });
         } else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };
 
 module.exports = {
     createAndAddMenu,
-    updatedMenu,
     findMenu,
+    updatedMenu,
     metrics,
 };
