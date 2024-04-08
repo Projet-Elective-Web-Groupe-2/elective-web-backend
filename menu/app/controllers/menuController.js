@@ -31,7 +31,7 @@ const createAndAddMenu = async (req, res) => {
         console.log(productIds);
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        let url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; // testé et fonctionnel
+        let url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
         const restaurantResponse = await axios.get(url, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
@@ -40,15 +40,7 @@ const createAndAddMenu = async (req, res) => {
         if (restaurantResponse.status !== 200) {
             throw new Error("Restaurant not found");
         }
-/*
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
-        const productsResponse = await axios.get(productUrl, { productIds }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json' 
-            }
-        });
-     */
+
         const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
         const productsResponse = await axios.get(productUrl, {
             data: { productIds }, 
