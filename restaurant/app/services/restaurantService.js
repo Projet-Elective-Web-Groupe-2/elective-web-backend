@@ -173,7 +173,22 @@ const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
     catch (error) {
         throw new Error("Error while trying to get orders since a certain number of days : " + error.message);
     }
-}
+};
+
+/**
+ * Fonction permettant de calculer le revenu total d'un restaurant à partir d'un tableau de commandes.
+ * @param {Array} orders - Les commandes pour lesquelles on veut calculer le revenu total.
+ * @returns {Number} Le revenu total.
+ */
+const getTotalRevenue = async (orders) => {
+    let totalRevenue = 0;
+
+    for (let order of orders) {
+        totalRevenue += order.totalPrice;
+    }
+
+    return totalRevenue;
+};
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -226,5 +241,6 @@ module.exports = {
     addOrder,
     updateOrderStatus,
     getOrdersSince,
+    getTotalRevenue,
     getPerformanceMetrics
 };

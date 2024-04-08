@@ -176,6 +176,9 @@ const getAllWithFilter = async (req, res) => {
         if (error.message === "User not found") {
             return res.status(404).json({ error: "User not found" });
         }
+        else if (error.message.contains("No orders found for this deliverer.")) {
+            return res.status(404).json({ error: "No orders found for this deliverer" });
+        }
         else {
             console.error("Unexpected error while getting orders with filter : ", error);
             return res.status(500).json({ error: error.message });

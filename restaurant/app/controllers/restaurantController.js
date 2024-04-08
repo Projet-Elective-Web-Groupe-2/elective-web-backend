@@ -9,6 +9,7 @@ const restaurantService = require('../services/restaurantService');
 const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
+const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
 
 const createRestaurant = async (req, res) => {
     if (!req.body) {
@@ -231,7 +232,9 @@ const updateOrder = async (req, res) => {
 
 const getOrdersSince = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-    const userType = decodeJWT(token).type;
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
 
     if (userType != "RESTAURATEUR") {
         return res.status(403).json({ error: "Forbidden" });
@@ -241,7 +244,7 @@ const getOrdersSince = async (req, res) => {
         return res.status(400).json({ error: "Required query parameters are missing" });
     }
 
-    const restaurantID = req.query.id;
+    const restaurantID = req.query.restaurantID;
     const numberOfDaysBack = req.query.daysBack;
 
     if (!restaurantID || !numberOfDaysBack) {
@@ -273,7 +276,19 @@ const getOrdersSince = async (req, res) => {
 
         const orders = await restaurantService.getOrdersSince(restaurantID, numberOfDaysBack);
 
-        return res.status(200).json({ orders });
+        url = `${ORDER_URL}getOrdersCountByDay`;
+        response = await axios.post(url, {
+            params: { orders: orders },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("Error while trying to get orders count by day");
+        }
+
+        const ordersByDay = response.data.ordersByDay;
+
+        return res.status(200).json({ ordersByDay });
     }
     catch (error) {
         if (error.message === "User not found" || error.message === "Restaurant not found") {
