@@ -1,3 +1,20 @@
+## [5.5.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.3...v5.5.0) (2024-04-09)
+
+
+### Features
+
+* added every possible action to user MS ([c2c6e86](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c2c6e86e34bd62c052ee4a024cd295a9e220c370))
+* Added the getUser, works fine ([eb6b446](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/eb6b446c3295d3eb63d2ab4962902642f3c2a862))
+
+
+### Bug Fixes
+
+* BDD FR to EN (merci Paul) ([d04a806](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d04a80639b5c6f326c9c4dfe88366881822defc3))
+* deleted console.log ([cf3463b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/cf3463b22d752c0fb8b2da0edffcb95483c16be6))
+* fixed a bit of users ([b3fa0b5](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b3fa0b5ef33f0fa26de1d99afc761e9ee25210d8))
+* Merge branch 'develop' of https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend into feat/AddUserModif ([826317b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/826317b2eefef96aa6b4902ba98d1857e2663b0d))
+* Merge branch 'develop' of https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend into feat/AddUserModif ([d8612d8](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d8612d8a18171ae4ab555fca083ec44daa904e4d))
+
 ## [5.4.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.2...v5.4.3) (2024-04-08)
 
 
