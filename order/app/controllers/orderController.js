@@ -167,7 +167,7 @@ const createAndAddOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while creating an order : ", error);
-            return res.status(500).json({ error: "Order creation failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -222,7 +222,7 @@ const getOrder = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting order : ", error);
-            return res.status(500).json({ error: "Order fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -315,14 +315,14 @@ const updateOrderStatus = async (req, res) => {
             return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Order status update failed") {
-            return res.status(500).json({ error: error.message });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Missing mandatory data for order status update") {
             return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while updating order status : ", error);
-            return res.status(500).json({ error: "Order status update failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 
@@ -364,7 +364,7 @@ const getAllFromUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting user's orders : ", error);
-            return res.status(500).json({ error: "Orders fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -415,7 +415,7 @@ const countOrdersByDay = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting user's orders : ", error);
-            return res.status(500).json({ error: "Orders fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -438,7 +438,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

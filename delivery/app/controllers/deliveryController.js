@@ -177,7 +177,7 @@ const getAllWithFilter = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting orders with filter : ", error);
-            return res.status(500).json({ error: error.message });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -470,11 +470,11 @@ const metrics = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Invalid user type") {
-            res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: "Forbidden" });
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

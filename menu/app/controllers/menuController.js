@@ -86,17 +86,17 @@ const createAndAddMenu = async (req, res) => {
             return res.status(404).json({ error: "Restaurant not found" });
         }
         else if (error.message === "Failed to fetch products") {
-            return res.status(500).json({ error: "Failed to fetch products" });
+            return res.status(400).json({ error: "Failed to fetch products" });
         }
         else if (error.message === "Menu not added") {
-            return res.status(500).json({ error: "Menu not added" });
+            return res.status(400).json({ error: "Menu not added" });
         }
         else if (error.message === "Menu not found") {
             return res.status(404).json({ error: "Menu not found" });
         }
         else {
             console.error("Unexpected error while adding a menu : ", error);
-            res.status(500).json({ error: 'Internal server error'});
+            return res.status(500).json({ error: 'Internal server error'});
         }
     }
 };
@@ -197,9 +197,10 @@ const metrics = async (req, res) => {
     catch (error) {
         if (error.message === "Invalid user type") {
             res.status(403).json({ error: "Forbidden" });
-        } else {
+        }
+        else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

@@ -70,11 +70,11 @@ const createAndAddProduct = async (req, res) => {
             return res.status(404).json({ error: "Restaurant not found" });
         }
         else if (error.message === "Product not added") {
-            return res.status(500).json({ error: "Product not added" });
+            return res.status(400).json({ error: "Product not added" });
         }
         else {
             console.error("Unexpected error while adding a product : ", error);
-            res.status(500).json({ error: 'Product adding failed' });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -105,7 +105,7 @@ const findProduct = async (req, res) => {
         }
         else {
             console.error("Unexpected error while finding a product : ", error);
-            return res.status(500).json({ error: "Product finding failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -131,7 +131,7 @@ const getProductsByIds = async (req, res) => {
             return res.status(404).json({ error: "No products found with the provided IDs" });
         }
         console.error("Unexpected error while fetching products: ", error);
-        return res.status(500).json({ error: "Failed to fetch products" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -153,7 +153,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

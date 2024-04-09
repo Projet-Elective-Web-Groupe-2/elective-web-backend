@@ -440,7 +440,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };

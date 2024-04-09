@@ -39,11 +39,11 @@ const getMetrics = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Invalid user type") {
-            res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: "Forbidden" });
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Failed to get metrics" });
+            return res.status(500).json({ error: "Internal" });
         }
     }
 };

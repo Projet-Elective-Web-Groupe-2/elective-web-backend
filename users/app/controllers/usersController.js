@@ -46,7 +46,7 @@ const getUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting user : ", error);
-            res.status(500).json({ error: "User fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -82,7 +82,7 @@ const getUserByEmail = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting user by email : ", error);
-            res.status(500).json({ error: "User fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
         
     }
@@ -121,7 +121,7 @@ const getAllUsers = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting all users : ", error);
-            res.status(500).json({ error: "Users fetching failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -195,7 +195,7 @@ const editUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while editing user : ", error);
-            res.status(500).json({ error: "User editing failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -259,7 +259,7 @@ const suspendUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while suspending user : ", error);
-            res.status(500).json({ error: "User suspension failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -302,7 +302,7 @@ const unsuspendUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while suspending user : ", error);
-            res.status(500).json({ error: "User suspension failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -382,7 +382,7 @@ const deleteUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while editing user : ", error);
-            res.status(500).json({ error: "User editing failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -406,7 +406,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
