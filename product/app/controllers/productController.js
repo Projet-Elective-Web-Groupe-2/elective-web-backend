@@ -1,6 +1,6 @@
 /**
  * Le contrôleur contenant la logique métier associée à chaque route de produits.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
@@ -60,21 +60,21 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Product not added");
         }
 
-        res.status(201).json({ message: 'Product added successfully' });
+        return res.status(201).json({ message: 'Product added successfully', product });
     }
     catch (error) {
         if (error.message === "Invalid user type") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Restaurant not found") {
-            return res.status(404).json({ error: "Restaurant not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Product not added") {
-            return res.status(500).json({ error: "Product not added" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while adding a product : ", error);
-            res.status(500).json({ error: 'Product adding failed' });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -101,11 +101,38 @@ const findProduct = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Product not found") {
-            return res.status(404).json({ error: "Product not found" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while finding a product : ", error);
-            return res.status(500).json({ error: "Product finding failed" });
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
+const getProductsByIds = async (req, res) => {
+    const productIds  = req.body["productIds"];
+
+    if (!productIds || !Array.isArray(productIds)) {
+        return res.status(400).json({ error: "Product IDs are missing or invalid" });
+    }
+
+    try {
+        const productsInfo = await productService.getProductsByIds(productIds);
+
+        if (productsInfo.length === 0) {
+            throw new Error("No products found with the provided IDs");
+        }
+
+        return res.status(200).json({ productsInfo });
+    }
+    catch (error) {
+        if (error.message === "No products found with the provided IDs") {
+            return res.status(404).json({ error: "No products found with the provided IDs" });
+        }
+        else {
+            console.error("Unexpected error while fetching products: ", error);
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -128,7 +155,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Metrics collecting failed" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -136,5 +163,6 @@ const metrics = async (req, res) => {
 module.exports = {
     createAndAddProduct,
     findProduct,
-    metrics,
+    getProductsByIds,
+    metrics
 };

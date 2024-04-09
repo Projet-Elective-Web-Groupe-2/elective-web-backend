@@ -1,6 +1,11 @@
+/**
+ * Le module de connexion à la base de données MySQL.
+ * @author JOURNEL Nicolas
+ * @version 1.0
+*/
+
 const mysql = require('mysql');
 
-// Create a connection to the MySQL database
 const connection = mysql.createConnection({
   host: 'mysql',
   user: 'root',
@@ -9,7 +14,6 @@ const connection = mysql.createConnection({
   database: 'elective',
 });
 
-// Handle connection errors
 connection.connect(function(err) {
   if (err) {
     console.error('Error connecting to MySQL database: ' + err.stack);

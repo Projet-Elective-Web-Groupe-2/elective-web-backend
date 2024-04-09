@@ -47,7 +47,6 @@ const createOrder = async (items, userID, userAddress, totalPrice) => {
     }
 };
 
-
 /**
  * Fonction permettant de retrouver une commande dans la base de données grâce à son ID.
  * @param {String} id - L'ID de la commande.

@@ -1,6 +1,6 @@
 /**
  * Le fichier principal du microservice des restaurants.
- * @author GAURE Warren, Amara Ahmed
+ * @author GAURE Warren, AMARA Ahmed
  * @version 1.0
 */
 
@@ -43,21 +43,6 @@ app.use(loggerMiddleware);
 app.use(authenticationMiddleware);
 
 app.use('/restaurant', restaurantRouter);
-
-/* ----- À SUPPRIMER UNE FOIS LES ROUTES CRÉÉES ----- */
-app.get('/hello', function(req, res) {
-    res.send("Hello World !");
-});
-
-app.get('/mongo', function(req, res) {
-    if (mongoose.connection.readyState == 1) {
-        res.send("Connected to MongoDB");
-    }
-    else {
-        res.status(500).send("Error while connecting to MongoDB");
-    }
-});
-/* -------------------------------------------------- */
 
 app.listen(port, function() {
     console.log(`Listens to port ${port}`);

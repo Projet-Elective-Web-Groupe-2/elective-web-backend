@@ -6,8 +6,8 @@
 
 const os = require('os');
 const osUtils = require('os-utils');
-const connection = require('../db/mySQLConnector');
 const bcrypt = require('bcryptjs');
+const connection = require('../db/mySQLConnector');
 
 /**
  * Fonction permettant de récupérer un utilisateur en fonction de son ID.
@@ -16,27 +16,26 @@ const bcrypt = require('bcryptjs');
 */
 const getUser = async (userID) => {
     try {
-        // Construction de la requête SQL
         const sql = `SELECT * FROM users WHERE userID = ?`;
         const values = [userID];
 
-        // Exécution de la requête
         const [user] = await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Erreur lors de la recherche de l'utilisateur par ID: " + error.message));
-                } else {
+                    reject(new Error(error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
 
         return user;
-    } catch (error) {
-        throw new Error("Erreur lors de la recherche de l'utilisateur par ID : " + error.message);
+    }
+    catch (error) {
+        throw new Error("Error while trying to find user by ID : " + error.message);
     }
 };
-
 
 /**
  * Fonction permettant de récupérer un utilisateur en fonction de son email.
@@ -45,24 +44,24 @@ const getUser = async (userID) => {
 */
 const getUserByEmail = async (email) => {
     try {
-        // Construction de la requête SQL
         const sql = `SELECT * FROM users WHERE email = ?`;
         const values = [email];
 
-        // Exécution de la requête
         const [user] = await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Erreur lors de la recherche de l'utilisateur par email: " + error.message));
-                } else {
+                    reject(new Error(error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
 
         return user;
-    } catch (error) {
-        throw new Error("Erreur lors de la recherche de l'utilisateur par email : " + error.message);
+    }
+    catch (error) {
+        throw new Error("Error while trying to find user by email : " + error.message);
     }
 };
 
@@ -72,71 +71,56 @@ const getUserByEmail = async (email) => {
 */
 const getAllUsers = async () => {
     try {
-        // Construction de la requête SQL
         const sql = "SELECT * FROM users WHERE userType IN ('CLIENT', 'RESTAURANT', 'DELIVERY', 'DEVELOPER')";
 
-        // Exécution de la requête
         const users = await new Promise((resolve, reject) => {
             connection.query(sql, (error, results) => {
                 if (error) {
-                    reject(new Error("Erreur lors de la récupération de tous les utilisateurs: " + error.message));
-                } else {
+                    reject(new Error(error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
+
         return users;
-    } catch (error) {
-        throw new Error("Erreur lors de la récupération de tous les utilisateurs : " + error.message);
+    }
+    catch (error) {
+        throw new Error("Error while trying to fetch all users : " + error.message);
     }
 };
 
 /**
  * Fonction permettant de modifier un utilisateur en fonction de son ID.
  * @param {String} userID - L'ID de l'utilisateur à modifier.
- * @param {String} email - L'email du client / livreur.
- * @param {String} password - Le mot de passe du client / livreur.
- * @param {String} firstName - Le prénom du client / livreur .
- * @param {String} lastName - Le nom du client / livreur.
- * @param {String} address - L'addresse du client / livreur.
- * @param {String} phoneNumber - Le numéro de téléphone du client / livreur.
- * @returns {object} L'utilisateur modifié.
- */
+ * @param {String} email - L'email de l'utilisateur.
+ * @param {String} password - Le mot de passe de l'utilisateur.
+ * @param {String} firstName - Le prénom de l'utilisateur.
+ * @param {String} lastName - Le nom de l'utilisateur.
+ * @param {String} address - L'addresse de l'utilisateur.
+ * @param {String} phoneNumber - Le numéro de téléphone de l'utilisateur.
+*/
 const editUser = async (userID, firstName, lastName, address, email, phoneNumber, password) => {
-    // return user modifié
-
     try {
-        // Construction de la requête SQL pour la mise à jour
         const sql = `UPDATE users SET firstName = ?, lastName = ?, address = ?, email = ?, phoneNumber = ?, password = ? WHERE userID = ?`;
         const values = [firstName, lastName, address, email, phoneNumber, password, userID];
 
-
-        // Exécution de la requête
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Erreur lors de la mise à jour des informations de l'utilisateur: " + error.message));
-                } else {
+                    reject(new Error(error.message));
+                }
+                else {
                     resolve(results);
                 }
             });
         });
-
-        
-        return {
-            userID,
-            firstName,
-            lastName,
-            address,
-            email,
-            phoneNumber,
-            password
-        };
-
-    } catch (error) {
-        throw new Error("Erreur lors de la mise à jour des informations de l'utilisateur: " + error.message);
     }
-}
+    catch (error) {
+        throw new Error("Error while updating user info : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de crypter le mot de passe entré par l'utilisateur.
@@ -146,7 +130,7 @@ const editUser = async (userID, firstName, lastName, address, email, phoneNumber
 const encryptPassword = async(password) => {
     const newPassword = await bcrypt.hash(password + process.env.PEPPER_STRING, 10);
     return newPassword;
-}
+};
 
 /**
  * Fonction permettant de suspendre un utilisateur en fonction de son ID.
@@ -160,10 +144,10 @@ const suspendUser = async (userID) => {
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Error while suspending user : " + error.message));
+                    reject(new Error(error.message));
                 }
                 else {
-                    resolve();
+                    resolve(results);
                 }
             });
         });
@@ -171,7 +155,7 @@ const suspendUser = async (userID) => {
     catch (error) {
         throw new Error("Error while suspending user : " + error.message);
     }
-}
+};
 
 /**
  * Fonction permettant de réactiver un utilisateur en fonction de son ID.
@@ -185,7 +169,32 @@ const unsuspendUser = async (userID) => {
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
-                    reject(new Error("Error while unsuspending user : " + error.message));
+                    reject(new Error(error.message));
+                }
+                else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+    catch (error) {
+        throw new Error("Error while unsuspending user : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de supprimer un utilisateur en fonction de son ID.
+ * @param {String} userID - L'ID de l'utilisateur à supprimer.
+*/
+const deleteUser = async (userID) => {
+    try {
+        const sql = `DELETE FROM users WHERE userID = ?`;
+        const values = [userID];
+
+        await new Promise((resolve, reject) => {
+            connection.query(sql, values, (error) => {
+                if (error) {
+                    reject(new Error(error.message));
                 }
                 else {
                     resolve();
@@ -194,35 +203,9 @@ const unsuspendUser = async (userID) => {
         });
     }
     catch (error) {
-        throw new Error("Error while unsuspending user : " + error.message);
-    }
-}
-
-/**
- * Fonction permettant de supprimer un utilisateur en fonction de son ID.
- * @param {String} userID - L'ID de l'utilisateur à supprimer.
-*/
-const deleteUser = async (userID) => {
-    try {
-        // Construction de la requête SQL
-        const sql = `DELETE FROM users WHERE userID = ?`;
-        const values = [userID];
-
-        // Exécution de la requête
-        await new Promise((resolve, reject) => {
-            connection.query(sql, values, (error) => {
-                if (error) {
-                    reject(new Error("Erreur lors de la suppression de l'utilisateur par ID: " + error.message));
-                } else {
-                    resolve();
-                }
-            });
-        });
-    } catch (error) {
-        throw new Error("Erreur lors de la suppression de l'utilisateur par ID: " + error.message);
+        throw new Error("Error while deleting a user : " + error.message);
     }
 };
-
 
 /**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
@@ -265,8 +248,6 @@ function getCpuUsage() {
         });
     });
 };
-
-
 
 module.exports = {
     getUser,
