@@ -129,7 +129,7 @@ const register = async (req, res) => {
 
                 break;
             }
-            case "RESTAURATEUR": {
+            case "RESTAURANT": {
                 const restaurantName = req.body["restaurantName"];
                 const restaurantAddress = req.body["restaurantAddress"];
 
