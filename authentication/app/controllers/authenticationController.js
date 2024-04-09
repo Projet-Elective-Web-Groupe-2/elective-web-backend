@@ -112,8 +112,6 @@ const register = async (req, res) => {
         switch(userType) {
             case "CLIENT":
             case "DELIVERY":
-            // For testing purposes
-            //case "TECHNICAL":
             case "SALES": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
@@ -192,7 +190,7 @@ const register = async (req, res) => {
         }
         else {
             console.error("Unexpected error while registering : ", error);
-            res.status(500).json({ error: "Registration failed" });
+            res.status(500).json({ error: "Internal server error" });
         }
     }
 };
