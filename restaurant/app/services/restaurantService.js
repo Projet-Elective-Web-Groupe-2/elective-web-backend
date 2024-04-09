@@ -73,6 +73,26 @@ const createRestaurant = async (name, ownerID, address) => {
 };
 
 /**
+ * Fonction permettant de modifier les informations d'un restaurant dans la base de données.
+ * @param {String} restaurantID - L'ID du restaurant à modifier.
+ * @param {String} name - Le nouveau nom du restaurant.
+ * @param {String} address - La nouvelle adresse du restaurant.
+ */
+const editRestaurant = async (restaurantID, name, address) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        restaurant.name = name;
+        restaurant.address = address;
+
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to edit a restaurant : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de supprimer un restaurant de la base de données.
  * @param {String} restaurantID - L'ID du restaurant à supprimer.
  */
@@ -83,7 +103,7 @@ const deleteRestaurant = async (restaurantID) => {
     catch (error) {
         throw new Error("Error while trying to delete a restaurant : " + error.message);
     }
-}
+};
 
 /**
  * Fonction permettant de récupérer tous les restaurants de la base de données.
@@ -257,6 +277,7 @@ module.exports = {
     findRestaurant,
     findRestaurantByID,
     createRestaurant,
+    editRestaurant,
     deleteRestaurant,
     getAllRestaurants,
     addProduct,

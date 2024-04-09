@@ -11,6 +11,7 @@ const restaurantController = require('../controllers/restaurantController');
 router.post('/create', restaurantController.createRestaurant);
 router.get('/find', restaurantController.findRestaurant);
 router.get('/delete', restaurantController.deleteRestaurant);
+router.post('/edit', restaurantController.editRestaurant);
 router.get('/getAll', restaurantController.getAllRestaurants);
 router.post('/addProduct', restaurantController.addProduct);
 router.post('/addOrder', restaurantController.addOrder);
