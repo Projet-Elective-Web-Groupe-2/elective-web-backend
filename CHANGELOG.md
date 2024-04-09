@@ -1,3 +1,16 @@
+## [5.6.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.3...v5.6.0) (2024-04-09)
+
+
+### Features
+
+* function qui recupere les infos produits ([9b31276](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/9b31276dfab43511f8cb6a223df13c4aba96234e))
+
+
+### Bug Fixes
+
+* changes on restaurant to get objects in products ([82120bc](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/82120bc26c3bdb7f0e7b539549ed245471ac693f))
+* that's a lot of work ([2079221](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2079221b4435c2225f262e838a5385847c47bd51))
+
 ## [5.5.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.2...v5.5.3) (2024-04-09)
 
 
