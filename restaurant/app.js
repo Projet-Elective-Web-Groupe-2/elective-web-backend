@@ -39,8 +39,8 @@ app.use(cors());
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
-//app.use(loggerMiddleware);
-//app.use(authenticationMiddleware);
+app.use(loggerMiddleware);
+app.use(authenticationMiddleware);
 
 app.use('/restaurant', restaurantRouter);
 
