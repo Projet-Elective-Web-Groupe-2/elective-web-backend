@@ -33,6 +33,8 @@ const createRestaurant = async (req, res) => {
         await restaurantService.createRestaurant(name, ownerID, address);
 
         const createdRestaurant = await restaurantService.findRestaurant(name, ownerID, address);
+        console.log("Created Restaurant ID:", createdRestaurant.id); 
+
 
         return res.status(201).json({ message: "Restaurant created", restaurant: createdRestaurant });
     }

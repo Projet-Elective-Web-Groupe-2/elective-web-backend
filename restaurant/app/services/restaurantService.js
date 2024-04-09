@@ -83,8 +83,10 @@ const createRestaurant = async (name, ownerID, address) => {
         });
 
         await newRestaurant.save();
+        console.log("Created Restaurant Object ID:", newRestaurant._id);
 
         return newRestaurant;
+
 
     } catch (error) {
         throw new Error("Error while trying to create a restaurant : " + error.message);
@@ -123,24 +125,7 @@ const getAllRestaurants = async () => {
     }
 };
 
-/**
- * Fonction permettant de récupérer tous les restaurants de la base de données.
- * @returns {Array} Les restaurants trouvés.
-*/
-const getAllRestaurants = async () => {
-    try {
-        const restaurants = await Restaurant.find();
 
-        if (restaurants.length === 0) {
-            return [];
-        }
-
-        return restaurants;
-    }
-    catch (error) {
-        throw new Error("Error while trying to get all restaurants : " + error.message);
-    }
-};
 
 /**
  * Fonction permettant d'ajouter un produit à un restaurant.
