@@ -30,8 +30,10 @@ const login = async (req, res) => {
             throw new Error("User is suspended");
         }
 
-        await authenticationService.verifyRefreshToken(existingUser.refreshToken);
-
+        if (existingUser.userType !== "SALES" && existingUser.userType !== "TECHNICAL") {
+            await authenticationService.verifyRefreshToken(existingUser.refreshToken);
+        }
+        
         await authenticationService.comparePassword(existingUser.password, password);
         
         const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
