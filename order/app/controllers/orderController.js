@@ -181,7 +181,7 @@ const getOrder = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURATEUR" && userType != "LIVREUR") {
+    if (userType != "RESTAURANT" && userType != "DELIVERY") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -374,7 +374,7 @@ const countOrdersByDay = async (req, res) => {
     const userType = req.decoded.type;
     const userID = req.decoded.id;
 
-    if (!userType === "RESTAURATEUR") {
+    if (!userType === "RESTAURANT") {
         return res.status(403).json({ error: "Forbidden" });
     }
     
@@ -424,7 +424,7 @@ const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 

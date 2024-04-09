@@ -12,7 +12,7 @@ const Restaurant = require('../models/restaurantModel');
  * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
  * La méthode va faire la recherche sur trois champs : ownerID, address et name.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
  * @returns 
  */
@@ -51,7 +51,7 @@ const findRestaurantByID = async (id) => {
 /**
  * Fonction permettant de créer un restaurant dans la base de données.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
  * @returns {object} Le restaurant créé.
 */
