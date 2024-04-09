@@ -28,10 +28,7 @@ const productSchema = new mongoose.Schema({
         unique: false,
         required: true
     },
-    drink: {
-        type: Boolean,
-        default: false
-    }
+  
 });
 
 module.exports = productSchema;
