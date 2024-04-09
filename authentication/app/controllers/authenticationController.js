@@ -227,41 +227,45 @@ const findUser = async (req, res) => {
 };
 
 const token = async (req, res) => {
-    if (!req.body) {
-        return res.status(400).json({ error: "Required request body is missing" });
+    if (!req.headers.authorization) {
+        return res.status(401).send({ message: "Missing token" });
     }
 
-    const refreshToken = req.body["refreshToken"];
-
-    if (!refreshToken) {
-        return res.status(400).json({ error: "Missing mandatory data for token renewal" });
-    }
-
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+    
     let email;
     let existingUser;
     let accessToken;
 
     try {
-        email = authenticationService.decodeRefreshToken(refreshToken);
-
-        existingUser = await authenticationService.findUserByEmail(email);
+        existingUser = await authenticationService.findUserByID(userID);
 
         if (!existingUser) {
             throw new Error("User not found");
         }
+        else if (existingUser.userType !== userType) {
+            throw new Error("Invalid user type");
+        }
+        else if (existingUser.userID !== userID) {
+            throw new Error("Invalid user ID");
+        }
         else if (existingUser.isSuspended === true) {
             throw new Error("User is suspended");
         }
-
-        await authenticationService.verifyRefreshToken(refreshToken);
-
-        if (existingUser.refreshToken !== refreshToken) {
-            throw new Error("Invalid refresh token");
+        else if (existingUser.refreshToken === null || existingUser.refreshToken === "") {
+            throw new Error("No refresh token found");
         }
-        
-        accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
 
-        await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+        email = existingUser.email;
+    
+        await authenticationService.verifyRefreshToken(existingUser.refreshToken);
+        
+        accessToken = authenticationService.generateAccessToken(userID, userType);
+
+        await authenticationService.writeLogs(6, userID, userType);
 
         return res.status(200).json({ accessToken });
     }
@@ -278,11 +282,11 @@ const token = async (req, res) => {
         else if (error.message === "Expired refresh token") {
             const newRefreshToken = authenticationService.generateRefreshToken(email);
 
-            await authenticationService.updateRefreshToken(existingUser.userID, newRefreshToken);
+            await authenticationService.updateRefreshToken(userID, newRefreshToken);
 
-            accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+            accessToken = authenticationService.generateAccessToken(userID, userType);
 
-            await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(6, userID, userType);
 
             return res.status(200).json({ accessToken, refreshToken: newRefreshToken });
         }
