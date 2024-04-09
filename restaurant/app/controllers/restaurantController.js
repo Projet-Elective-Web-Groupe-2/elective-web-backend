@@ -4,7 +4,7 @@
  * @version 1.0
 */
 
-const axios = require('axios');
+const axios = require('axios')  ;
 const restaurantService = require('../services/restaurantService');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
@@ -136,6 +136,63 @@ const deleteRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while deleting a restaurant : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
+const editRestaurant = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const newAddress = req.body["address"];
+    const newName = req.body["name"];
+
+    if (!restaurantID || !newAddress || !newName) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURANT" && userType != "SALES") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+    
+    try {
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+        else if (restaurant.ownerID !== userID && userType != "SALES") {
+            throw new Error("Restaurant does not belong to user");
+        }
+
+        const restaurantWithParameter = await restaurantService.findRestaurantByNameOrAddress(newName, newAddress);
+
+        if (restaurantWithParameter && restaurantWithParameter._id != restaurantID) {
+            throw new Error("Restaurant with same name or address already exists");
+        }
+        else if (restaurantWithParameter && restaurantWithParameter._id == restaurantID) {
+            throw new Error("Restaurant already has this name and address");
+        }
+
+        await restaurantService.editRestaurant(restaurantID, newName, newAddress);
+
+        return res.status(200).json({ message: "Restaurant successfully updated" });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant does not belong to user") {
+            return res.status(403).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while updating a restaurant : ", error.message);
             return res.status(500).send({ error: "Internal server error" });
         }
     }
@@ -391,6 +448,7 @@ const metrics = async (req, res) => {
 module.exports = {
     createRestaurant,
     findRestaurant,
+    editRestaurant,
     deleteRestaurant,
     getAllRestaurants,
     addProduct,
