@@ -4,9 +4,8 @@
  * @version 1.0
 */
 
-const axios = require('axios');
+const axios = require('axios')  ;
 const restaurantService = require('../services/restaurantService');
-const decodeJWT = require('../utils/decodeToken');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
 const ORDER_URL = `http://${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order/`;
@@ -146,14 +145,14 @@ const editRestaurant = async (req, res) => {
     const newAddress = req.body["address"];
     const newName = req.body["name"];
 
-    if (!restaurantID || (!newAddress && !newName)) {
+    if (!restaurantID || !newAddress || !newName) {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURANT" | userType != "SALES") {
+    if (userType != "RESTAURANT" && userType != "SALES") {
         return res.status(403).json({ error: "Forbidden" });
     }
     
@@ -165,6 +164,15 @@ const editRestaurant = async (req, res) => {
         }
         else if (restaurant.ownerID !== userID && userType != "SALES") {
             throw new Error("Restaurant does not belong to user");
+        }
+
+        const restaurantWithParameter = await restaurantService.findRestaurantByNameOrAddress(newName, newAddress);
+
+        if (restaurantWithParameter && restaurantWithParameter._id != restaurantID) {
+            throw new Error("Restaurant with same name or address already exists");
+        }
+        else if (restaurantWithParameter && restaurantWithParameter._id == restaurantID) {
+            throw new Error("Restaurant already has this name and address");
         }
 
         await restaurantService.editRestaurant(restaurantID, newName, newAddress);

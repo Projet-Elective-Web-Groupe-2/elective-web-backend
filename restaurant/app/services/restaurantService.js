@@ -9,20 +9,20 @@ const osUtils = require('os-utils');
 const Restaurant = require('../models/restaurantModel');
 
 /**
- * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
+ * Fonction permettant de récupérer un restaurant depuis la base de données grâce à certaines informations.
  * La méthode va faire la recherche sur trois champs : ownerID, address et name.
  * @param {string} name - Le nom du restaurant.
  * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
- * @returns 
+ * @returns {object} Le restaurant trouvé avec ces informations
  */
 const findRestaurant = async (name, ownerID, address) => {
     try {
         const restaurant = await Restaurant.findOne({
             $or: [
-                { name },
-                { ownerID },
-                { address }
+            { name: name },
+            { ownerID: ownerID },
+            { address: address }
             ]
         });
         return restaurant;
@@ -45,6 +45,28 @@ const findRestaurantByID = async (id) => {
     }
     catch(error) {
         throw new Error("Error while trying to find a restaurant by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de retrouver un restaurant dans la base de données grâce à son nom ou son adresse. 
+ * @param {String} name - Le nom du restaurant.
+ * @param {String} address - L'adresse du restaurant.
+ * @returns {Array} Le restaurant trouvé.
+ */
+const findRestaurantByNameOrAddress = async (name, address) => {
+    try {
+        const restaurant = await Restaurant.findOne({
+            $or: [
+                { name: name },
+                { address: address }
+            ]
+        });
+
+        return restaurant;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find a restaurant by name or address : " + error.message);
     }
 };
 
@@ -276,6 +298,7 @@ function getCpuUsage() {
 module.exports = {
     findRestaurant,
     findRestaurantByID,
+    findRestaurantByNameOrAddress,
     createRestaurant,
     editRestaurant,
     deleteRestaurant,
