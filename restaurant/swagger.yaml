@@ -10,6 +10,8 @@ servers:
 paths:
   /create:
     post:
+      tags:
+        - Restaurant
       summary: Create a new restaurant
       description: |
         This endpoint allows a user to create a new restaurant.
@@ -73,6 +75,8 @@ paths:
                     
   /find:
     get:
+      tags:
+        - Restaurant
       summary: Find a restaurant by ID
       description: |
         This endpoint allows retrieving a restaurant by its ID.
@@ -125,6 +129,8 @@ paths:
                     description: Error message indicating an internal server error occurred.
   /delete:
     get:
+      tags:
+        - Restaurant
       summary: Delete a restaurant
       description: Deletes a restaurant with the specified ID.
       parameters:
@@ -189,6 +195,8 @@ paths:
                     description: Error message indicating an unexpected server error occurred.
   /addProduct:
     post:
+      tags:
+        - Product
       summary: Add a product to a restaurant
       description: Adds a product to the specified restaurant.
       requestBody:
@@ -247,6 +255,8 @@ paths:
                     description: Error message indicating an unexpected server error occurred.
   /addOrder:
     post:
+      tags:
+        - Order
       summary: Add an order to a restaurant
       description: Adds an order to the specified restaurant.
       requestBody:
@@ -315,6 +325,8 @@ paths:
                     description: Error message indicating an unexpected server error occurred.
   /updateOrder:
     post:
+      tags:
+        - Order
       summary: Update the status of an order in a restaurant
       description: Updates the status of the specified order in the restaurant.
       requestBody:
@@ -376,6 +388,8 @@ paths:
                     description: Error message indicating an unexpected server error occurred.
   /getOrdersSince:
     get:
+      tags:
+        - Order
       summary: Get orders received by a restaurant since a specified number of days back
       description: Retrieves the orders received by the specified restaurant within the specified number of days back.
       parameters:

@@ -10,6 +10,8 @@ servers:
 paths:
   /add:
     post:
+      tags:
+        - Product
       summary: Add a product to a restaurant
       description: |
         This endpoint allows a restaurant owner to add a new product to their restaurant's menu.
@@ -87,6 +89,8 @@ paths:
 
   /find:
     get:
+      tags:
+        - Product
       summary: Retrieve product information by ID
       description: |
         This endpoint retrieves information about a product based on its ID.
