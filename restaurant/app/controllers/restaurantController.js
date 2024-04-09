@@ -4,7 +4,7 @@
  * @version 1.0
 */
 
-const axios = require('axios');
+const axios = require('axios')  ;
 const restaurantService = require('../services/restaurantService');
 
 const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
@@ -87,34 +87,20 @@ const deleteRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
-    const token = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURATEUR" || userType != "SERVICE COMMERCIAL") {
+    if (userType != "RESTAURANT" || userType != "SALES") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
-    let url;
-    let response;
-
     try {
-        url = `${AUTH_URL}find`;
-        response = await axios.get(url, {
-            params: { id: userID },
-            headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.status !== 200) {
-            throw new Error("User not found");
-        }
-
         const restaurant = await restaurantService.findRestaurantByID(restaurantID);
 
         if (!restaurant) {
             throw new Error("Restaurant not found");
         }
-        else if (restaurant.ownerID !== userID && userType != "SERVICE COMMERCIAL") {
+        else if (restaurant.ownerID !== userID && userType != "SALES") {
             throw new Error("Restaurant does not belong to user");
         }
 
@@ -123,7 +109,7 @@ const deleteRestaurant = async (req, res) => {
         return res.status(200).json({ message: "Restaurant successfully deleted" });
     }
     catch (error) {
-        if (error.message === "User not found" || error.message === "Restaurant not found") {
+        if (error.message === "Restaurant not found") {
             return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Restaurant does not belong to user") {
@@ -131,6 +117,96 @@ const deleteRestaurant = async (req, res) => {
         }
         else {
             console.error("Unexpected error while deleting a restaurant : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
+const editRestaurant = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const newAddress = req.body["address"];
+    const newName = req.body["name"];
+
+    if (!restaurantID || !newAddress || !newName) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURANT" && userType != "SALES") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+    
+    try {
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+        else if (restaurant.ownerID !== userID && userType != "SALES") {
+            throw new Error("Restaurant does not belong to user");
+        }
+
+        const restaurantWithParameter = await restaurantService.findRestaurantByNameOrAddress(newName, newAddress);
+
+        if (restaurantWithParameter && restaurantWithParameter._id != restaurantID) {
+            throw new Error("Restaurant with same name or address already exists");
+        }
+        else if (restaurantWithParameter && restaurantWithParameter._id == restaurantID) {
+            throw new Error("Restaurant already has this name and address");
+        }
+
+        await restaurantService.editRestaurant(restaurantID, newName, newAddress);
+
+        return res.status(200).json({ message: "Restaurant successfully updated" });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant does not belong to user") {
+            return res.status(403).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant with same name or address already exists") {
+            return res.status(409).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant already has this name and address") {
+            return res.status(409).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while updating a restaurant : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
+const getAllRestaurants = async (req, res) => {
+    const userType = req.decoded.type;
+
+    if (userType != "CLIENT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    try {
+        const restaurants = await restaurantService.getAllRestaurants();
+
+        if (restaurants.length === 0) {
+            throw new Error("No restaurants found");
+        }
+
+        return res.status(200).json({ restaurants });
+    }
+    catch (error) {
+        if (error.message === "No restaurants found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting all restaurants : ", error.message);
             return res.status(500).send({ error: "Internal server error" });
         }
     }
@@ -232,7 +308,7 @@ const getOrdersSince = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURATEUR") {
+    if (userType != "RESTAURANT") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -304,11 +380,39 @@ const getOrdersSince = async (req, res) => {
     }
 };
 
+const addMenu = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: "Required request body is missing" });
+    }
+
+    const restaurantID = req.body["restaurantID"];
+    const menu = req.body["menu"];
+
+    if (!restaurantID || !menu) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        await restaurantService.addMenu(restaurantID, menu);
+
+        return res.status(201).json({ message: "Menu successfully added to restaurant" });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found" || error.message === "Menu not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while adding a menu to a restaurant : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
@@ -322,7 +426,7 @@ const metrics = async (req, res) => {
         }
         else {
             console.error("Unexpected error while getting metrics : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -330,8 +434,11 @@ const metrics = async (req, res) => {
 module.exports = {
     createRestaurant,
     findRestaurant,
+    editRestaurant,
     deleteRestaurant,
+    getAllRestaurants,
     addProduct,
+    addMenu,
     addOrder,
     updateOrder,
     getOrdersSince,

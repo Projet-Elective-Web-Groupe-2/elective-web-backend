@@ -9,6 +9,7 @@ const authenticationService = require('../services/authenticationService');
 const decodeJWT = require('../utils/decodeToken');
 
 const login = async (req, res) => {
+    console.log(req.body);
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
     }
@@ -30,8 +31,10 @@ const login = async (req, res) => {
             throw new Error("User is suspended");
         }
 
-        await authenticationService.verifyRefreshToken(existingUser.refreshToken);
-
+        if (existingUser.userType !== "SALES" && existingUser.userType !== "TECHNICAL") {
+            await authenticationService.verifyRefreshToken(existingUser.refreshToken);
+        }
+        
         await authenticationService.comparePassword(existingUser.password, password);
         
         const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
@@ -58,7 +61,7 @@ const login = async (req, res) => {
         }
         else {
             console.error("Unexpected error while logging in : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -78,7 +81,7 @@ const logout = async (req, res) => {
     }
     catch(error) {
         console.error("Unexpected error while logging out : ", error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -111,10 +114,7 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "DELIVERY":
-            // For testing purposes
-            //case "TECHNICAL":
-            /*case "SALES":*/ {
+            case "DELIVERY": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -165,7 +165,7 @@ const register = async (req, res) => {
                 const apiKey = req.body["apiKey"];
 
                 if (!apiKey || apiKey !== "azerty123!") {
-                    throw new Error("Invalid api key");
+                    throw new Error("Invalid API Key");
                 }
 
                 refreshToken = authenticationService.generateRefreshToken(email);
@@ -194,14 +194,14 @@ const register = async (req, res) => {
             return res.status(400).json({ error: "Invalid user type"});
         }
         else if (error.message === "Failed to create restaurant") {
-            return res.status(500).json({ error: "Failed to create restaurant" });
+            return res.status(400).json({ error: "Failed to create restaurant" });
         }
-        else if (error.message === "Invalid api key") {
-            return res.status(401).json({ error: `Invalid api key for ${userType}` });
+        else if (error.message === "Invalid API key") {
+            return res.status(403).json({ error: "Invalid API key" });
         }
         else {
             console.error("Unexpected error while registering : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -238,41 +238,45 @@ const findUser = async (req, res) => {
 };
 
 const token = async (req, res) => {
-    if (!req.body) {
-        return res.status(400).json({ error: "Required request body is missing" });
+    if (!req.headers.authorization) {
+        return res.status(401).send({ message: "Missing token" });
     }
 
-    const refreshToken = req.body["refreshToken"];
-
-    if (!refreshToken) {
-        return res.status(400).json({ error: "Missing mandatory data for token renewal" });
-    }
-
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = decodeJWT(token);
+    const userID = decodedToken.id;
+    const userType = decodedToken.type;
+    
     let email;
     let existingUser;
     let accessToken;
 
     try {
-        email = authenticationService.decodeRefreshToken(refreshToken);
-
-        existingUser = await authenticationService.findUserByEmail(email);
+        existingUser = await authenticationService.findUserByID(userID);
 
         if (!existingUser) {
             throw new Error("User not found");
         }
+        else if (existingUser.userType !== userType) {
+            throw new Error("Invalid user type");
+        }
+        else if (existingUser.userID !== userID) {
+            throw new Error("Invalid user ID");
+        }
         else if (existingUser.isSuspended === true) {
             throw new Error("User is suspended");
         }
-
-        await authenticationService.verifyRefreshToken(refreshToken);
-
-        if (existingUser.refreshToken !== refreshToken) {
-            throw new Error("Invalid refresh token");
+        else if (existingUser.refreshToken === null || existingUser.refreshToken === "") {
+            throw new Error("No refresh token found");
         }
-        
-        accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
 
-        await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+        email = existingUser.email;
+    
+        await authenticationService.verifyRefreshToken(existingUser.refreshToken);
+        
+        accessToken = authenticationService.generateAccessToken(userID, userType);
+
+        await authenticationService.writeLogs(6, userID, userType);
 
         return res.status(200).json({ accessToken });
     }
@@ -289,11 +293,11 @@ const token = async (req, res) => {
         else if (error.message === "Expired refresh token") {
             const newRefreshToken = authenticationService.generateRefreshToken(email);
 
-            await authenticationService.updateRefreshToken(existingUser.userID, newRefreshToken);
+            await authenticationService.updateRefreshToken(userID, newRefreshToken);
 
-            accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+            accessToken = authenticationService.generateAccessToken(userID, userType);
 
-            await authenticationService.writeLogs(6, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(6, userID, userType);
 
             return res.status(200).json({ accessToken, refreshToken: newRefreshToken });
         }
@@ -313,7 +317,7 @@ const logs = async (req, res) => {
     const userType = decodeJWT(token).type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
@@ -342,7 +346,7 @@ const metrics = async (req, res) => {
     const userType = decodeJWT(token).type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 

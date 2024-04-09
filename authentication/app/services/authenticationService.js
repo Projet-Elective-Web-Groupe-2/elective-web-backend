@@ -17,7 +17,7 @@ const logsPath = __dirname.replace('app/services', 'connectionLogs.txt');
  * Fonction permettant de créér un client ou un livreur dans la base de données.
  * @param {String} email - L'email du client / livreur.
  * @param {String} password - Le mot de passe du client / livreur.
- * @param {String} userType - Le type de l'utilisateur ("CLIENT" ou "LIVREUR").
+ * @param {String} userType - Le type de l'utilisateur ("CLIENT" ou "DELIVERY").
  * @param {String} firstName - Le prénom du client / livreur .
  * @param {String} lastName - Le nom du client / livreur.
  * @param {String} address - L'addresse du client / livreur.
@@ -67,7 +67,7 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
  * Fonction permettant de créer un restaurateur dans la base de données.
  * @param {String} email - L'email du restaurateur.
  * @param {String} password - Le mot de passe du restaurateur.
- * @param {String} userType - Le type de l'utilisateur ("RESTAURATEUR").
+ * @param {String} userType - Le type de l'utilisateur ("RESTAURANT").
  * @param {String} phoneNumber - Le numéro de téléphone du restaurateur.
  * @param {String} refreshToken - Le token de rafraîchissement du restaurateur.
  * @returns {object} Le restaurateur en question, ou false si rien n'a été créé.
@@ -111,18 +111,15 @@ const createRestaurateur = async (email, password, userType, phoneNumber, refres
  * Fonction permettant de créer un développeur tiers dans la base de données.
  * @param {String} email - L'email du développeur.
  * @param {String} password - Le mot de passe du développeur.
- * @param {String} userType - Le type de l'utilisateur ("DEVELOPPEUR TIERS").
+ * @param {String} userType - Le type de l'utilisateur ("DEVELOPER").
  * @param {String} phoneNumber - Le numéro de téléphone du développeur.
  * @param {String} refreshToken - Le token de rafraîchissement du développeur.
  * @returns {object} Le développeur en question, ou false si rien n'a été créé.
  */
 const createDeveloper = async (email, password, userType, phoneNumber, refreshToken) => {
     try {
-        const apiKey = generateApiKey();
-
-        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken, apiKey) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const values = [email, password, phoneNumber, userType, false, refreshToken, apiKey];
-
+        const sql = "INSERT INTO users (email, password, phoneNumber, userType, isSuspended, refreshToken) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [email, password, phoneNumber, userType, false, refreshToken];
         await new Promise((resolve, reject) => {
             connection.query(sql, values, (error, results) => {
                 if (error) {
@@ -135,7 +132,6 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
         });
 
         const userID = await findUserIDByEmail(email);
-
         return {
             userID,
             email,
@@ -143,12 +139,11 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
             phoneNumber,
             userType,
             refreshToken,
-            apiKey,
             userID
         };
     }
     catch (error) {
-        throw new Error(`Error while trying to create a developer`);
+        throw new Error(`Error while trying to create a  : ${error.message}`);
     }
 };
 
@@ -251,20 +246,6 @@ function generateReferralCode() {
 };
 
 /**
- * Fonction permettant de générer une clé d'API aléatoire.
- * @returns {string} La clé d'API générée.
- */
-function generateApiKey() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let apiKey = '';
-    for (let i = 0; i < 42; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        apiKey += characters.charAt(randomIndex);
-    }
-    return apiKey;
-};
-
-/**
  * Fonction permettant de crypter le mot de passe entré par l'utilisateur.
  * @param {String} password - Le mot de passe à crypter.
  * @returns {String} Le mot de passe crypté.
@@ -272,7 +253,7 @@ function generateApiKey() {
 const encryptPassword = async(password) => {
     const newPassword = await bcrypt.hash(password + process.env.PEPPER_STRING, 10);
     return newPassword;
-}
+};
 
 /**
  * Fonction permettant de vérifier si le mot de passe de l'utilisateur est correct.

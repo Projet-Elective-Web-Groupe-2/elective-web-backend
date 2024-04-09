@@ -42,11 +42,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: [
             "CLIENT",
-            "RESTAURATEUR",
-            "LIVREUR",
-            "DEVELOPPEUR TIERS",
-            "SERVICE COMMERCIAL",
-            "SERVICE TECHNIQUE"
+            "RESTAURANT",
+            "DELIVERY",
+            "DEVELOPER",
+            "SALES",
+            "TECHNICAL"
         ],
         unique: false,
         required: true

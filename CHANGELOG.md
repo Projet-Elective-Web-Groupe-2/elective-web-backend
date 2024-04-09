@@ -1,3 +1,54 @@
+## [5.6.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.3...v5.6.0) (2024-04-09)
+
+
+### Features
+
+* function qui recupere les infos produits ([9b31276](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/9b31276dfab43511f8cb6a223df13c4aba96234e))
+
+
+### Bug Fixes
+
+* changes on restaurant to get objects in products ([82120bc](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/82120bc26c3bdb7f0e7b539549ed245471ac693f))
+* that's a lot of work ([2079221](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/2079221b4435c2225f262e838a5385847c47bd51))
+
+## [5.5.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.2...v5.5.3) (2024-04-09)
+
+
+### Bug Fixes
+
+* quick fix ([0366d82](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/0366d822ac2fb91b96f77073db9917c186855d15))
+
+## [5.5.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.1...v5.5.2) (2024-04-09)
+
+
+### Bug Fixes
+
+* fixed things for the Front ([6901002](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/69010024c97b1952ff1d0dd02fb2c83796dcb45d))
+
+## [5.5.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.0...v5.5.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* small fix to user MS ([645d049](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/645d0499898528f71cddb2a13163dc83a9e0b9b9))
+
+## [5.5.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.3...v5.5.0) (2024-04-09)
+
+
+### Features
+
+* added every possible action to user MS ([c2c6e86](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/c2c6e86e34bd62c052ee4a024cd295a9e220c370))
+* Added the getUser, works fine ([eb6b446](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/eb6b446c3295d3eb63d2ab4962902642f3c2a862))
+
+
+### Bug Fixes
+
+* BDD FR to EN (merci Paul) ([d04a806](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d04a80639b5c6f326c9c4dfe88366881822defc3))
+* deleted console.log ([cf3463b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/cf3463b22d752c0fb8b2da0edffcb95483c16be6))
+* fixed a bit of users ([b3fa0b5](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b3fa0b5ef33f0fa26de1d99afc761e9ee25210d8))
+* Merge branch 'develop' of https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend into feat/AddUserModif ([826317b](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/826317b2eefef96aa6b4902ba98d1857e2663b0d))
+* Merge branch 'develop' of https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend into feat/AddUserModif ([d8612d8](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/d8612d8a18171ae4ab555fca083ec44daa904e4d))
+
 ## [5.4.3](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.4.2...v5.4.3) (2024-04-08)
 
 

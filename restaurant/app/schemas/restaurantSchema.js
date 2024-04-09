@@ -5,6 +5,7 @@
 */
 
 const mongoose = require('mongoose');
+
 const Product = require('../models/productModel');
 const Menu = require('../models/menuModel');
 const Order = require('../models/orderModel');
@@ -36,7 +37,7 @@ const restaurantSchema = new mongoose.Schema({
         unique: false,
         required: false
     },
-    status: {
+    isOpen: {
         type: Boolean,
         unique: false,
         required: true,
@@ -48,7 +49,7 @@ const restaurantSchema = new mongoose.Schema({
         unique: false,
         required: false
     }],
-    products : [{ 
+    products: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         unique: false,

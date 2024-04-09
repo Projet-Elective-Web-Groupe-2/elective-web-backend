@@ -9,20 +9,20 @@ const osUtils = require('os-utils');
 const Restaurant = require('../models/restaurantModel');
 
 /**
- * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
+ * Fonction permettant de récupérer un restaurant depuis la base de données grâce à certaines informations.
  * La méthode va faire la recherche sur trois champs : ownerID, address et name.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
- * @returns 
+ * @returns {object} Le restaurant trouvé avec ces informations
  */
 const findRestaurant = async (name, ownerID, address) => {
     try {
         const restaurant = await Restaurant.findOne({
             $or: [
-                { name },
-                { ownerID },
-                { address }
+            { name: name },
+            { ownerID: ownerID },
+            { address: address }
             ]
         });
         return restaurant;
@@ -41,6 +41,10 @@ const findRestaurantByID = async (id) => {
     try {
         const restaurant = await Restaurant.findById(id);
 
+        await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+        await Restaurant.populate(restaurant, { path: 'menus', model: 'Menu' });
+
         return restaurant;
     }
     catch(error) {
@@ -49,9 +53,31 @@ const findRestaurantByID = async (id) => {
 };
 
 /**
+ * Fonction permettant de retrouver un restaurant dans la base de données grâce à son nom ou son adresse. 
+ * @param {String} name - Le nom du restaurant.
+ * @param {String} address - L'adresse du restaurant.
+ * @returns {object} Le restaurant trouvé.
+ */
+const findRestaurantByNameOrAddress = async (name, address) => {
+    try {
+        const restaurant = await Restaurant.findOne({
+            $or: [
+                { name: name },
+                { address: address }
+            ]
+        });
+
+        return restaurant;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find a restaurant by name or address : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de créer un restaurant dans la base de données.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
  * @returns {object} Le restaurant créé.
 */
@@ -60,15 +86,37 @@ const createRestaurant = async (name, ownerID, address) => {
         const newRestaurant = new Restaurant({
             name: name,
             ownerID: ownerID,
-            address: address
+            address: address,
         });
 
         await newRestaurant.save();
         // For testing purposes
-        console.log("Restaurant created : " + newRestaurant._id);
+        console.log("Restaurant created : ", newRestaurant._id);
+
+        return newRestaurant;
     }
     catch (error) {
         throw new Error("Error while trying to create a restaurant : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de modifier les informations d'un restaurant dans la base de données.
+ * @param {String} restaurantID - L'ID du restaurant à modifier.
+ * @param {String} name - Le nouveau nom du restaurant.
+ * @param {String} address - La nouvelle adresse du restaurant.
+ */
+const editRestaurant = async (restaurantID, name, address) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        restaurant.name = name;
+        restaurant.address = address;
+
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to edit a restaurant : " + error.message);
     }
 };
 
@@ -83,7 +131,26 @@ const deleteRestaurant = async (restaurantID) => {
     catch (error) {
         throw new Error("Error while trying to delete a restaurant : " + error.message);
     }
-}
+};
+
+/**
+ * Fonction permettant de récupérer tous les restaurants de la base de données.
+ * @returns {Array} Les restaurants trouvés.
+*/
+const getAllRestaurants = async () => {
+    try {
+        const restaurants = await Restaurant.find();
+
+        if (restaurants.length === 0) {
+            return [];
+        }
+
+        return restaurants;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all restaurants : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant d'ajouter un produit à un restaurant.
@@ -98,7 +165,7 @@ const addProduct = async (restaurantID, product) => {
             throw new Error("Restaurant not found");
         }
 
-        restaurant.products.push(product);
+        restaurant.products.push(product._id);
 
         await restaurant.save();
     }
@@ -120,7 +187,7 @@ const addOrder = async (restaurantID, order) => {
             throw new Error("Restaurant not found");
         }
 
-        restaurant.orders.push(order);
+        restaurant.orders.push(order._id);
 
         await restaurant.save();
     }
@@ -138,8 +205,11 @@ const addOrder = async (restaurantID, order) => {
 const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
     try {
         const restaurant = await Restaurant.findById(restaurantID);
+        
         const index = restaurant.orders.findIndex((o) => o._id.toString() === orderID.toString());
+        
         restaurant.orders[index].status = newStatus;
+        
         await restaurant.save();
     }
     catch (error) {
@@ -167,8 +237,11 @@ const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
         }
         else {
             const currentDate = new Date();
+            
             const startDate = new Date(currentDate.getTime() - numberOfDaysBack * 24 * 60 * 60 * 1000);
+            
             const orders = restaurant.orders.filter((order) => new Date(order.date).getTime() >= startDate.getTime());
+            
             return orders;
         }
     }
@@ -190,6 +263,22 @@ const getTotalRevenue = async (orders) => {
     }
 
     return totalRevenue;
+};
+
+/**
+ * Fonction permettant d'ajouter un menu au restaurant.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @param {object} menu - Le menu à ajouter.
+*/
+const addMenu = async (restaurantID, menu) => {
+    try {
+        Restaurant.findByIdAndUpdate(restaurantID, {
+            $addToSet: { menu: menu }
+        });
+    }
+    catch (error) {
+        throw new Error("Error while trying to add a product to a restaurant : " + error.message);
+    }
 };
 
 /**
@@ -237,9 +326,13 @@ function getCpuUsage() {
 module.exports = {
     findRestaurant,
     findRestaurantByID,
+    findRestaurantByNameOrAddress,
     createRestaurant,
+    editRestaurant,
     deleteRestaurant,
+    getAllRestaurants,
     addProduct,
+    addMenu,
     addOrder,
     updateOrderStatus,
     getOrdersSince,
