@@ -65,9 +65,6 @@ const getUserByEmail = async (req, res) => {
 
     try {
 
-        if (userType === "TECHNICAL") {
-            throw new Error("Forbidden");
-        }
         const user = await usersService.getUserByEmail(email);
 
         if (!user) {
