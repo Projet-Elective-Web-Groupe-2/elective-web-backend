@@ -92,7 +92,6 @@ const deleteRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
-    const token = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
@@ -100,20 +99,7 @@ const deleteRestaurant = async (req, res) => {
         return res.status(403).json({ error: "Forbidden" });
     }
 
-    let url;
-    let response;
-
     try {
-        url = `${AUTH_URL}find`;
-        response = await axios.get(url, {
-            params: { id: userID },
-            headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.status !== 200) {
-            throw new Error("User not found");
-        }
-
         const restaurant = await restaurantService.findRestaurantByID(restaurantID);
 
         if (!restaurant) {
@@ -128,7 +114,7 @@ const deleteRestaurant = async (req, res) => {
         return res.status(200).json({ message: "Restaurant successfully deleted" });
     }
     catch (error) {
-        if (error.message === "User not found" || error.message === "Restaurant not found") {
+        if (error.message === "Restaurant not found") {
             return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Restaurant does not belong to user") {
@@ -190,6 +176,12 @@ const editRestaurant = async (req, res) => {
         }
         else if (error.message === "Restaurant does not belong to user") {
             return res.status(403).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant with same name or address already exists") {
+            return res.status(409).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant already has this name and address") {
+            return res.status(409).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while updating a restaurant : ", error.message);
@@ -416,13 +408,12 @@ const addMenu = async (req, res) => {
         }
         else {
             console.error("Unexpected error while adding a menu to a restaurant : ", error.message);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };
 
 const metrics = async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
     const userType = req.decoded.type;
 
     try {

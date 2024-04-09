@@ -64,7 +64,7 @@ const createAndAddMenu = async (req, res) => {
         url = url.replace('find', 'addMenu'); 
         response = await axios.post(url, { 
             restaurantID: restaurantID,
-            menu : menu ,
+            menu : menu,
         },
         {
             headers: {

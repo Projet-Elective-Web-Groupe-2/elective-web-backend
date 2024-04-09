@@ -233,7 +233,7 @@ const findUser = async (req, res) => {
         }
         else {
             console.error("Unexpected error while finding a user : ", error);
-            return res.status(500).send({ error: error.message });
+            return res.status(500).send({ error: "Internal server error" });
         }
     }
 };

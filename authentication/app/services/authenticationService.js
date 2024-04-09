@@ -245,7 +245,6 @@ function generateReferralCode() {
     return referralCode;
 };
 
-
 /**
  * Fonction permettant de crypter le mot de passe entré par l'utilisateur.
  * @param {String} password - Le mot de passe à crypter.
@@ -254,7 +253,7 @@ function generateReferralCode() {
 const encryptPassword = async(password) => {
     const newPassword = await bcrypt.hash(password + process.env.PEPPER_STRING, 10);
     return newPassword;
-}
+};
 
 /**
  * Fonction permettant de vérifier si le mot de passe de l'utilisateur est correct.
