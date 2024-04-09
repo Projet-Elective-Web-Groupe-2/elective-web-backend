@@ -30,7 +30,7 @@ const createAndAddMenu = async (req, res) => {
     }
 
     try {
-        if (userType !== "RESTAURATEUR") {
+        if (userType !== "RESTAURANT") {
             throw new Error("Invalid user type");
         }
 
@@ -139,7 +139,7 @@ const updatedMenu = async (req, res) => {
     const userType = req.decoded.type;
 
     try {
-        if (userType !== "RESTAURATEUR" && userType !== "CLIENT") {
+        if (userType !== "RESTAURANT" && userType !== "CLIENT") {
             throw new Error("Invalid user type");
         }
 
@@ -186,7 +186,7 @@ const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
     try {
-        if (userType !== "SERVICE TECHNIQUE") {
+        if (userType !== "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
