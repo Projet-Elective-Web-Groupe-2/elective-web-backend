@@ -60,16 +60,16 @@ const acceptDelivery = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order is not pending") {
-            return res.status(400).json({ error: "Order is not pending" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Delivery refused by this user") {
-            return res.status(400).json({ error: "Delivery refused by this user" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while accepting delivery : ", error);
@@ -126,13 +126,13 @@ const refuseDelivery = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order is not pending") {
-            return res.status(400).json({ error: "Order is not pending" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while refusing delivery : ", error);
@@ -170,10 +170,10 @@ const getAllWithFilter = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message.contains("No orders found for this deliverer.")) {
-            return res.status(404).json({ error: "No orders found for this deliverer" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while getting orders with filter : ", error);
@@ -228,13 +228,13 @@ const getStatut = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order does not belong to this user") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while getting delivery status : ", error);
@@ -300,16 +300,16 @@ const trackDelivery = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Delivery does not belong to this user") {
-            return res.status(403).json({ error: "Delivery does not belong to this user" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Order is not being delivered") {
-            return res.status(400).json({ error: "Order is not being delivered" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while tracking delivery : ", error);
@@ -369,16 +369,16 @@ const nearbyDelivery = async (req, res) => {
     }
     catch(error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Delivery does not belong to this user") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Order is not being delivered") {
-            return res.status(400).json({ error: "Order is not being delivered" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while tracking delivery : ", error);
@@ -438,16 +438,16 @@ const validateDelivery = async (req, res) => {
     }
     catch(error) {
         if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Order not found") {
-            return res.status(404).json({ error: "Order not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Delivery does not belong to this user") {
-            return res.status(403).json({ error: "Delivery does not belong to this user"});
+            return res.status(403).json({ error: error.message});
         }
         else if (error.message === "Order is not being delivered or nearby") {
-            return res.status(400).json({ error: "Order is not being delivered or nearby" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while validating delivery : ", error);

@@ -27,12 +27,13 @@ const createAndAddMenu = async (name, products, image, drink) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-            //products: products.map(product => product._id),
-            //À confirmer avec le groupe s'ils veulent les ID ou les noms des produits
+            products: products.map(product => product._id),
             drink: drink 
         });
 
         await newMenu.save();
+
+        await Menu.populate(newMenu, { path: 'products', model: 'Product' });
 
         return newMenu;
     }

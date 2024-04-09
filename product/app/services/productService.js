@@ -30,7 +30,7 @@ const createProduct = async (name, description, price) => {
     catch (error) {
         throw new Error("Error while trying to create a product : " + error.message)
     }
-}
+};
 
 /**
  * Fonction permettant de retrouver un produit dans la base de données grâce à son ID.
@@ -61,13 +61,12 @@ const getProductsByIds = async (productIds) => {
             name: product.name,
             price: product.price,
             //description: product.description
-            // Pas besoin de ça pour le moment. On a juste besoin de prix pour faire la somme et le nom.
         }));
 
         return productsInfo;
     }
     catch (error) {
-        throw new Error("Erreur lors de la récupération des produits : " + error.message);
+        throw new Error("Error while fetching products : " + error.message);
     }
 };
 

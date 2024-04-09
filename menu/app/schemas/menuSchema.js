@@ -39,6 +39,8 @@ const menuSchema = new mongoose.Schema({
     },
     drink: {
         type: Boolean,
+        unique: false,
+        required: false,
         default: false
     }
 });

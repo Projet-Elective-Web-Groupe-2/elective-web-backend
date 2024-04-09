@@ -22,12 +22,13 @@ const createAndAddMenu = async (req, res) => {
     const image = req.body["image"];
     const drinkButtonClicked = req.body["drinkButtonClicked"]; 
     const drink = drinkButtonClicked ? true : false;
-    
-    console.log(req.body);
 
     if (!name || !restaurantID || !productIds || !image) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
+
+    let url;
+    let response;
 
     try {
         if (userType !== "RESTAURANT") {
@@ -36,28 +37,27 @@ const createAndAddMenu = async (req, res) => {
 
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        let url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
-        const restaurantResponse = await axios.get(url, {
+        url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
+        response = await axios.get(url, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
         });
 
-        if (restaurantResponse.status !== 200) {
+        if (response.status !== 200) {
             throw new Error("Restaurant not found");
         }
 
-        const productUrl = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
-        const productsResponse = await axios.get(productUrl, {
+        url = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
+        response = await axios.get(url, {
             data: { productIds }, 
             headers: { Authorization: `Bearer ${token}` }
         });
-           
-
-        if (productsResponse.status !== 200) {
+        
+        if (response.status !== 200) {
             throw new Error("Failed to fetch products");
         }
 
-        const products = productsResponse.data.productsInfo;
+        const products = response.data.productsInfo;
 
         const menu = await menuService.createAndAddMenu(name, products, image, drink);
 
@@ -83,16 +83,16 @@ const createAndAddMenu = async (req, res) => {
             return res.status(403).json({ error: "Forbidden" });
         }
         else if (error.message === "Restaurant not found") {
-            return res.status(404).json({ error: "Restaurant not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Failed to fetch products") {
-            return res.status(400).json({ error: "Failed to fetch products" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Menu not added") {
-            return res.status(400).json({ error: "Menu not added" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Menu not found") {
-            return res.status(404).json({ error: "Menu not found" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while adding a menu : ", error);
@@ -123,7 +123,7 @@ const findMenu = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Menu not found") {
-            return res.status(404).json({ error: "Menu not found" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while finding a menu : ", error);
@@ -146,7 +146,7 @@ const updatedMenu = async (req, res) => {
         if (!menuID || !productID) {
             throw new Error("Missing mandatory data");
         }
-
+        
         const productResponse = await axios.get(`http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`, {
             data: { productIds }, 
             headers: { Authorization: `Bearer ${token}` }
@@ -167,13 +167,13 @@ const updatedMenu = async (req, res) => {
             return res.status(403).json({ error: "Forbidden" });
         }
         else if (error.message === "Missing mandatory data") {
-            return res.status(400).json({ error: "Missing mandatory data" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Product not found") {
-            return res.status(404).json({ error: "Product not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Menu not found") {
-            return res.status(404).json({ error: "Menu not found" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Error while adding product to menu: ", error);

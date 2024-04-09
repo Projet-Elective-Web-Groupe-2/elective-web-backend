@@ -64,13 +64,13 @@ const createAndAddProduct = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Invalid user type") {
-            return res.status(403).json({ error: "Forbidden" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Restaurant not found") {
-            return res.status(404).json({ error: "Restaurant not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "Product not added") {
-            return res.status(400).json({ error: "Product not added" });
+            return res.status(400).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while adding a product : ", error);
@@ -101,7 +101,7 @@ const findProduct = async (req, res) => {
     }
     catch (error) {
         if (error.message === "Product not found") {
-            return res.status(404).json({ error: "Product not found" });
+            return res.status(404).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while finding a product : ", error);
@@ -130,8 +130,10 @@ const getProductsByIds = async (req, res) => {
         if (error.message === "No products found with the provided IDs") {
             return res.status(404).json({ error: "No products found with the provided IDs" });
         }
-        console.error("Unexpected error while fetching products: ", error);
-        return res.status(500).json({ error: "Internal server error" });
+        else {
+            console.error("Unexpected error while fetching products: ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
     }
 };
 
