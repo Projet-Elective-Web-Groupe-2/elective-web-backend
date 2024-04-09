@@ -32,11 +32,7 @@ const createRestaurant = async (req, res) => {
 
         await restaurantService.createRestaurant(name, ownerID, address);
 
-        const createdRestaurant = await restaurantService.findRestaurant(name, ownerID, address);
-        console.log("Created Restaurant ID:", createdRestaurant.id); 
-
-
-        return res.status(201).json({ message: "Restaurant created", restaurant: createdRestaurant });
+        return res.status(201).json({ message: "Restaurant created" });
     }
     catch (error) {
         if (error.message === "Restaurant already exists") {
@@ -48,7 +44,6 @@ const createRestaurant = async (req, res) => {
         }
     }
 };
-
 
 const findRestaurant = async (req, res) => {
     if (!req.query) {

@@ -7,8 +7,6 @@
 const os = require('os');
 const osUtils = require('os-utils');
 const Restaurant = require('../models/restaurantModel');
-const Product = require('../models/productModel'); 
-
 
 /**
  * Fonction permettant de récupérer un restaurant depuis la base de données grâce à certaines informations.
@@ -43,6 +41,10 @@ const findRestaurantByID = async (id) => {
     try {
         const restaurant = await Restaurant.findById(id);
 
+        await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+        await Restaurant.populate(restaurant, { path: 'menus', model: 'Menu' });
+
         return restaurant;
     }
     catch(error) {
@@ -54,7 +56,7 @@ const findRestaurantByID = async (id) => {
  * Fonction permettant de retrouver un restaurant dans la base de données grâce à son nom ou son adresse. 
  * @param {String} name - Le nom du restaurant.
  * @param {String} address - L'adresse du restaurant.
- * @returns {Array} Le restaurant trouvé.
+ * @returns {object} Le restaurant trouvé.
  */
 const findRestaurantByNameOrAddress = async (name, address) => {
     try {
@@ -81,36 +83,19 @@ const findRestaurantByNameOrAddress = async (name, address) => {
 */
 const createRestaurant = async (name, ownerID, address) => {
     try {
-        const product1 = new Product({
-            name: "Coca",
-            description: "Coca cola 33cl",
-            price: 10
-        });
-        const product2 = new Product({                         
-            name: "Frites",
-            description: "frites avec 3 sauces au choix",
-            price: 7
-        });
-
-        await product1.save(); 
-        await product2.save(); 
-
-        const products = [product1.toObject(), product2.toObject()]; 
-
         const newRestaurant = new Restaurant({
             name: name,
             ownerID: ownerID,
             address: address,
-            products: products 
         });
 
         await newRestaurant.save();
-        console.log("Created Restaurant Object ID:", newRestaurant._id);
+        // For testing purposes
+        console.log("Restaurant created : ", newRestaurant._id);
 
         return newRestaurant;
-
-
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error("Error while trying to create a restaurant : " + error.message);
     }
 };
@@ -167,8 +152,6 @@ const getAllRestaurants = async () => {
     }
 };
 
-
-
 /**
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
@@ -182,7 +165,7 @@ const addProduct = async (restaurantID, product) => {
             throw new Error("Restaurant not found");
         }
 
-        restaurant.products.push(product);
+        restaurant.products.push(product._id);
 
         await restaurant.save();
     }
@@ -204,7 +187,7 @@ const addOrder = async (restaurantID, order) => {
             throw new Error("Restaurant not found");
         }
 
-        restaurant.orders.push(order);
+        restaurant.orders.push(order._id);
 
         await restaurant.save();
     }
@@ -222,8 +205,11 @@ const addOrder = async (restaurantID, order) => {
 const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
     try {
         const restaurant = await Restaurant.findById(restaurantID);
+        
         const index = restaurant.orders.findIndex((o) => o._id.toString() === orderID.toString());
+        
         restaurant.orders[index].status = newStatus;
+        
         await restaurant.save();
     }
     catch (error) {
@@ -251,8 +237,11 @@ const getOrdersSince = async (restaurantID, numberOfDaysBack) => {
         }
         else {
             const currentDate = new Date();
+            
             const startDate = new Date(currentDate.getTime() - numberOfDaysBack * 24 * 60 * 60 * 1000);
+            
             const orders = restaurant.orders.filter((order) => new Date(order.date).getTime() >= startDate.getTime());
+            
             return orders;
         }
     }
