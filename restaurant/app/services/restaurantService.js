@@ -86,6 +86,25 @@ const deleteRestaurant = async (restaurantID) => {
 }
 
 /**
+ * Fonction permettant de récupérer tous les restaurants de la base de données.
+ * @returns {Array} Les restaurants trouvés.
+*/
+const getAllRestaurants = async () => {
+    try {
+        const restaurants = await Restaurant.find();
+
+        if (restaurants.length === 0) {
+            return [];
+        }
+
+        return restaurants;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all restaurants : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
  * @param {object} product - Le produit à ajouter.
@@ -239,6 +258,7 @@ module.exports = {
     findRestaurantByID,
     createRestaurant,
     deleteRestaurant,
+    getAllRestaurants,
     addProduct,
     addOrder,
     updateOrderStatus,
