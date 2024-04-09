@@ -14,7 +14,7 @@ const Product = require('../models/productModel');
  * Fonction permettant de récupérer un utilisateur depuis la base de données grâce à certaines informations.
  * La méthode va faire la recherche sur trois champs : ownerID, address et name.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
  * @returns 
  */
@@ -53,7 +53,7 @@ const findRestaurantByID = async (id) => {
 /**
  * Fonction permettant de créer un restaurant dans la base de données.
  * @param {string} name - Le nom du restaurant.
- * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURATEUR").
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
  * @returns {object} Le restaurant créé.
 */
@@ -101,6 +101,25 @@ const deleteRestaurant = async (restaurantID) => {
     }
     catch (error) {
         throw new Error("Error while trying to delete a restaurant : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer tous les restaurants de la base de données.
+ * @returns {Array} Les restaurants trouvés.
+*/
+const getAllRestaurants = async () => {
+    try {
+        const restaurants = await Restaurant.find();
+
+        if (restaurants.length === 0) {
+            return [];
+        }
+
+        return restaurants;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all restaurants : " + error.message);
     }
 };
 

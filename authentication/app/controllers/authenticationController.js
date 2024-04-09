@@ -112,10 +112,10 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "LIVREUR":
+            case "DELIVERY":
             // For testing purposes
-            case "SERVICE TECHNIQUE":
-            /*case "SERVICE COMMERCIAL":*/ {
+            //case "TECHNICAL":
+            case "SALES": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -162,7 +162,7 @@ const register = async (req, res) => {
 
                 break;
             }
-            case "DEVELOPPEUR": {
+            case "DEVELOPER": {
                 refreshToken = authenticationService.generateRefreshToken(email);
                 
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
@@ -305,7 +305,7 @@ const logs = async (req, res) => {
     const userType = decodeJWT(token).type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
@@ -331,7 +331,7 @@ const metrics = async (req, res) => {
     const userType = decodeJWT(token).type;
 
     try {
-        if (userType != "SERVICE TECHNIQUE") {
+        if (userType != "TECHNICAL") {
             throw new Error("Invalid user type");
         }
 
