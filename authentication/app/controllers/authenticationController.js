@@ -160,6 +160,12 @@ const register = async (req, res) => {
                 break;
             }
             case "DEVELOPER": {
+                const apiKey = req.body["apiKey"];
+
+                if (apiKey !== "azerty123!") {
+                    throw new Error("Invalid API key");
+                }
+
                 refreshToken = authenticationService.generateRefreshToken(email);
                 
                 newUser = await authenticationService.createDeveloper(email, encryptedPassword, userType, phoneNumber, refreshToken);
@@ -187,6 +193,9 @@ const register = async (req, res) => {
         }
         else if (error.message === "Invalid user type") {
             return res.status(400).json({ error: "Invalid user type"});
+        }
+        else if (error.message === "Invalid API key") {
+            return res.status(403).json({ error: "Invalid API key" });
         }
         else {
             console.error("Unexpected error while registering : ", error);
