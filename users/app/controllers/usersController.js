@@ -13,7 +13,7 @@ const getUser = async (req, res) => {
     const decodeToken = decodeJWT(accessToken)
     let userID = decodeToken.id;
     const userType = decodeToken.type;
-    const targetUserID = parseInt(req.body["userID"]);
+    const targetUserID = req.headers["userid"];
 
     try {
 
@@ -57,7 +57,7 @@ const getUserByEmail = async (req, res) => {
         return res.status(400).json({ error: "Required request body is missing" });
     }
 
-    const email = req.body["email"];
+    const email = req.headers["email"];
 
     if (!email) {
         return res.status(400).json({ error: "Missing mandatory data for user retrieval" });
@@ -176,7 +176,7 @@ const editUser = async (req, res) => {
             editedUser = await usersService.editUser(targetUserID, email, phoneNumber, encryptedPassword);
         }
         
-        return res.status(200).json({ editedUser });
+        return res.status(200).json({ message: "User edited" });
     }
     catch (error) {
         if (error.message === "User not found") {
