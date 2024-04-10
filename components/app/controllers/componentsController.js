@@ -11,7 +11,7 @@ const writeLogs = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
     const userType = req.decoded.type;
-    const componentName = req.body.componentName;
+    const componentName = req.query.componentName;
 
     if (userType != "DEVELOPER") {
         return res.status(403).send({ message: "Forbidden" });

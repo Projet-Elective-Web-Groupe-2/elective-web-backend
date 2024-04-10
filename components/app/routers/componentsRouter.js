@@ -9,7 +9,7 @@ const router = express.Router();
 const componentsController = require('../controllers/componentsController');
 
 router.get('/writeLogs', componentsController.writeLogs);
-router.get('/getLogs', componentsController.getlogs);
+router.get('/getLogs', componentsController.getLogs);
 router.get('/metrics', componentsController.metrics);
 
 module.exports = router;

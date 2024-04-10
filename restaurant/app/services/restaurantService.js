@@ -296,7 +296,7 @@ const getTotalRevenue = async (orders) => {
 const addMenu = async (restaurantID, menu) => {
     try {
         Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { menu: menu }
+            $addToSet: { menus: menu }
         });
     }
     catch (error) {
