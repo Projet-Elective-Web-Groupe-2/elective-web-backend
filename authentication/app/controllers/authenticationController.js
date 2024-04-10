@@ -202,13 +202,13 @@ const register = async (req, res) => {
             return res.status(400).json({ error: `Missing mandatory data to create a ${userType}` });
         }
         else if (error.message === "Invalid user type") {
-            return res.status(400).json({ error: "Invalid user type"});
+            return res.status(400).json({ error: error.message});
         }
         else if (error.message === "Failed to create restaurant") {
-            return res.status(400).json({ error: "Failed to create restaurant" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Invalid API key") {
-            return res.status(403).json({ error: "Invalid API key" });
+            return res.status(403).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while registering : ", error);
@@ -293,13 +293,13 @@ const token = async (req, res) => {
     }
     catch(error) {
         if (error.message === "Invalid refresh token") {
-            return res.status(401).json({ error: "Invalid refresh token" });
+            return res.status(401).json({ error: error.message });
         }
         else if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "User is suspended") {
-            return res.status(403).json({ error: "User is suspended" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Expired refresh token") {
             const newRefreshToken = authenticationService.generateRefreshToken(email);
