@@ -21,8 +21,8 @@ const createProduct = async (name, description, price, image, isDrink) => {
     try {
         const newProduct = new Product({ 
             name: name,
-            description: description,
             image: image,
+            description: description,
             price: price,
             isDrink: isDrink
         });
