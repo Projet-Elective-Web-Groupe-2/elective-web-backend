@@ -23,7 +23,7 @@ const getMetrics = async (req, res) => {
         const order = await monitoringService.getMetrics(`${process.env.ORDER_HOST}:${process.env.ORDER_PORT}/order`, token);
         const delivery = await monitoringService.getMetrics(`${process.env.DELIVERY_HOST}:${process.env.DELIVERY_PORT}/delivery`, token);
         const monitoring = await monitoringService.getPerformanceMetrics();
-        //const components = await monitoringService.getMetrics(`${process.env.COMPONENT_HOST}:${process.env.COMPONENT_PORT}/components`, token);
+        const components = await monitoringService.getMetrics(`${process.env.COMPONENT_HOST}:${process.env.COMPONENT_PORT}/components`, token);
 
         return res.status(200).json({
             authentication,
@@ -34,7 +34,7 @@ const getMetrics = async (req, res) => {
             order,
             delivery,
             monitoring,
-            //components
+            components
         });
     }
     catch (error) {
