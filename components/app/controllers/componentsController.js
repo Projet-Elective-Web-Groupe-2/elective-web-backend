@@ -7,6 +7,8 @@
 const axios = require('axios')
 const componentsService = require('../services/componentsService');
 
+const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
+
 const writeLogs = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
