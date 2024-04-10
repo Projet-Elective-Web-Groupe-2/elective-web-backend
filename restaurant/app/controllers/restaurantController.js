@@ -348,8 +348,8 @@ const getOrdersSince = async (req, res) => {
         return res.status(400).json({ error: "Required query parameters are missing" });
     }
 
-    const restaurantID = req.params.restaurantID;
-    const numberOfDaysBack = req.params.daysBack;
+    const restaurantID = req.query.restaurantID;
+    const numberOfDaysBack = req.query.daysBack;
 
     if (!restaurantID || !numberOfDaysBack) {
         return res.status(400).json({ error: "Missing mandatory data" });
