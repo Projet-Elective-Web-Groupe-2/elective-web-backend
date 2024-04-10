@@ -18,8 +18,9 @@ const createRestaurant = async (req, res) => {
     const name = req.body["name"];
     const address = req.body["address"];
     const ownerID = req.body["ownerID"];
+    const image = req.body["image"];
 
-    if (!name || !address || !ownerID) {
+    if (!name || !address || !ownerID || !image) {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
@@ -30,7 +31,7 @@ const createRestaurant = async (req, res) => {
             throw new Error("Restaurant already exists");
         }
 
-        await restaurantService.createRestaurant(name, ownerID, address);
+        await restaurantService.createRestaurant(name, ownerID, address, image);
 
         return res.status(201).json({ message: "Restaurant created" });
     }

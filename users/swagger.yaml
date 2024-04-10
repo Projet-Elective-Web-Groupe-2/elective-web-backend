@@ -1,37 +1,430 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: |
+    Project "Élective Logiciel" - Users microservice API documentation
+servers:
+  - url: 'http://localhost:3001'
+    description: Development server
 paths:
-  /health:
+  /get:
     get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
+      summary: Retrieve user by ID
+      description: Retrieves user details based on the provided user ID.
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to retrieve.
+      responses:
         '200':
-          description: it will return a success message
-          content: 
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
+                  error:
+                    type: string
+                    example: Required query parameter is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /getByEmail:
+    post:
+      summary: Retrieve user by email
+      description: Retrieves user details based on the provided email address.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the user to retrieve.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Required request body is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /getAll:
+    get:
+      summary: Retrieve all users
+      description: Retrieves details of all users.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /edit:
+    put:
+      summary: Update user details
+      description: Updates the details of a user based on the provided user ID.
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Required query parameter or request body is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /suspend:
+    put:
+      summary: Suspend user
+      description: Suspends a user based on the provided user ID.
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to suspend.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Required query parameter is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /unsuspend:
+    put:
+      summary: Unsuspend user
+      description: Unsuspends a user based on the provided user ID.
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to unsuspend.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Required query parameter is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /delete:
+    delete:
+      summary: Delete user
+      description: Deletes a user based on the provided user ID.
+      parameters:
+        - in: query
+          name: userID
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to delete.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Required query parameter is missing
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userID:
+          type: integer
+          description: The ID of the user.
+        firstName:
+          type: string
+          description: The first name of the user.
+        lastName:
+          type: string
+          description: The last name of the user.
+        email:
+          type: string
+          format: email
+          description: The email address of the user.
+        phoneNumber:
+          type: string
+          description: The phone number of the user.
+        userType:
+          type: string
+          enum: ['CLIENT', 'RESTAURANT', 'DELIVERY', 'DEVELOPER', 'SALES', 'TECHNICAL']
+          description: The type of user.
+        address:
+          type: string
+          description: The address of the user.
+        referredBy:
+          type: integer
+          description: The ID of the user who referred this user.
+        referrerOf:
+          type: integer
+          description: The ID of the user who is referred by this user.
+        referralCode:
+          type: string
+          description: The referral code of the user.
+        refreshToken:
+          type: string
+          description: The refresh token for the user's session.
+        isSuspended:
+          type: boolean
+          description: Indicates whether the user is suspended.

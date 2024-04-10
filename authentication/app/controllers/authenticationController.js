@@ -156,6 +156,15 @@ const register = async (req, res) => {
                 });
 
                 if (response.status !== 201) {
+                    url = `http://${process.env.USERS_HOST}:${process.env.USERS_PORT}/user/delete`;
+                    response = await axios.delete(url, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        },
+                        data: {
+                            userID: newUser.userID
+                        }
+                    });
                     throw new Error("Failed to create restaurant");
                 }
 
