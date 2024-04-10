@@ -27,7 +27,7 @@ const login = async (req, res) => {
         if (!existingUser) {
             throw new Error("User not found");
         }
-        else if (existingUser.isSuspended === true) {
+        else if (existingUser.isSuspended === 1) {
             throw new Error("User is suspended");
         }
 

@@ -1,3 +1,10 @@
+## [5.6.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.1...v5.6.2) (2024-04-10)
+
+
+### Bug Fixes
+
+* quick fix to suspended ([5732678](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/57326780f312790625aa75da2065cf47765a90c9))
+
 ## [5.6.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.0...v5.6.1) (2024-04-10)
 
 
