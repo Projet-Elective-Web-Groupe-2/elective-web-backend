@@ -358,6 +358,16 @@ const deleteUser = async (req, res) => {
         await usersService.deleteUser(targetUserID);
 
         if (targetUser.userType === "RESTAURANT") {
+            url = `${RESTAURANT_URL}find`;
+            response = await axios.get(url, {
+                params: { id: targetUserID },
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+
+            if (response.status === 404) {
+                throw new Error("Restaurant not found");
+            }
+
             url = `${RESTAURANT_URL}delete`;
             response = await axios.delete(url, {
                 params: { id: targetUserID },
@@ -374,6 +384,9 @@ const deleteUser = async (req, res) => {
     catch (error) {
         if (error.message === "User not found") {
             res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant not found") {
+            return res.status(200).json({ message: "User deleted" });
         }
         else if (error.message === "Wrong user ID in request body") {
             res.status(400).json({ error: error.message });

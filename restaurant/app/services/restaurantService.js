@@ -33,13 +33,18 @@ const findRestaurant = async (name, ownerID, address) => {
 };
 
 /**
- * Fonction permettant de retrouver un restaurant dans la base de données grâce à son ID.
- * @param {String} id - L'ID du restaurant.
+ * Fonction permettant de retrouver un restaurant dans la base de données grâce à un ID.
+ * @param {String} id - L'ID du restaurant ou de son propriétaire.
  * @returns {object} Le restaurant trouvé.
 */
 const findRestaurantByID = async (id) => {
     try {
-        const restaurant = await Restaurant.findById(id);
+        const restaurant = await Restaurant.findOne({
+            $or: [
+            { _id: id },
+            { ownerID: id }
+            ]
+        });
 
         await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
         await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
@@ -79,17 +84,20 @@ const findRestaurantByNameOrAddress = async (name, address) => {
  * @param {string} name - Le nom du restaurant.
  * @param {Number} ownerID - L'ID du propriétaire du restaurant (un utilisateur de type "RESTAURANT").
  * @param {string} address - L'addresse du restaurant.
+ * @param {string} image - L'URL de l'image du restaurant.
  * @returns {object} Le restaurant créé.
 */
-const createRestaurant = async (name, ownerID, address) => {
+const createRestaurant = async (name, ownerID, address, image) => {
     try {
         const newRestaurant = new Restaurant({
             name: name,
             ownerID: ownerID,
             address: address,
+            image: image
         });
 
         await newRestaurant.save();
+        
         // For testing purposes
         console.log("Restaurant created : ", newRestaurant._id);
 
