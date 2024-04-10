@@ -22,7 +22,7 @@ const writeLogs = async (userID, componentName) => {
     const localDate = new Date(currentDate.getTime() - timezoneOffset);
     localDate.setHours(localDate.getHours() + 2);
     
-    let logMessage = `[${localDate.toLocaleString('fr-FR')}] User n°${userID} downloaded the component ${componentName}.\n`;
+    let logMessage = `[${localDate.toLocaleString('fr-FR')}] User n°${userID} downloaded the component '${componentName}'.\n`;
 
     fs.appendFile(logsPath, logMessage, {flag: 'a+'}, (error) => {
         if (error) {
