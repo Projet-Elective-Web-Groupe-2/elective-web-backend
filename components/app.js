@@ -20,7 +20,7 @@ require("dotenv").config();
 
 const app = express();
 
-const port = process.env.COMPONENT_PORT || 3008;
+const port = process.env.COMPONENT_PORTS || 3008;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
