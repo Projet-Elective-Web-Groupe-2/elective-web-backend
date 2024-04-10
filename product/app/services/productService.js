@@ -71,6 +71,25 @@ const getProductsByIds = async (productIds) => {
 };
 
 /**
+ * Fonction permettant de supprimer un article de la base de données.
+ * @param {String} productID - L'ID de l'article à supprimer.
+ */
+const deleteProduct = async (productID) => {
+    try {
+        const product = findProductByID(productID);
+
+        if (!product) {
+            throw new Error("Product not found");
+        }
+
+        await Product.deleteOne({ _id: productID });
+    }
+    catch(error) {
+        throw new Error("Error while trying to delete a product by ID : " + error.message);
+    }
+}
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -116,5 +135,6 @@ module.exports = {
     createProduct,
     findProductByID,
     getProductsByIds,
+    deleteProduct,
     getPerformanceMetrics
 };

@@ -137,6 +137,33 @@ const getProductsByIds = async (req, res) => {
     }
 };
 
+const deleteProduct = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const productID = req.query.id;
+
+    if (!productID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        await productService.deleteProductByID(productID);
+
+        return res.status(200).json({ message: "Product deleted successfully" });
+    }
+    catch (error) {
+        if (error.message === "Product not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while deleting a product : ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
@@ -164,5 +191,6 @@ module.exports = {
     createAndAddProduct,
     findProduct,
     getProductsByIds,
+    deleteProduct,
     metrics
 };
