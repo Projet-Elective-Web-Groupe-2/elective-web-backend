@@ -291,7 +291,7 @@ const unsuspendUser = async (req, res) => {
 
         await usersService.unsuspendUser(targetUserID);
 
-        return res.status(200).json({ message: "User suspended" });
+        return res.status(200).json({ message: "User unsuspended" });
     }
     catch (error) {
         if (error.message === "Invalid user type") {
