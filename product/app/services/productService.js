@@ -1,6 +1,6 @@
 /**
  * Le fichier contenant les traitements liés aux articles.
- * @author AMARA Ahmed
+ * @author GAURE Warren
  * @version 1.0
 */
 
@@ -14,7 +14,7 @@ const Product = require('../models/productModel');
  * @param {String} description - La description de l'article.
  * @param {Number} price - Le prix de l'article.
  * @returns {object} L'article créé.
- */
+*/
 const createProduct = async (name, description, price) => {
     try {
         const newProduct = new Product({ 
@@ -30,7 +30,7 @@ const createProduct = async (name, description, price) => {
     catch (error) {
         throw new Error("Error while trying to create a product : " + error.message)
     }
-}
+};
 
 /**
  * Fonction permettant de retrouver un produit dans la base de données grâce à son ID.
@@ -45,6 +45,28 @@ const findProductByID = async (id) => {
     }
     catch(error) {
         throw new Error("Error while trying to find a product by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les informations des produits à partir de leurs IDs.
+ * @param {Array} productIds - Les IDs des produits.
+ * @returns Les informations des produits.
+*/
+const getProductsByIds = async (productIds) => {
+    try {
+        const products = await Product.find({ _id: { $in: productIds } });
+
+        const productsInfo = products.map(product => ({
+            name: product.name,
+            price: product.price,
+            //description: product.description
+        }));
+
+        return productsInfo;
+    }
+    catch (error) {
+        throw new Error("Error while fetching products : " + error.message);
     }
 };
 
@@ -93,5 +115,6 @@ function getCpuUsage() {
 module.exports = {
     createProduct,
     findProductByID,
+    getProductsByIds,
     getPerformanceMetrics
 };
