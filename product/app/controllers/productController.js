@@ -60,7 +60,7 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Product not added");
         }
 
-        return res.status(201).json({ message: 'Product added successfully', product });
+        return res.status(201).json({ message: 'Product added successfully' });
     }
     catch (error) {
         if (error.message === "Invalid user type") {
