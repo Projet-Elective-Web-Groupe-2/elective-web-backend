@@ -131,8 +131,9 @@ const register = async (req, res) => {
             case "RESTAURANT": {
                 const restaurantName = req.body["restaurantName"];
                 const restaurantAddress = req.body["restaurantAddress"];
+                const image = req.body["image"];
 
-                if (!restaurantName || !restaurantAddress) {
+                if (!restaurantName || !restaurantAddress || !image) {
                     throw new Error("Missing mandatory data");
                 }
 
@@ -147,7 +148,8 @@ const register = async (req, res) => {
                 const response = await axios.post(url, {
                     name: restaurantName,
                     address: restaurantAddress,
-                    ownerID: newUser.userID
+                    ownerID: newUser.userID,
+                    image: image
                 },
                 {
                     headers: {
