@@ -10,6 +10,7 @@ const restaurantController = require('../controllers/restaurantController');
 
 router.post('/create', restaurantController.createRestaurant);
 router.get('/find', restaurantController.findRestaurant);
+router.get('/findByOwner', restaurantController.findRestaurantByOwnerID);
 router.delete('/delete', restaurantController.deleteRestaurant);
 router.post('/edit', restaurantController.editRestaurant);
 router.get('/getAll', restaurantController.getAllRestaurants);

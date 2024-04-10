@@ -51,21 +51,45 @@ const findRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Required query parameter is missing" });
     }
 
-    let restaurantID = req.query.id;
+    const restaurantID = req.query.id;
 
     if (!restaurantID) {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
-    // ID du restaurateur, pas le restaurant en lui-même
-    if (restaurantID.length < 4) {
-        restaurantID = parseInt(restaurantID);
-    }
-
-    console.log("Type du restaurantID : " + typeof restaurantID)
-
     try {
         const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        return res.status(200).json({ restaurant });
+    }
+    catch (error) {
+        if (error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while finding a restaurant : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
+const findRestaurantByOwnerID = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const ownerID = parseInt(req.query.id);
+
+    if (!ownerID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        const restaurant = await restaurantService.findRestaurantByOwnerID(ownerID);
 
         if (!restaurant) {
             throw new Error("Restaurant not found");
@@ -442,6 +466,7 @@ const metrics = async (req, res) => {
 module.exports = {
     createRestaurant,
     findRestaurant,
+    findRestaurantByOwnerID,
     editRestaurant,
     deleteRestaurant,
     getAllRestaurants,

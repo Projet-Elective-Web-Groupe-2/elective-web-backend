@@ -358,13 +358,13 @@ const deleteUser = async (req, res) => {
         await usersService.deleteUser(targetUserID);
 
         if (targetUser.userType === "RESTAURANT") {
-            url = `${RESTAURANT_URL}find`;
+            url = `${RESTAURANT_URL}findByOwner`;
             response = await axios.get(url, {
                 params: { id: targetUserID },
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
 
-            if (response.status === 404) {
+            if (!response.status === 200 || !response.data) {
                 throw new Error("Restaurant not found");
             }
 

@@ -34,19 +34,12 @@ const findRestaurant = async (name, ownerID, address) => {
 
 /**
  * Fonction permettant de retrouver un restaurant dans la base de données grâce à un ID.
- * @param {String} id - L'ID du restaurant ou de son propriétaire.
+ * @param {String} id - L'ID du restaurant.
  * @returns {object} Le restaurant trouvé.
 */
 const findRestaurantByID = async (id) => {
     try {
-        let restaurant;
-        
-        if (typeof id === 'number') {
-            restaurant = await Restaurant.findOne({ownerID: id });
-        }
-        else if (typeof id === 'string') {
-            restaurant = await Restaurant.findOne({ _id: id });
-        }
+        const restaurant = await Restaurant.findById(id);
 
         await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
         await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
@@ -56,6 +49,26 @@ const findRestaurantByID = async (id) => {
     }
     catch(error) {
         throw new Error("Error while trying to find a restaurant by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de trouver un restaurant dans la base de données en fonction de l'ID de son propriétaire.
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant.
+ * @returns {object} Le restaurant trouvé.
+ */
+const findRestaurantByOwnerID = async (ownerID) => {
+    try {
+        const restaurant = await Restaurant.findOne({ ownerID: ownerID });
+
+        await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+        await Restaurant.populate(restaurant, { path: 'menus', model: 'Menu' });
+
+        return restaurant;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find a restaurant by owner ID : " + error.message);
     }
 };
 
@@ -336,6 +349,7 @@ function getCpuUsage() {
 module.exports = {
     findRestaurant,
     findRestaurantByID,
+    findRestaurantByOwnerID,
     findRestaurantByNameOrAddress,
     createRestaurant,
     editRestaurant,
