@@ -19,6 +19,9 @@ const createAndAddProduct = async (req, res) => {
     const name = req.body["name"];
     const description = req.body["description"];
     const price = req.body["price"];
+    const image = req.body["image"];
+    const isDrink = req.body["isDrink"];
+
     let restaurantID = req.body["restaurantID"];
 
     if (!name || !description || !price || !restaurantID) {
@@ -43,7 +46,7 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        const product = await productService.createProduct(name, description, price);
+        const product = await productService.createProduct(name, description, price, image, isDrink);
 
         url = url.replace('find', 'addProduct');
         response = await axios.post(url, { 

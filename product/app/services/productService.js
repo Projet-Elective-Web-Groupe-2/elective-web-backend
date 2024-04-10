@@ -13,14 +13,18 @@ const Product = require('../models/productModel');
  * @param {String} name - Le nom de l'article.
  * @param {String} description - La description de l'article.
  * @param {Number} price - Le prix de l'article.
+ * @param {String} image - L'image de l'article.
+ * @param {Boolean} isDrink - Le type de l'article (boisson ou nourriture).
  * @returns {object} L'article créé.
 */
-const createProduct = async (name, description, price) => {
+const createProduct = async (name, description, price, image, isDrink) => {
     try {
         const newProduct = new Product({ 
             name: name,
             description: description,
-            price: price 
+            image: image,
+            price: price,
+            isDrink: isDrink
         });
 
         await newProduct.save();

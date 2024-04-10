@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         unique: false,
         required: true
+    },
+    isDrink: {
+        type: Boolean,
+        unique: false,
+        required: true
     }
 });
 
