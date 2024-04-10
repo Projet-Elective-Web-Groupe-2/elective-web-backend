@@ -18,6 +18,7 @@ router.post('/addProduct', restaurantController.addProduct);
 router.post('/addOrder', restaurantController.addOrder);
 router.post('/updateOrder', restaurantController.updateOrder);
 router.get('/getOrdersSince', restaurantController.getOrdersSince);
+router.get('/getOrderCount', restaurantController.getOrderCount);
 router.get('/metrics', restaurantController.metrics);
 router.post('/addMenu', restaurantController.addMenu);
 

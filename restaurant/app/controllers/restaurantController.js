@@ -412,6 +412,58 @@ const getOrdersSince = async (req, res) => {
     }
 };
 
+const getOrderCount = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURANT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameters are missing" });
+    }
+
+    const restaurantID = req.query.restaurantID;
+
+    if (!restaurantID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        return res.status(200).json({ orderCount: restaurant.orders.length });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while getting order count : ", error.message);
+            return res.status(500).send({ error: "Internal server error" });
+        }
+    }
+};
+
 const addMenu = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -475,5 +527,6 @@ module.exports = {
     addOrder,
     updateOrder,
     getOrdersSince,
+    getOrderCount,
     metrics
 };
