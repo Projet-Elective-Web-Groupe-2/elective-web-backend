@@ -51,7 +51,7 @@ const findRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Required query parameter is missing" });
     }
 
-    const restaurantID = req.query.id;
+    let restaurantID = req.query.id;
 
     if (!restaurantID) {
         return res.status(400).json({ error: "Missing mandatory data" });
