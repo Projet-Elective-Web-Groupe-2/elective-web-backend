@@ -1,3 +1,10 @@
+## [5.6.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.0...v5.6.1) (2024-04-10)
+
+
+### Bug Fixes
+
+* fixed something ([a689587](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/a689587c4936bf5280ffc15034f014bec1af9b94))
+
 ## [5.6.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.5.3...v5.6.0) (2024-04-09)
 
 
