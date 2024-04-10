@@ -13,7 +13,7 @@ const writeLogs = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
     const userType = req.decoded.type;
-    const componentName = req.query.componentName;
+    const componentName = req.body["componentName"];
 
     if (userType != "DEVELOPER") {
         return res.status(403).send({ message: "Forbidden" });
@@ -35,7 +35,7 @@ const writeLogs = async (req, res) => {
 
         await componentsService.writeLogs(userID, componentName);
 
-        return res.status(200).send('Logs written successfully!');
+        return res.status(200).send({ message: "Logs written successfully!"});
     }
     catch (error) {
         if (error.message === "User not found") {
@@ -53,7 +53,7 @@ const getLogs = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "TECHNICAL ") {
+    if (userType != "TECHNICAL") {
         return res.status(403).send({ message: "Forbidden" });
     }
     try {
