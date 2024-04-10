@@ -28,7 +28,6 @@ const createAndAddMenu = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
 
-    let url;
     let response;
 
     try {
@@ -38,8 +37,8 @@ const createAndAddMenu = async (req, res) => {
 
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
-        response = await axios.get(url, {
+        const restaurantURL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
+        response = await axios.get(restaurantURL, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -48,8 +47,8 @@ const createAndAddMenu = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        url = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
-        response = await axios.get(url, {
+        const productURL = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
+        response = await axios.get(productURL, {
             data: { productIds }, 
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -62,8 +61,8 @@ const createAndAddMenu = async (req, res) => {
 
         const menu = await menuService.createAndAddMenu(name, products, image, drink, totalPrice);
 
-        url = url.replace('find', 'addMenu'); 
-        response = await axios.post(url, { 
+        restaurantURL = restaurantURL.replace('find', 'addMenu'); 
+        response = await axios.post(restaurantURL, { 
             restaurantID: restaurantID,
             menu : menu,
         },
