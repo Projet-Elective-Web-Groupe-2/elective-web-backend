@@ -1,37 +1,544 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: >
+    Project "Élective Logiciel" - Delivery microservice API documentation
+servers:
+  - url: 'http://localhost:3006'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
+  /accept:
+    post:
+      tags:
+        - Delivery
+      summary: Accept delivery.
+      description: This endpoint is used by delivery drivers to accept a delivery.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderID:
+                  type: string
+                  description: The ID of the order to be accepted.
+                  example: "12345"
+      responses:
         '200':
-          description: it will return a success message
-          content: 
+          description: Delivery accepted successfully.
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Confirmation message indicating successful acceptance of the delivery.
+        '400':
+          description: Bad request.
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating missing mandatory data or invalid request.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to accept deliveries.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or the order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /refuse:
+    post:
+      tags:
+        - Delivery
+      summary: Refuse delivery.
+      description: This endpoint is used by delivery drivers to refuse a delivery.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderID:
+                  type: string
+                  description: The ID of the order to be refused.
+                  example: "12345"
+      responses:
+        '200':
+          description: Delivery refused successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message indicating successful refusal of the delivery.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data or invalid request.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to refuse deliveries.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or the order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /getAllWithFilter:
+    get:
+      tags:
+        - Delivery
+      summary: Get all orders with filter.
+      description: This endpoint is used by delivery drivers to retrieve all orders assigned to them based on a filter.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    description: List of orders matching the filter criteria.
+                    items:
+                      type: object
+                      properties:
+                        orderID:
+                          type: string
+                          description: The ID of the order.
+                        status:
+                          type: string
+                          description: The status of the order.
+                        # Add more properties as needed
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this endpoint.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or no orders were found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /getStatut:
+    get:
+      tags:
+        - Delivery
+      summary: Get delivery status.
+      description: This endpoint is used by clients to retrieve the status of a specific delivery order.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: orderID
+          required: true
+          description: The ID of the order to retrieve status for.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The status of the specified delivery order.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for tracking delivery status.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this endpoint or the order does not belong to the user.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /trackDelivery:
+    get:
+      tags:
+        - Delivery
+      summary: Track delivery.
+      description: This endpoint is used by deliverers to track the details of a delivery they are assigned to.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: orderID
+          required: true
+          description: The ID of the order to track delivery for.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                    description: The first name of the client who placed the order.
+                  lastName:
+                    type: string
+                    description: The last name of the client who placed the order.
+                  phoneNumber:
+                    type: string
+                    description: The phone number of the client who placed the order.
+                  address:
+                    type: string
+                    description: The delivery address for the order.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for tracking delivery.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this endpoint or the delivery does not belong to the user.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /nearby:
+    post:
+      tags:
+        - Delivery
+      summary: Notify nearby delivery.
+      description: This endpoint is used by deliverers to notify that they are nearby to the delivery location.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderID:
+                  type: string
+                  description: The ID of the order for which the delivery is nearby.
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating that the delivery is nearby.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for tracking delivery or that the order is not being delivered.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this endpoint or the delivery does not belong to the user.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /validate:
+    post:
+      tags:
+        - Delivery
+      summary: Validate delivery.
+      description: This endpoint is used by deliverers to validate the delivery after successful delivery or when nearby to the client's location.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderID:
+                  type: string
+                  description: The ID of the order to validate delivery.
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Message indicating that the delivery has been validated.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for tracking delivery or that the order is not being delivered or nearby.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this endpoint or the delivery does not belong to the user.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user or order was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.

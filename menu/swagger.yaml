@@ -1,37 +1,275 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: |
+    Project "Élective Logiciel" - Menu microservice API documentation
+servers:
+  - url: 'http://localhost:3003'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
-        '200':
-          description: it will return a success message
-          content: 
+  /create:
+    post:
+      tags:
+        - Menu
+      summary: Create and add a menu
+      description: |
+        This endpoint allows a restaurant to create and add a new menu.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the menu.
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant.
+                productIds:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of product IDs included in the menu.
+                image:
+                  type: string
+                  description: The URL of the menu image.
+                drinkButtonClicked:
+                  type: boolean
+                  description: Boolean indicating whether a drink button was clicked.
+              required:
+                - name
+                - restaurantID
+                - productIds
+                - image
+      responses:
+        '201':
+          description: Menu created and added successfully
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Confirmation message indicating successful menu addition.
+        '400':
+          description: Bad request
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating missing or invalid data.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unauthorized access.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant or menu was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error.
+  /find:
+    get:
+      tags:
+        - Menu
+      summary: Find a menu by ID
+      description: |
+        This endpoint allows users to find a menu by its ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the menu to find.
+      responses:
+        '200':
+          description: Menu found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  menu:
+                    type: object
+                    description: The menu object.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the menu was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error.
+  /update:
+    post:
+      tags:
+        - Menu
+      summary: Update a menu with a new product
+      description: |
+        This endpoint allows users to update a menu by adding a new product to it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menuID:
+                  type: string
+                  description: The ID of the menu to update.
+                productID:
+                  type: string
+                  description: The ID of the product to add to the menu.
+      responses:
+        '200':
+          description: Product added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message indicating that the product was added to the menu.
+                  menu:
+                    type: object
+                    description: The updated menu object.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user does not have permission to perform the action.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the menu or product was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error.
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.

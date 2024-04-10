@@ -56,12 +56,12 @@ const login = async (req, res) => {
             await authenticationService.writeLogs(4, existingUser.userID, existingUser.userType);
             return res.status(403).json({ error : error.message });
         }
-        else if (error.message === "Expired refresh token") {
+        else if (error.message === "Expired refresh token" || error.message === "Invalid refresh token") {
             return res.status(401).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while logging in : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -81,7 +81,7 @@ const logout = async (req, res) => {
     }
     catch(error) {
         console.error("Unexpected error while logging out : ", error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -114,8 +114,7 @@ const register = async (req, res) => {
 
         switch(userType) {
             case "CLIENT":
-            case "DELIVERY":
-            case "SALES": {
+            case "DELIVERY": {
                 const firstName = req.body["firstName"];
                 const lastName = req.body["lastName"];
                 const address = req.body["address"];
@@ -165,8 +164,8 @@ const register = async (req, res) => {
             case "DEVELOPER": {
                 const apiKey = req.body["apiKey"];
 
-                if (apiKey !== "azerty123!") {
-                    throw new Error("Invalid API key");
+                if (!apiKey || apiKey !== "azerty123!") {
+                    throw new Error("Invalid API Key");
                 }
 
                 refreshToken = authenticationService.generateRefreshToken(email);
@@ -191,18 +190,18 @@ const register = async (req, res) => {
         else if (error.message === "Missing mandatory data") {
             return res.status(400).json({ error: `Missing mandatory data to create a ${userType}` });
         }
-        else if (error.message === "Failed to create restaurant") {
-            return res.status(400).json({ error: "Failed to create restaurant" });
-        }
         else if (error.message === "Invalid user type") {
             return res.status(400).json({ error: "Invalid user type"});
+        }
+        else if (error.message === "Failed to create restaurant") {
+            return res.status(400).json({ error: "Failed to create restaurant" });
         }
         else if (error.message === "Invalid API key") {
             return res.status(403).json({ error: "Invalid API key" });
         }
         else {
             console.error("Unexpected error while registering : ", error);
-            res.status(500).json({ error: "Internal server error" });
+            return res.status(500).json({ error: "Internal server error" });
         }
     }
 };
@@ -330,8 +329,11 @@ const logs = async (req, res) => {
         if (error.message === "Invalid user type") {
             res.status(403).json({ error: "Forbidden" });
         }
-        console.error("Unexpected error while retrieving logs : ", error);
-        res.status(500).json({ error: "Internal server error" });
+        else {
+            console.error("Unexpected error while retrieving logs : ", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+
     }
 };
 

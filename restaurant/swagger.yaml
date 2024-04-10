@@ -1,37 +1,639 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: >
+    Project "Élective Logiciel" - Restaurant microservice API documentation
+servers:
+  - url: 'http://localhost:3002'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
-        '200':
-          description: it will return a success message
-          content: 
+  /create:
+    post:
+      tags:
+        - Restaurant
+      summary: Create a new restaurant
+      description: |
+        This endpoint allows a user to create a new restaurant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the restaurant.
+                address:
+                  type: string
+                  description: The address of the restaurant.
+                ownerID:
+                  type: string
+                  description: The ID of the owner of the restaurant.
+      responses:
+        '201':
+          description: Restaurant created successfully.
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: A message indicating the success of the operation.
+        '400':
+          description: Bad request.
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating the reason for the bad request.
+        '409':
+          description: Conflict - Restaurant already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant already exists.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an internal server error occurred.
+                    
+  /find:
+    get:
+      tags:
+        - Restaurant
+      summary: Find a restaurant by ID
+      description: |
+        This endpoint allows retrieving a restaurant by its ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to retrieve.
+      responses:
+        '200':
+          description: Restaurant found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    restaurant:
+                      $ref: '#/components/schemas/Order'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the reason for the bad request.
+        '404':
+          description: Restaurant not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an internal server error occurred.
+  /delete:
+    get:
+      tags:
+        - Restaurant
+      summary: Delete a restaurant
+      description: Deletes a restaurant with the specified ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to delete.
+      requestBody:
+        required: false
+      responses:
+        '200':
+          description: Restaurant successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the restaurant was deleted.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the user is not authorized to delete the restaurant.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that either the user or the restaurant was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+  /addProduct:
+    post:
+      tags:
+        - Product
+      summary: Add a product to a restaurant
+      description: Adds a product to the specified restaurant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant to which the product will be added.
+                product:
+                  type: object
+                  description: The product object to be added to the restaurant.
+      responses:
+        '201':
+          description: Product successfully added to restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the product was added to the restaurant.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+  /addOrder:
+    post:
+      tags:
+        - Order
+      summary: Add an order to a restaurant
+      description: Adds an order to the specified restaurant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant to which the order will be added.
+                order:
+                  type: object
+                  description: The order object to be added to the restaurant.
+      responses:
+        '201':
+          description: Order successfully added to restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the order was added to the restaurant.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for order adding.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to add orders.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+  /updateOrder:
+    post:
+      tags:
+        - Order
+      summary: Update the status of an order in a restaurant
+      description: Updates the status of the specified order in the restaurant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant where the order belongs.
+                orderID:
+                  type: string
+                  description: The ID of the order to be updated.
+                newStatus:
+                  type: string
+                  description: The new status to be assigned to the order.
+      responses:
+        '200':
+          description: Order status updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the order status was updated.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data for order status update.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the order was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+  /getOrdersSince:
+    get:
+      tags:
+        - Order
+      summary: Get orders received by a restaurant since a specified number of days back
+      description: Retrieves the orders received by the specified restaurant within the specified number of days back.
+      parameters:
+        - in: query
+          name: restaurantID
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to retrieve orders for.
+        - in: query
+          name: daysBack
+          required: true
+          schema:
+            type: integer
+          description: The number of days back from the current date to retrieve orders for.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ordersByDay:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                          description: The date for which the order count is calculated.
+                        count:
+                          type: integer
+                          description: The number of orders received on the specified date.
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory query parameters.
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this resource.
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant or user was not found.
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+components:
+  schemas:
+    Restaurant:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the restaurant.
+        image:
+          type: string
+          description: The image URL of the restaurant.
+        ownerID:
+          type: number
+          description: The ID of the owner of the restaurant.
+        address:
+          type: string
+          description: The address of the restaurant.
+        description:
+          type: string
+          description: The description of the restaurant.
+        status:
+          type: boolean
+          description: The status of the restaurant (active/inactive).
+        menus:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
+          description: The menus offered by the restaurant.
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          description: The products offered by the restaurant.
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+          description: The orders made at the restaurant.
+    Order:
+      type: object
+      properties:
+        clientID:
+          type: number
+          description: The ID of the client who placed the order
+        delivererID:
+          type: number
+          description: The ID of the deliverer assigned to the order (optional)
+        address:
+          type: string
+          description: The delivery address for the order
+        date:
+          type: string
+          format: date-time
+          description: The date and time when the order was created
+        status:
+          type: string
+          description: The status of the order
+          enum:
+            - Created
+            - Payment refused
+            - Order refused by restaurateur
+            - In preparation
+            - Being delivered
+            - Delivery near client
+            - Delivered
+        menus:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
+          description: List of menu items included in the order
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          description: List of products included in the order
+        totalPrice:
+          type: number
+          description: The total price of the order
+        refusedBy:
+          type: array
+          items:
+            type: number
+          description: List of user IDs who refused the order (optional)
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the product
+        image:
+          type: string
+          description: URL of the image representing the product
+        description:
+          type: string
+          description: Description of the product
+        price:
+          type: number
+          description: The price of the product
+      required:
+        - name
+        - description
+        - price
+    Menu:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the menu
+        image:
+          type: string
+          description: URL of the image representing the menu
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+          description: List of products included in the menu
+        totalPrice:
+          type: number
+          description: The total price of the menu
+      required:
+        - name
+        - products
+        - totalPrice

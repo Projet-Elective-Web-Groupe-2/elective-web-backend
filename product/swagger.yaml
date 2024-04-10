@@ -1,37 +1,213 @@
 openapi: 3.0.0
-info: 
+info:
   version: 1.0.0
   title: CESI EATS SWAGGER API
-  description: > 
-    Projet Elective WEB FISA A4 INFO
-servers: 
-  - url: http://localhost:4000
-    description: dev server
-  - url: http://example.com/api/v1
-    description: prod server
+  description: >
+    Project "Élective Logiciel" - Product microservice API documentation
+servers:
+  - url: 'http://localhost:3004'
+    description: Development server
 paths:
-  /health:
-    get:
-      tags: [Health]
-      description: this endpoint will test the health of the api
-      responses: 
-        '200':
-          description: it will return a success message
-          content: 
+  /add:
+    post:
+      tags:
+        - Product
+      summary: Add a product to a restaurant
+      description: |
+        This endpoint allows a restaurant owner to add a new product to their restaurant's menu.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the product.
+                description:
+                  type: string
+                  description: The description of the product.
+                price:
+                  type: number
+                  format: float
+                  description: The price of the product.
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant to which to add the product.
+      responses:
+        '201':
+          description: Product added successfully.
+          content:
             application/json:
               schema:
                 type: object
-                properties: 
+                properties:
                   message:
                     type: string
-                    example: ok
-        '500': 
-          description: The Server is down
-          content: 
+                    description: Confirmation message indicating that the product was added successfully.
+        '400':
+          description: Missing or invalid request data.
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
-                properties: 
-                  message: 
+                properties:
+                  error:
                     type: string
-                    example: server is down
+                    description: Error message indicating that the request data is missing or invalid.
+        '403':
+          description: The user is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to add a product.
+        '404':
+          description: The specified restaurant was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the specified restaurant was not found.
+        '500':
+          description: An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that an internal server error occurred.
+
+  /find:
+    get:
+      tags:
+        - Product
+      summary: Retrieve product information by ID
+      description: |
+        This endpoint retrieves information about a product based on its ID.
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the product to retrieve.
+      responses:
+        '200':
+          description: Successful retrieval of product information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          description: Missing mandatory data or invalid query parameter.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that mandatory data is missing or the query parameter is invalid.
+        '404':
+          description: The specified product was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the specified product was not found.
+        '500':
+          description: An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that an internal server error occurred.
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the product
+        image:
+          type: string
+          description: URL of the image representing the product
+        description:
+          type: string
+          description: Description of the product
+        price:
+          type: number
+          description: The price of the product
+      required:
+        - name
+        - description
+        - price
