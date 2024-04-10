@@ -349,11 +349,7 @@ const getOrdersSince = async (req, res) => {
     }
 
     const restaurantID = req.params.restaurantID;
-    console.log("restaurantID (query) : " + req.query.restaurantID);
-    console.log("restaurantID (params) : " + req.params.restaurantID);
     const numberOfDaysBack = req.params.daysBack;
-    console.log("numberOfDaysBack (query) : " + req.query.daysBack);
-    console.log("numberOfDaysBack (params) : " + req.params.daysBack);
 
     if (!restaurantID || !numberOfDaysBack) {
         return res.status(400).json({ error: "Missing mandatory data" });
