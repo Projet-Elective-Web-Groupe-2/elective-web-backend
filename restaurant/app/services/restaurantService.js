@@ -35,14 +35,15 @@ const findRestaurant = async (name, ownerID, address) => {
 /**
  * Fonction permettant de retrouver un restaurant dans la base de données grâce à un ID.
  * @param {String} id - L'ID du restaurant ou de son propriétaire.
+ * @param {String} NaNID - Un booléen indiquant si l'ID est un ID de restaurant ou de propriétaire.
  * @returns {object} Le restaurant trouvé.
 */
-const findRestaurantByID = async (id) => {
+const findRestaurantByID = async (id, NaNID) => {
     try {
         const restaurant = await Restaurant.findOne({
             $or: [
-            { _id: id },
-            { ownerID: id }
+            { _id: NaNID === true ? id : null },
+            { ownerID: NaNID === false ? id : null }
             ]
         });
 

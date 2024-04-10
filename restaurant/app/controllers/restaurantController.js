@@ -58,7 +58,7 @@ const findRestaurant = async (req, res) => {
     }
 
     try {
-        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID, isNaN(restaurantID));
 
         if (!restaurant) {
             throw new Error("Restaurant not found");
