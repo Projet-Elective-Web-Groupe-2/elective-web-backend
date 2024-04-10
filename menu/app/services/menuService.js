@@ -27,7 +27,7 @@ const createAndAddMenu = async (name, products, image, drink) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-            products: products.map(product => product._id),
+           // products: products.map(product => product._id),
             drink: drink 
         });
 
