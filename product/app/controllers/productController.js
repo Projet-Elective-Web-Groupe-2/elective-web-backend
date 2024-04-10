@@ -24,7 +24,7 @@ const createAndAddProduct = async (req, res) => {
 
     let restaurantID = req.body["restaurantID"];
 
-    if (!name || !description || !price || !restaurantID || !image || !isDrink) {
+    if (!name || !description || !price || !restaurantID || !image || isDrink === undefined || isDrink === null) {
         return res.status(400).json({ error: "Missing mandatory data to add a product" });
     }
 
