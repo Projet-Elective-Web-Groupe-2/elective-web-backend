@@ -187,6 +187,27 @@ services:
       backend_network:
         ipv4_address: 192.168.16.9
 
+  components:
+    build:
+      context: ./components
+    hostname: ${COMPONENTS_HOST}
+    container_name: ${COMPONENTS_HOST}
+    ports:
+      - "${COMPONENTS_PORT}:${COMPONENTS_PORT}"
+    depends_on:
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.components-service.rule=Host(`components.localhost`)"
+      - "traefik.http.services.components-service.loadbalancer.server.port=${COMPONENTS_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.10
+
   mongoDB:
     image: mongo
     container_name: mongoDB
@@ -198,7 +219,7 @@ services:
       - ./volumes/mongodb:/data/database
     networks:
       backend_network:
-        ipv4_address: 192.168.16.10
+        ipv4_address: 192.168.16.11
 
   mysql:
     image: mysql:5.7
@@ -212,7 +233,7 @@ services:
       - ./volumes/mysql-data:/var/lib/mysql
     networks:
       backend_network:
-        ipv4_address: 192.168.16.11
+        ipv4_address: 192.168.16.12
 
   traefik:
     image: traefik:v3.0
@@ -238,7 +259,7 @@ services:
         target: /etc/traefik/traefik.yml
     networks:
       backend_network:
-        ipv4_address: 192.168.16.12
+        ipv4_address: 192.168.16.13
 
   phpmyadmin:
     image: phpmyadmin
