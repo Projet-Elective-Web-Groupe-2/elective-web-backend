@@ -24,7 +24,7 @@ const createAndAddMenu = async (req, res) => {
     const drinkButtonClicked = req.body["drinkButtonClicked"];
     const drink = drinkButtonClicked ? true : false;
 
-    if (!name || !restaurantID || !productIds || !image || !totalPrice || drinkButtonClicked === undefined || drinkButtonClicked === null) {
+    if (!name || !restaurantID || !productIds || !image || !totalPrice) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
 
