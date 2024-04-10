@@ -1,3 +1,10 @@
+## [5.7.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.2...v5.7.0) (2024-04-10)
+
+
+### Features
+
+* Added dashboard to sales ([5ef8d33](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/5ef8d330b6d6dc2107480c23960ae788ce49da9e))
+
 ## [5.6.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.1...v5.6.2) (2024-04-10)
 
 
