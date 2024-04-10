@@ -295,9 +295,15 @@ const getTotalRevenue = async (orders) => {
 */
 const addMenu = async (restaurantID, menu) => {
     try {
-        Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { menus: menu }
-        });
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.menus.push(menu._id);
+
+        await restaurant.save();
     }
     catch (error) {
         throw new Error("Error while trying to add a product to a restaurant : " + error.message);
