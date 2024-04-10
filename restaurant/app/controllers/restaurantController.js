@@ -57,6 +57,11 @@ const findRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
+    // ID du restaurateur, pas le restaurant en lui-même
+    if (restaurantID.length < 4) {
+        restaurantID = parseInt(restaurantID);
+    }
+
     console.log("Type du restaurantID : " + typeof restaurantID)
 
     try {
