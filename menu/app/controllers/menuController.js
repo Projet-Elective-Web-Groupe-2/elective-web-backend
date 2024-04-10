@@ -8,8 +8,6 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const menuService = require('../services/menuService');
 
-const PRODUCT_URL = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product`;	
-
 const createAndAddMenu = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -19,17 +17,17 @@ const createAndAddMenu = async (req, res) => {
     const userType = req.decoded.type;
 
     const productIds = req.body["productIds"];
-    let restaurantID = req.body["restaurantID"];
     const name = req.body["name"];
     const image = req.body["image"];
-    const drinkButtonClicked = req.body["drinkButtonClicked"]; 
+    const totalPrice = req.body["totalPrice"];
+    let restaurantID = req.body["restaurantID"];
+    const drinkButtonClicked = req.body["drinkButtonClicked"];
     const drink = drinkButtonClicked ? true : false;
 
-    if (!name || !restaurantID || !productIds || !image) {
+    if (!name || !restaurantID || !productIds || !image || !totalPrice) {
         return res.status(400).json({ error: "Missing mandatory data to create menu" });
     }
 
-    let url;
     let response;
 
     try {
@@ -39,8 +37,8 @@ const createAndAddMenu = async (req, res) => {
 
         restaurantID = new mongoose.Types.ObjectId(restaurantID);
 
-        url = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
-        response = await axios.get(url, {
+        let restaurantURL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/find`; 
+        response = await axios.get(restaurantURL, {
             params: { id: restaurantID },
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -49,8 +47,8 @@ const createAndAddMenu = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        url = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
-        response = await axios.get(url, {
+        const productURL = `http://${process.env.PRODUCT_HOST}:${process.env.PRODUCT_PORT}/product/getProducts`;
+        response = await axios.get(productURL, {
             data: { productIds }, 
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -61,10 +59,10 @@ const createAndAddMenu = async (req, res) => {
 
         const products = response.data.productsInfo;
 
-        const menu = await menuService.createAndAddMenu(name, products, image, drink);
+        const menu = await menuService.createAndAddMenu(name, products, image, drink, totalPrice);
 
-        url = url.replace('find', 'addMenu'); 
-        response = await axios.post(url, { 
+        restaurantURL = restaurantURL.replace('find', 'addMenu'); 
+        response = await axios.post(restaurantURL, { 
             restaurantID: restaurantID,
             menu : menu,
         },

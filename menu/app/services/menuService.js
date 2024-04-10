@@ -14,12 +14,11 @@ const Menu = require('../models/menuModel');
  * @param {Array} products - Les produits du menu.
  * @param {String} image - L'image du menu, contenue sous forme d'URL.
  * @param {Boolean} drink - Un booléen indiquant si le menu possède une boisson ou non.
+ * @param {Number} totalPrice - Le prix total du menu.
  * @returns {object} Le menu créé.
 */
-const createAndAddMenu = async (name, products, image, drink) => {
+const createAndAddMenu = async (name, products, image, drink, totalPrice) => {
     try {
-        const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
-
         const description = products.map(product => product.name).join(', ');
         
         const newMenu = new Menu({ 
@@ -27,7 +26,7 @@ const createAndAddMenu = async (name, products, image, drink) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-            products: products.map(product => product._id),
+           // products: products.map(product => product._id),
             drink: drink 
         });
 
