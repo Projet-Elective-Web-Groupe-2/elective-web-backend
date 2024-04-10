@@ -57,8 +57,10 @@ const findRestaurant = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data" });
     }
 
+    console.log("Type du restaurantID : " + typeof restaurantID)
+
     try {
-        const restaurant = await restaurantService.findRestaurantByID(restaurantID, isNaN(restaurantID));
+        const restaurant = await restaurantService.findRestaurantByID(restaurantID);
 
         if (!restaurant) {
             throw new Error("Restaurant not found");
