@@ -65,7 +65,7 @@ const createAndAddOrder = async (req, res) => {
             const isMenu = item.isMenu;
             const drinkID = item.drink;
 
-            if (!itemID || isMenu == undefined || (isMenu && drinkID == undefined)) {
+            if (!itemID || isMenu === undefined || !drinkID) {
                 throw new Error("Missing mandatory data for item verification");
             }
 
@@ -82,35 +82,36 @@ const createAndAddOrder = async (req, res) => {
 
                 totalPrice += response.data.menu.totalPrice;
 
-                if (drinkID) {
+                if (drinkID != "") {
                     url = `${PRODUCT_URL}find`;
                     response = await axios.get(url, {
                         params: { id: drinkID },
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                }
+                
 
-                if (response.status != 200) {
-                    throw new Error("Drink not found");
-                }
-
-                const drink = response.data.product;
-
-                totalPrice += drink.price;
-
-                url = `${MENU_URL}updateMenu`;
-                response = await axios.post(url, {
-                    menuID: itemID,
-                    product: drink,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
+                    if (response.status != 200) {
+                        throw new Error("Drink not found");
                     }
-                });
 
-                if (response.status != 201) {
-                    throw new Error("Drink not added to menu");
+                    const drink = response.data.product;
+
+                    totalPrice += drink.price;
+
+                    url = `${MENU_URL}updateMenu`;
+                    response = await axios.post(url, {
+                        menuID: itemID,
+                        product: drink,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.status != 201) {
+                        throw new Error("Drink not added to menu");
+                    }
                 }
             }
             else {
