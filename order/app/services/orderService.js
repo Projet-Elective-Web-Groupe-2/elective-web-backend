@@ -146,6 +146,30 @@ const getAllOrdersFromRestaurant = async (restaurantID) => {
 };
 
 /**
+ * Fonction permettant de récupérer toutes les commandes créées.
+ * @param {object} restaurantID - L'ID du restaurant dont il faut trouver les commandes créées.
+ * @returns {Array} Les commandes créées.
+ */
+const getAllCreatedOrdersFromRestaurant = async (restaurantID) => {
+    try {
+        const orders = await Order.find({ 
+            restaurantID: restaurantID,
+            status: "Created" 
+        });
+
+        for (let order of orders) {
+            await Order.populate(order, { path: 'menus', model: 'Menu' });
+            await Order.populate(order, { path: 'products', model: 'Product' });
+        }
+
+        return orders;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all created orders : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de compter le nombre de commandes par jour avec un tableau de commandes.
  * @param {Array} orders - Les commandes à traiter.
  * @returns {Array} Le nombre de commandes par jour.
@@ -215,6 +239,7 @@ module.exports = {
     getAllOrdersFromUser,
     getAllOrders,
     getAllOrdersFromRestaurant,
+    getAllCreatedOrdersFromRestaurant,
     countOrdersByDay,
     getPerformanceMetrics
 };
