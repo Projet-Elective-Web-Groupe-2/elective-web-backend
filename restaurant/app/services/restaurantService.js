@@ -162,7 +162,7 @@ const deleteRestaurant = async (restaurantID) => {
 */
 const getAllRestaurants = async () => {
     try {
-        const restaurants = await Restaurant.find();
+        const restaurants = await Restaurant.find({ isOpen: true });
 
         if (restaurants.length === 0) {
             return [];
