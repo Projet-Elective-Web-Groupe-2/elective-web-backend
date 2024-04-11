@@ -50,6 +50,7 @@ const login = async (req, res) => {
         return res.status(200).json({ accessToken });
     }
     catch (error) {
+        const existingUser = await authenticationService.findUserByEmail(email);
         if (error.message === "User not found") {
             await authenticationService.writeLogs(2, null, null);
             return res.status(404).json({ error : error.message });

@@ -12,6 +12,7 @@ router.post('/create', orderController.createAndAddOrder);
 router.get('/getOrder', orderController.getOrder);
 router.post('/update', orderController.updateOrderStatus);
 router.get('/getAllFromUser', orderController.getAllFromUser);
+router.get('/getAllOrders', orderController.getAllOrders);
 router.post('/getOrdersCountByDay', orderController.countOrdersByDay);
 router.get('/metrics', orderController.metrics);
 
