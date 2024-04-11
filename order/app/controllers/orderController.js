@@ -414,6 +414,68 @@ const getAllOrders = async (req, res) => {
     }
 };
 
+const getAllOrdersFromRestaurant = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURANT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const restaurantID = req.query["restaurantID"];
+
+    if (!restaurantID) {
+        return res.status(400).json({ error: "Missing mandatory data for order retrieval" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
+        url = `${RESTAURANT_URL}find`;
+        response = await axios.get(url, {
+            params: { id: restaurantID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status != 200) {
+            throw new Error("Restaurant not found");
+        }
+
+        const orders = await orderService.getAllOrdersFromRestaurant(response.data.restaurant._id);
+
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found");
+        }
+
+        return res.status(200).json({ orders });
+    }
+    catch (error) {
+        if (error.message === "User not found" || error.message === "No orders found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while fetching orders : ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
 const countOrdersByDay = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const userType = req.decoded.type;
@@ -497,6 +559,7 @@ module.exports = {
     updateOrderStatus,
     getAllFromUser,
     getAllOrders,
+    getAllOrdersFromRestaurant,
     countOrdersByDay,
     metrics
 };

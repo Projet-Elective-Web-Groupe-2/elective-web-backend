@@ -13,6 +13,7 @@ router.get('/getOrder', orderController.getOrder);
 router.post('/update', orderController.updateOrderStatus);
 router.get('/getAllFromUser', orderController.getAllFromUser);
 router.get('/getAllOrders', orderController.getAllOrders);
+router.get('/getAllOrdersFromRestaurant', orderController.getAllOrdersFromRestaurant);
 router.post('/getOrdersCountByDay', orderController.countOrdersByDay);
 router.get('/metrics', orderController.metrics);
 
