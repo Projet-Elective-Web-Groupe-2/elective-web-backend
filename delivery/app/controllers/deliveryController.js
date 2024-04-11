@@ -172,7 +172,7 @@ const getAllWithFilter = async (req, res) => {
         if (error.message === "User not found") {
             return res.status(404).json({ error: error.message });
         }
-        else if (error.message.contains("No orders found for this deliverer.")) {
+        else if (error.message.includes("No orders found for this deliverer")) {
             return res.status(404).json({ error: error.message });
         }
         else {
