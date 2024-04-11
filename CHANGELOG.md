@@ -1,3 +1,10 @@
+## [5.7.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.7.0...v5.7.1) (2024-04-11)
+
+
+### Bug Fixes
+
+* fixed auth service crash when user is sus ([b6e49e1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/b6e49e1435b4d19c4202112694e937dca464985d))
+
 ## [5.7.0](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.6.2...v5.7.0) (2024-04-10)
 
 
