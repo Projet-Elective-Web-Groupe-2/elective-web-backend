@@ -69,15 +69,20 @@ const refuseDelivery = async (orderID, delivererID) => {
  */
 const getAllWithFilter = async (userID) => {
     try {
-        const orders = await Order.find({ status: "In preparation", refusedBy: { $nin: [parseInt(userID)] } });
-
+        const orders = await Order.find({ status: "In preparation" });
+        console.log("NB commandes en préparation : " + orders.length);
         if (!orders || orders.length === 0) {
             throw new Error("No orders found for this deliverer.");
         }
 
         for (let order of orders) {
-            await Order.populate(order, { path: 'menus', model: 'Menu' });
-            await Order.populate(order, { path: 'products', model: 'Product' });
+            if (order.refusedBy.includes(userID)) {
+                orders.splice(orders.indexOf(order), 1);
+            }
+            else {
+                await Order.populate(order, { path: 'menus', model: 'Menu' });
+                await Order.populate(order, { path: 'products', model: 'Product' });
+            }
         }
 
         return orders;
