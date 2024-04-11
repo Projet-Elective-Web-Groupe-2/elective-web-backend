@@ -14,6 +14,7 @@ router.get('/findByOwner', restaurantController.findRestaurantByOwnerID);
 router.delete('/delete', restaurantController.deleteRestaurant);
 router.post('/edit', restaurantController.editRestaurant);
 router.get('/getAll', restaurantController.getAllRestaurants);
+//router.post('/changeStatus', restaurantController.changeStatus);
 router.post('/addProduct', restaurantController.addProduct);
 router.post('/addOrder', restaurantController.addOrder);
 router.post('/updateOrder', restaurantController.updateOrder);

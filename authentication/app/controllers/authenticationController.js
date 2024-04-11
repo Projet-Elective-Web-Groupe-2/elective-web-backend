@@ -21,8 +21,14 @@ const login = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data for verification" });
     }
 
+    let existingUser;
+    let userID;
+    let userType;
+
     try {
-        const existingUser = await authenticationService.findUserByEmail(email);
+        existingUser = await authenticationService.findUserByEmail(email);
+        userID = existingUser.userID;
+        userType = existingUser.userType;
 
         if (!existingUser) {
             throw new Error("User not found");
@@ -37,9 +43,9 @@ const login = async (req, res) => {
         
         await authenticationService.comparePassword(existingUser.password, password);
         
-        const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+        const accessToken = authenticationService.generateAccessToken(userID, userType);
 
-        await authenticationService.writeLogs(1, existingUser.userID, existingUser.userType);
+        await authenticationService.writeLogs(1, userID, userType);
 
         return res.status(200).json({ accessToken });
     }
@@ -49,11 +55,11 @@ const login = async (req, res) => {
             return res.status(404).json({ error : error.message });
         }
         else if (error.message === "Invalid password") {
-            await authenticationService.writeLogs(3, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(3, userID, userType);
             return res.status(401).json({ error : error.message });
         }
         else if (error.message === "User is suspended") {
-            await authenticationService.writeLogs(4, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(4, userID, userType);
             return res.status(403).json({ error : error.message });
         }
         else if (error.message === "Expired refresh token" || error.message === "Invalid refresh token") {
