@@ -532,7 +532,7 @@ const getAllCreatedOrdersFromRestaurant = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        const orders = await orderService.getAllCreatedOrdersFromRestaurant(restaurantID);
+        const orders = await orderService.getAllCreatedOrdersFromRestaurant(response.data.restaurant);
 
         if (!orders || orders.length === 0) {
             throw new Error("No orders found");
@@ -542,7 +542,6 @@ const getAllCreatedOrdersFromRestaurant = async (req, res) => {
     }
     catch (error) {
         if (error.message === "User not found" || error.message === "No orders found" || error.message === "Restaurant not found") {
-            console.log("error.message : ", error.message);
             return res.status(404).json({ error: error.message });
         }
         else {

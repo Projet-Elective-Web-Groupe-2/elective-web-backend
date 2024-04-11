@@ -147,15 +147,12 @@ const getAllOrdersFromRestaurant = async (restaurantID) => {
 
 /**
  * Fonction permettant de récupérer toutes les commandes créées.
- * @param {object} restaurantID - L'ID du restaurant dont il faut trouver les commandes créées.
+ * @param {object} restaurant - Le restaurant dont il faut récupéré les commandes créées.
  * @returns {Array} Les commandes créées.
  */
-const getAllCreatedOrdersFromRestaurant = async (restaurantID) => {
+const getAllCreatedOrdersFromRestaurant = async (restaurant) => {
     try {
-        const orders = await Order.find({ 
-            restaurantID: restaurantID,
-            status: "Created" 
-        });
+        const orders = restaurant.orders.filter(order => order.status === "Created");
 
         for (let order of orders) {
             await Order.populate(order, { path: 'menus', model: 'Menu' });
