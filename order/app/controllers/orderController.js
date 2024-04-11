@@ -541,7 +541,8 @@ const getAllCreatedOrdersFromRestaurant = async (req, res) => {
         return res.status(200).json({ orders });
     }
     catch (error) {
-        if (error.message === "User not found" || error.message === "No orders found") {
+        if (error.message === "User not found" || error.message === "No orders found" || error.message === "Restaurant not found") {
+            console.log("error.message : ", error.message);
             return res.status(404).json({ error: error.message });
         }
         else {
