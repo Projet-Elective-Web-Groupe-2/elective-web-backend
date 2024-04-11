@@ -73,7 +73,7 @@ const createAndAddOrder = async (req, res) => {
             const drinkID = item.drink;
             console.log(`drinkID n°${i} : ${drinkID}`);
 
-            if (!itemID || isMenu === undefined || !drinkID) {
+            if (!itemID || isMenu === undefined || drinkID === undefined) {
                 throw new Error("Missing mandatory data for item verification");
             }
 
@@ -491,6 +491,23 @@ const getAllOrdersFromRestaurant = async (req, res) => {
             return res.status(500).json({ error: "Internal server error" });
         }
     }
+};
+
+const getAllCreatedOrders = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userID = req.decoded.id;
+    const userType = req.decoded.type;
+
+    if (userType != "RESTAURANT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    let url;
+    let response;
+
+
+
+
 };
 
 const countOrdersByDay = async (req, res) => {
