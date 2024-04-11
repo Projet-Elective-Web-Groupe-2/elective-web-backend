@@ -82,14 +82,13 @@ const createAndAddOrder = async (req, res) => {
 
                 totalPrice += response.data.menu.totalPrice;
 
-                if (drinkID != "") {
+                if (drinkID !== "") {
                     url = `${PRODUCT_URL}find`;
                     response = await axios.get(url, {
                         params: { id: drinkID },
                         headers: { Authorization: `Bearer ${token}` }
                     });
                 
-
                     if (response.status != 200) {
                         throw new Error("Drink not found");
                     }
@@ -98,10 +97,10 @@ const createAndAddOrder = async (req, res) => {
 
                     totalPrice += drink.price;
 
-                    url = `${MENU_URL}updateMenu`;
+                    url = `${MENU_URL}update`;
                     response = await axios.post(url, {
                         menuID: itemID,
-                        product: drink,
+                        productID: drink,
                     },
                     {
                         headers: {
