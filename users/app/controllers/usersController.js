@@ -4,6 +4,7 @@
  * @version 1.0
 */
 
+const axios = require('axios');
 const usersService = require('../services/usersService');
 const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
 
