@@ -218,12 +218,6 @@ const findUserIDByEmail = async (email) => {
                     reject(new Error("Error while trying to find user by email : " + error.message));
                 }
                 else {
-                    console.log("results");
-                    console.log(results);
-                    console.log("results[0]");
-                    console.log(results[0]);
-                    console.log("results[0].userID");
-                    console.log(results[0].userID);
                     userID = results[0].userID;
                     resolve(results);
                 }
