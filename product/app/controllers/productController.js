@@ -8,6 +8,9 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const productService = require('../services/productService');
 
+const AUTH_URL = `http://${process.env.AUTH_HOST}:${process.env.AUTH_PORT}/auth/`;
+const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
+
 const createAndAddProduct = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
@@ -140,6 +143,86 @@ const getProductsByIds = async (req, res) => {
     }
 };
 
+const getDrinks = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const userType = req.decoded.type;
+    const userID = req.decoded.id;
+
+    if (userType != "CLIENT") {
+        return res.status(403).json({ error: "Forbidden" });
+    }
+
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const restaurantID = req.query.restaurantID;
+
+    if (!restaurantID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    let url;
+    let response;
+
+    try {
+        url = `${AUTH_URL}find`;
+        response = await axios.get(url, {
+            params: { id: userID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("User not found");
+        }
+
+        url = `${RESTAURANT_URL}find`;
+        response = await axios.get(url, {
+            params: { id: restaurantID },
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+            throw new Error("Restaurant not found");
+        }
+
+        const restaurant = response.data.restaurant;
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+        else if (!restaurant.products || restaurant.products.length === 0) {
+            throw new Error("No products found in the restaurant");
+        }
+
+        const drinks = await productService.getDrinks(restaurant);
+
+        if (!drinks || drinks.length === 0) {
+            throw new Error("No drinks found in the restaurant");
+        }
+
+        return res.status(200).json({ drinks });
+    }
+    catch (error) {
+        if (error.message === "User not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "No products found in the restaurant") {
+            return res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "No drinks found in the restaurant") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while fetching drinks: ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
 const deleteProduct = async (req, res) => {
     if (!req.query) {
         return res.status(400).json({ error: "Required query parameter is missing" });
@@ -194,6 +277,7 @@ module.exports = {
     createAndAddProduct,
     findProduct,
     getProductsByIds,
+    getDrinks,
     deleteProduct,
     metrics
 };

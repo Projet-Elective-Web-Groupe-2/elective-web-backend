@@ -496,7 +496,7 @@ const getOrderCount = async (req, res) => {
         if (!restaurant) {
             throw new Error("Restaurant not found");
         }
-console.log({ orderCount: restaurant.orders.length });
+        
         return res.status(200).json({ orderCount: restaurant.orders.length });
     }
     catch (error) {

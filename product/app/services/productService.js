@@ -64,13 +64,29 @@ const getProductsByIds = async (productIds) => {
         const productsInfo = products.map(product => ({
             name: product.name,
             price: product.price,
-            //description: product.description
+            description: product.description
         }));
 
         return productsInfo;
     }
     catch (error) {
         throw new Error("Error while fetching products : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les boissons d'un restaurant.
+ * @param {object} restaurant - Le restaurant pour lequel on souhaite récupérer les boissons.
+ * @returns {Array} Les boissons du restaurant.
+*/
+const getDrinks = async (restaurant) => {
+    try {
+        const drinks = restaurant.products.filter(product => product.isDrink === true);
+
+        return drinks;
+    }
+    catch (error) {
+        throw new Error("Error while fetching drinks : " + error.message);
     }
 };
 
@@ -139,6 +155,7 @@ module.exports = {
     createProduct,
     findProductByID,
     getProductsByIds,
+    getDrinks,
     deleteProduct,
     getPerformanceMetrics
 };
