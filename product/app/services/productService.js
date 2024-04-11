@@ -64,7 +64,8 @@ const getProductsByIds = async (productIds) => {
         const productsInfo = products.map(product => ({
             name: product.name,
             price: product.price,
-            description: product.description
+            description: product.description,
+            isDrink: product.isDrink
         }));
 
         return productsInfo;
