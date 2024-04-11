@@ -373,13 +373,14 @@ const getAllFromUser = async (req, res) => {
 
         const orders = await orderService.getAllOrdersFromUser(userID);
 
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found for this user");
+        }
+
         return res.status(200).json({ orders });
     }
     catch (error) {
-        if (error.message === "User not found") {
-            return res.status(404).json({ error: error.message });
-        }
-        else if (error.message === "No orders found for this user") {
+        if (error.message === "User not found" || error.message === "No orders found for this user") {
             return res.status(404).json({ error: error.message });
         }
         else {

@@ -214,7 +214,7 @@ const getDrinks = async (req, res) => {
             return res.status(404).json({ error: error.message });
         }
         else if (error.message === "No drinks found in the restaurant") {
-            return res.status(404).json({ error: error.message });
+            return res.status(200).json({ message: "This restaurant doesn't have drinks yet" });
         }
         else {
             console.error("Unexpected error while fetching drinks: ", error);

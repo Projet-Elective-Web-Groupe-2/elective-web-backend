@@ -93,10 +93,6 @@ const getAllOrdersFromUser = async (userID) => {
     try {
         const orders = await Order.find({ clientID: userID });
 
-        if (!orders || orders.length === 0) {
-            throw new Error("No orders found for this user.");
-        }
-
         for (let order of orders) {
             await Order.populate(order, { path: 'menus', model: 'Menu' });
             await Order.populate(order, { path: 'products', model: 'Product' });
