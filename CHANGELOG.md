@@ -1,3 +1,11 @@
+## [5.7.2](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.7.1...v5.7.2) (2024-04-11)
+
+
+### Bug Fixes
+
+* change params to query ([56e2670](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/56e267088d69381356bee3974d0daa2658888d7d))
+* const to let ([bff1636](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/commit/bff1636d9e5bb8b109f989f9241f881854481f85))
+
 ## [5.7.1](https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/compare/v5.7.0...v5.7.1) (2024-04-11)
 
 
