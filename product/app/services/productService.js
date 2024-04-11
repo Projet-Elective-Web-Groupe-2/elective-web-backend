@@ -55,20 +55,19 @@ const findProductByID = async (id) => {
 /**
  * Fonction permettant de récupérer les informations des produits à partir de leurs IDs.
  * @param {Array} productIds - Les IDs des produits.
- * @returns Les informations des produits.
+ * @returns {Array} Les produits en eux-mêmes.
 */
 const getProductsByIds = async (productIds) => {
     try {
-        const products = await Product.find({ _id: { $in: productIds } });
+        let products = []; 
+        let product;
+        
+        for (let i = 0; i < productIds.length; i++) {
+            product = await Product.findById(productIds[i]);
+            products.push(product);
+        }
 
-        const productsInfo = products.map(product => ({
-            name: product.name,
-            price: product.price,
-            description: product.description,
-            isDrink: product.isDrink
-        }));
-
-        return productsInfo;
+        return products;
     }
     catch (error) {
         throw new Error("Error while fetching products : " + error.message);
