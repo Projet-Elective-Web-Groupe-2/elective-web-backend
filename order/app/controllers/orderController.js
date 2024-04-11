@@ -391,17 +391,24 @@ const getAllOrders = async (req, res) => {
             headers: { Authorization: `Bearer ${token}` }
         });
 
+        if (response.status != 200) {
+            throw new Error("User not found");
+        }
+
         const orders = await orderService.getAllOrders();
+
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found");
+        }
 
         return res.status(200).json({ orders });
     }
     catch (error) {
-
-        if (error.message === "No orders found") {
+        if (error.message === "User not found" || error.message === "No orders found") {
             return res.status(404).json({ error: error.message });
         }
         else {
-            console.error("Unexpected error while orders : ", error);
+            console.error("Unexpected error while fetching orders : ", error);
             return res.status(500).json({ error: "Internal server error" });
         }
     }

@@ -59,7 +59,7 @@ const createClientOrDeliverer = async (email, password, userType, firstName, las
         };
     }
     catch (error) {
-        throw new Error(`Error while trying to create a ${userType}`);
+        throw new Error(`Error while trying to create a ${userType} : ${error.message}` );
     }
 };
 
@@ -154,11 +154,10 @@ const createDeveloper = async (email, password, userType, phoneNumber, refreshTo
 */
 const findUserByEmail = async (email) => {
     try {
-        const sql = `SELECT * FROM users WHERE email = ?`;
-        const values = [email];
+        const sql = `SELECT * FROM users WHERE email = "${email}"`;
 
         const [user] = await new Promise((resolve, reject) => {
-            connection.query(sql, values, (error, results) => {
+            connection.query(sql, (error, results) => {
                 if (error) {
                     reject(new Error("Error while trying to find user by email : " + error.message));
                 }
@@ -173,6 +172,7 @@ const findUserByEmail = async (email) => {
         throw new Error("Error while trying to find user by email : " + error.message);
     }
 };
+
 
 /**
  * Fonction permettant de trouver un utilisateur dans la base de données grâce à son ID.
@@ -208,17 +208,22 @@ const findUserByID = async (id) => {
 */
 const findUserIDByEmail = async (email) => {
     try {
-        const sql = `SELECT userID FROM users WHERE email = ?`;
-        const values = [email];
+        const sql = `SELECT userID FROM users WHERE email = "${email}"`;
 
         let userID;
         
         await new Promise((resolve, reject) => {
-            connection.query(sql, values, (error, results) => {
+            connection.query(sql, (error, results) => {
                 if (error) {
                     reject(new Error("Error while trying to find user by email : " + error.message));
                 }
                 else {
+                    console.log("results");
+                    console.log(results);
+                    console.log("results[0]");
+                    console.log(results[0]);
+                    console.log("results[0].userID");
+                    console.log(results[0].userID);
                     userID = results[0].userID;
                     resolve(results);
                 }

@@ -7,6 +7,7 @@
 const axios = require('axios');
 const authenticationService = require('../services/authenticationService');
 const decodeJWT = require('../utils/decodeToken');
+const e = require('express');
 
 const login = async (req, res) => {
     console.log(req.body);

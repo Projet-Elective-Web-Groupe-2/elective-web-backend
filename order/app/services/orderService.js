@@ -117,21 +117,12 @@ const getAllOrders = async () => {
     try {
         const orders = await Order.find();
 
-        if (!orders || orders.length === 0) {
-            throw new Error("Aucune commande trouvée.");
-        }
-
-        for (let order of orders) {
-            await Order.populate(order, { path: 'menus', model: 'Menu' });
-            await Order.populate(order, { path: 'products', model: 'Product' });
-        }
         return orders;
     }
     catch (error) {
-        throw new Error("Erreur lors de la récupération de toutes les commandes : " + error.message);
+        throw new Error("Error while trying to fetch all orders : " + error.message);
     }
 };
-
 
 /**
  * Fonction permettant de compter le nombre de commandes par jour avec un tableau de commandes.
