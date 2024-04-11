@@ -21,8 +21,14 @@ const login = async (req, res) => {
         return res.status(400).json({ error: "Missing mandatory data for verification" });
     }
 
+    let existingUser;
+    let userID;
+    let userType;
+
     try {
-        const existingUser = await authenticationService.findUserByEmail(email);
+        existingUser = await authenticationService.findUserByEmail(email);
+        userID = existingUser.userID;
+        userType = existingUser.userType;
 
         if (!existingUser) {
             throw new Error("User not found");
@@ -37,9 +43,9 @@ const login = async (req, res) => {
         
         await authenticationService.comparePassword(existingUser.password, password);
         
-        const accessToken = authenticationService.generateAccessToken(existingUser.userID, existingUser.userType);
+        const accessToken = authenticationService.generateAccessToken(userID, userType);
 
-        await authenticationService.writeLogs(1, existingUser.userID, existingUser.userType);
+        await authenticationService.writeLogs(1, userID, userType);
 
         return res.status(200).json({ accessToken });
     }
@@ -50,11 +56,11 @@ const login = async (req, res) => {
             return res.status(404).json({ error : error.message });
         }
         else if (error.message === "Invalid password") {
-            await authenticationService.writeLogs(3, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(3, userID, userType);
             return res.status(401).json({ error : error.message });
         }
         else if (error.message === "User is suspended") {
-            await authenticationService.writeLogs(4, existingUser.userID, existingUser.userType);
+            await authenticationService.writeLogs(4, userID, userType);
             return res.status(403).json({ error : error.message });
         }
         else if (error.message === "Expired refresh token" || error.message === "Invalid refresh token") {
@@ -132,8 +138,9 @@ const register = async (req, res) => {
             case "RESTAURANT": {
                 const restaurantName = req.body["restaurantName"];
                 const restaurantAddress = req.body["restaurantAddress"];
+                const image = req.body["image"];
 
-                if (!restaurantName || !restaurantAddress) {
+                if (!restaurantName || !restaurantAddress || !image) {
                     throw new Error("Missing mandatory data");
                 }
 
@@ -148,7 +155,8 @@ const register = async (req, res) => {
                 const response = await axios.post(url, {
                     name: restaurantName,
                     address: restaurantAddress,
-                    ownerID: newUser.userID
+                    ownerID: newUser.userID,
+                    image: image
                 },
                 {
                     headers: {
@@ -201,13 +209,13 @@ const register = async (req, res) => {
             return res.status(400).json({ error: `Missing mandatory data to create a ${userType}` });
         }
         else if (error.message === "Invalid user type") {
-            return res.status(400).json({ error: "Invalid user type"});
+            return res.status(400).json({ error: error.message});
         }
         else if (error.message === "Failed to create restaurant") {
-            return res.status(400).json({ error: "Failed to create restaurant" });
+            return res.status(400).json({ error: error.message });
         }
         else if (error.message === "Invalid API key") {
-            return res.status(403).json({ error: "Invalid API key" });
+            return res.status(403).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while registering : ", error);
@@ -292,13 +300,13 @@ const token = async (req, res) => {
     }
     catch(error) {
         if (error.message === "Invalid refresh token") {
-            return res.status(401).json({ error: "Invalid refresh token" });
+            return res.status(401).json({ error: error.message });
         }
         else if (error.message === "User not found") {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: error.message });
         }
         else if (error.message === "User is suspended") {
-            return res.status(403).json({ error: "User is suspended" });
+            return res.status(403).json({ error: error.message });
         }
         else if (error.message === "Expired refresh token") {
             const newRefreshToken = authenticationService.generateRefreshToken(email);

@@ -72,7 +72,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an internal server error occurred.
-                    
+
   /find:
     get:
       tags:
@@ -127,6 +127,53 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an internal server error occurred.
+
+  /findByOwner:
+    get:
+      tags:
+        - Restaurant
+      summary: Find restaurants by owner
+      description: Retrieves a list of restaurants owned by a specific owner.
+      parameters:
+        - in: query
+          name: ownerID
+          required: true
+          schema:
+            type: string
+          description: The ID of the owner to filter the restaurants by.
+      responses:
+        '200':
+          description: Restaurants found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Restaurant'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the reason for the bad request.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an internal server error occurred.
+
   /delete:
     get:
       tags:
@@ -193,6 +240,246 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an unexpected server error occurred.
+
+  /edit:
+    put:
+      tags:
+        - Restaurant
+      summary: Edit a restaurant
+      description: Updates the information of a restaurant with the specified ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to edit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The new name of the restaurant.
+                address:
+                  type: string
+                  description: The new address of the restaurant.
+      responses:
+        '200':
+          description: Restaurant successfully edited.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the restaurant was edited.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the user is not authorized to edit the restaurant.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that either the user or the restaurant was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+
+  /getAll:
+    get:
+      tags:
+        - Restaurant
+      summary: Get all restaurants
+      description: Retrieves a list of all restaurants.
+      responses:
+        '200':
+          description: Restaurants retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Restaurant'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an internal server error occurred.
+
+  /changeStatus:
+    put:
+      tags:
+        - Restaurant
+      summary: Change the status of a restaurant
+      description: Changes the status of a restaurant with the specified ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to change the status of.
+        - in: query
+          name: status
+          required: true
+          schema:
+            type: string
+          description: The new status of the restaurant.
+      responses:
+        '200':
+          description: Restaurant status successfully changed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the restaurant status was changed.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the user is not authorized to change the status of the restaurant.
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that either the user or the restaurant was not found.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+
+  /addMenu:
+    post:
+      tags:
+        - Menu
+      summary: Add a menu to a restaurant
+      description: Adds a menu to the specified restaurant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantID:
+                  type: string
+                  description: The ID of the restaurant to which the menu will be added.
+                menu:
+                  type: object
+                  description: The menu object to be added to the restaurant.
+      responses:
+        '201':
+          description: Menu successfully added to restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A success message indicating that the menu was added to the restaurant.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error occurred.
+
   /addProduct:
     post:
       tags:
@@ -253,6 +540,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an unexpected server error occurred.
+
   /addOrder:
     post:
       tags:
@@ -323,6 +611,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an unexpected server error occurred.
+
   /updateOrder:
     post:
       tags:
@@ -386,6 +675,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an unexpected server error occurred.
+
   /getOrdersSince:
     get:
       tags:
@@ -464,7 +754,67 @@ paths:
                 properties:
                   error:
                     type: string
+      description: Retrieves the total count of orders for the specified restaurant.
+      parameters:
+        - in: query
+          name: restaurantID
+          required: true
+          schema:
+            type: string
+          description: The ID of the restaurant to retrieve the order count for.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: The total count of orders for the specified restaurant.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory query parameters.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to access this resource.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the restaurant or user was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
                     description: Error message indicating an unexpected server error occurred.
+  
+
   /metrics:
     get:
       tags:
@@ -514,6 +864,9 @@ paths:
                   error:
                     type: string
                     description: Error message indicating unexpected server error.
+  
+  
+
 components:
   schemas:
     Restaurant:

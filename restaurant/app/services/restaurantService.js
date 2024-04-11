@@ -34,17 +34,12 @@ const findRestaurant = async (name, ownerID, address) => {
 
 /**
  * Fonction permettant de retrouver un restaurant dans la base de données grâce à un ID.
- * @param {String} id - L'ID du restaurant ou de son propriétaire.
+ * @param {String} id - L'ID du restaurant.
  * @returns {object} Le restaurant trouvé.
 */
 const findRestaurantByID = async (id) => {
     try {
-        const restaurant = await Restaurant.findOne({
-            $or: [
-            { _id: id },
-            { ownerID: id }
-            ]
-        });
+        const restaurant = await Restaurant.findById(id);
 
         await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
         await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
@@ -54,6 +49,26 @@ const findRestaurantByID = async (id) => {
     }
     catch(error) {
         throw new Error("Error while trying to find a restaurant by ID : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de trouver un restaurant dans la base de données en fonction de l'ID de son propriétaire.
+ * @param {Number} ownerID - L'ID du propriétaire du restaurant.
+ * @returns {object} Le restaurant trouvé.
+ */
+const findRestaurantByOwnerID = async (ownerID) => {
+    try {
+        const restaurant = await Restaurant.findOne({ ownerID: ownerID });
+
+        await Restaurant.populate(restaurant, { path: 'products', model: 'Product' });
+        await Restaurant.populate(restaurant, { path: 'orders', model: 'Order' });
+        await Restaurant.populate(restaurant, { path: 'menus', model: 'Menu' });
+
+        return restaurant;
+    }
+    catch (error) {
+        throw new Error("Error while trying to find a restaurant by owner ID : " + error.message);
     }
 };
 
@@ -147,7 +162,7 @@ const deleteRestaurant = async (restaurantID) => {
 */
 const getAllRestaurants = async () => {
     try {
-        const restaurants = await Restaurant.find();
+        const restaurants = await Restaurant.find({ isOpen: true });
 
         if (restaurants.length === 0) {
             return [];
@@ -157,6 +172,23 @@ const getAllRestaurants = async () => {
     }
     catch (error) {
         throw new Error("Error while trying to get all restaurants : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de changer le statut d'un restaurant (ouvrir ou fermer).
+ * @param {String} restaurantID - L'ID du restaurant.
+ */
+const changeStatus = async (restaurantID) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        restaurant.isOpen = !restaurant.isOpen;
+
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to change the status of a restaurant : " + error.message);
     }
 };
 
@@ -280,9 +312,15 @@ const getTotalRevenue = async (orders) => {
 */
 const addMenu = async (restaurantID, menu) => {
     try {
-        Restaurant.findByIdAndUpdate(restaurantID, {
-            $addToSet: { menu: menu }
-        });
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        if (!restaurant) {
+            throw new Error("Restaurant not found");
+        }
+
+        restaurant.menus.push(menu._id);
+
+        await restaurant.save();
     }
     catch (error) {
         throw new Error("Error while trying to add a product to a restaurant : " + error.message);
@@ -334,11 +372,13 @@ function getCpuUsage() {
 module.exports = {
     findRestaurant,
     findRestaurantByID,
+    findRestaurantByOwnerID,
     findRestaurantByNameOrAddress,
     createRestaurant,
     editRestaurant,
     deleteRestaurant,
     getAllRestaurants,
+    changeStatus,
     addProduct,
     addMenu,
     addOrder,

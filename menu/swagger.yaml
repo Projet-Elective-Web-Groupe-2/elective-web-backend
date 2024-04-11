@@ -150,6 +150,71 @@ paths:
                   error:
                     type: string
                     description: Error message indicating an unexpected server error.
+  /delete:
+    delete:
+      tags:
+        - Menu
+      summary: Delete a menu
+      description: |
+        This endpoint allows users to delete a menu by its ID.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the menu to delete.
+      responses:
+        '200':
+          description: Menu deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message indicating that the menu was deleted.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user does not have permission to perform the action.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the menu was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error.
   /update:
     post:
       tags:
@@ -181,6 +246,80 @@ paths:
                   message:
                     type: string
                     description: Success message indicating that the product was added to the menu.
+                  menu:
+                    type: object
+                    description: The updated menu object.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating missing mandatory data.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user does not have permission to perform the action.
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the menu or product was not found.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating an unexpected server error.
+  /removeProduct:
+    delete:
+      tags:
+        - Menu
+      summary: Remove a product from a menu
+      description: |
+        This endpoint allows users to remove a product from a menu.
+      parameters:
+        - in: query
+          name: menuID
+          required: true
+          schema:
+            type: string
+          description: The ID of the menu from which to remove the product.
+        - in: query
+          name: productID
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to remove from the menu.
+      responses:
+        '200':
+          description: Product removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message indicating that the product was removed from the menu.
                   menu:
                     type: object
                     description: The updated menu object.

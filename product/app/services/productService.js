@@ -13,14 +13,18 @@ const Product = require('../models/productModel');
  * @param {String} name - Le nom de l'article.
  * @param {String} description - La description de l'article.
  * @param {Number} price - Le prix de l'article.
+ * @param {String} image - L'image de l'article.
+ * @param {Boolean} isDrink - Le type de l'article (boisson ou nourriture).
  * @returns {object} L'article créé.
 */
-const createProduct = async (name, description, price) => {
+const createProduct = async (name, description, price, image, isDrink) => {
     try {
         const newProduct = new Product({ 
             name: name,
+            image: image,
             description: description,
-            price: price 
+            price: price,
+            isDrink: isDrink
         });
 
         await newProduct.save();
@@ -71,6 +75,25 @@ const getProductsByIds = async (productIds) => {
 };
 
 /**
+ * Fonction permettant de supprimer un article de la base de données.
+ * @param {String} productID - L'ID de l'article à supprimer.
+ */
+const deleteProduct = async (productID) => {
+    try {
+        const product = findProductByID(productID);
+
+        if (!product) {
+            throw new Error("Product not found");
+        }
+
+        await Product.deleteOne({ _id: productID });
+    }
+    catch(error) {
+        throw new Error("Error while trying to delete a product by ID : " + error.message);
+    }
+}
+
+/**
  * Fonction permettant de récupérer les métriques de performance de l'application, à savoir :
  * - CPU usage (usage du CPU)
  * - Total memory (mémoire totale)
@@ -116,5 +139,6 @@ module.exports = {
     createProduct,
     findProductByID,
     getProductsByIds,
+    deleteProduct,
     getPerformanceMetrics
 };

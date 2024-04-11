@@ -10,7 +10,9 @@ const menuController = require('../controllers/menuController');
 
 router.post('/create', menuController.createAndAddMenu);
 router.get('/find', menuController.findMenu);
-router.post('/update', menuController.updatedMenu),
+router.delete('/delete', menuController.deleteMenu);
+router.post('/update', menuController.updateMenu);
+router.post('/removeProduct', menuController.removeProduct);
 router.get('/metrics', menuController.metrics);
 
 module.exports = router;

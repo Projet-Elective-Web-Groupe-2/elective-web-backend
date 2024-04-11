@@ -141,6 +141,103 @@ paths:
                   error:
                     type: string
                     description: Error message indicating that an internal server error occurred.
+  
+  /getProducts:
+    get:
+      tags:
+        - Product
+      summary: Get all products
+      description: |
+        This endpoint retrieves all products.
+      responses:
+        '200':
+          description: Successful retrieval of products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        '500':
+          description: An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that an internal server error occurred.
+
+  /delete:
+    delete:
+      tags:
+        - Product
+      summary: Delete a product
+      description: |
+        This endpoint allows a restaurant owner to delete a product from their restaurant's menu.
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the product to delete.
+      responses:
+        '200':
+          description: Product deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message indicating that the product was deleted successfully.
+        '400':
+          description: Missing or invalid query parameter.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the query parameter is missing or invalid.
+        '403':
+          description: The user is not authorized to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the user is not authorized to delete a product.
+        '404':
+          description: The specified product was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that the specified product was not found.
+        '500':
+          description: An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that an internal server error occurred.
+  
   /metrics:
     get:
       tags:
@@ -190,6 +287,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating unexpected server error.
+  
 components:
   schemas:
     Product:

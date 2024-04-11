@@ -28,6 +28,11 @@ const productSchema = new mongoose.Schema({
         unique: false,
         required: true
     },
+    isDrink: {
+        type: Boolean,
+        unique: false,
+        required: true
+    }
 });
 
 module.exports = productSchema;

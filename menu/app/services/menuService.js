@@ -14,12 +14,11 @@ const Menu = require('../models/menuModel');
  * @param {Array} products - Les produits du menu.
  * @param {String} image - L'image du menu, contenue sous forme d'URL.
  * @param {Boolean} drink - Un booléen indiquant si le menu possède une boisson ou non.
+ * @param {Number} totalPrice - Le prix total du menu.
  * @returns {object} Le menu créé.
 */
-const createAndAddMenu = async (name, products, image, drink) => {
+const createAndAddMenu = async (name, products, image, drink, totalPrice) => {
     try {
-        const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
-
         const description = products.map(product => product.name).join(', ');
         
         const newMenu = new Menu({ 
@@ -27,7 +26,7 @@ const createAndAddMenu = async (name, products, image, drink) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-            products: products.map(product => product._id),
+           // products: products.map(product => product._id),
             drink: drink 
         });
 
@@ -61,6 +60,25 @@ const findMenuByID = async (id) => {
 };
 
 /**
+ * Fonction permettant de supprimer un menu de la base de données.
+ * @param {String} menuID - L'ID du menu à supprimer.
+ */
+const deleteMenu = async (menuID) => {
+    try {
+        const menu = findMenuByID(menuID);
+
+        if (!menu) {
+            throw new Error("Menu not found");
+        }
+
+        await Menu.deleteOne({ _id: menuID });
+    }
+    catch(error) {
+        throw new Error("Error while trying to delete a menu by ID : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant de mettre à jour un menu en ajoutant des produits.
  * @param {String} menuID - L'ID du menu à mettre à jour.
  * @param {Array} products - Les produits à ajouter au menu.
@@ -82,6 +100,34 @@ const updateMenu = async (menuID, products) => {
     }
     catch (error) {
         throw new Error("Error while adding product to menu: " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de retirer un produit d'un menu.
+ * @param {String} menuID - L'ID du menu.
+ * @param {String} productID - L'ID du produit à retirer du menu.
+*/
+const removeProduct = async (menuID, productID) => {
+    try {
+        const menu = await Menu.findById(menuID);
+
+        if (!menu) {
+            throw new Error("Menu not found");
+        }
+
+        const productIndex = menu.products.findIndex(product => product._id === productID);
+
+        if (productIndex === -1) {
+            throw new Error("Product not found in the menu");
+        }
+
+        menu.products.splice(productIndex, 1);
+
+        await menu.save();
+    }
+    catch(error) {
+        throw new Error("Error while removing product from menu : " + error.message);
     }
 };
 
@@ -130,6 +176,8 @@ function getCpuUsage() {
 module.exports = {
     createAndAddMenu,
     findMenuByID,
+    deleteMenu,
     updateMenu,
+    removeProduct,
     getPerformanceMetrics
 };

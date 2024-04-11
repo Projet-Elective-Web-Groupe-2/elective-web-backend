@@ -19,9 +19,12 @@ const createAndAddProduct = async (req, res) => {
     const name = req.body["name"];
     const description = req.body["description"];
     const price = req.body["price"];
+    const image = req.body["image"];
+    const isDrink = req.body["isDrink"];
+
     let restaurantID = req.body["restaurantID"];
 
-    if (!name || !description || !price || !restaurantID) {
+    if (!name || !description || !price || !restaurantID || !image || isDrink === undefined || isDrink === null) {
         return res.status(400).json({ error: "Missing mandatory data to add a product" });
     }
 
@@ -43,7 +46,7 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Restaurant not found");
         }
 
-        const product = await productService.createProduct(name, description, price);
+        const product = await productService.createProduct(name, description, price, image, isDrink);
 
         url = url.replace('find', 'addProduct');
         response = await axios.post(url, { 
@@ -60,7 +63,7 @@ const createAndAddProduct = async (req, res) => {
             throw new Error("Product not added");
         }
 
-        return res.status(201).json({ message: 'Product added successfully', product });
+        return res.status(201).json({ message: 'Product added successfully' });
     }
     catch (error) {
         if (error.message === "Invalid user type") {
@@ -137,6 +140,33 @@ const getProductsByIds = async (req, res) => {
     }
 };
 
+const deleteProduct = async (req, res) => {
+    if (!req.query) {
+        return res.status(400).json({ error: "Required query parameter is missing" });
+    }
+
+    const productID = req.query.id;
+
+    if (!productID) {
+        return res.status(400).json({ error: "Missing mandatory data" });
+    }
+
+    try {
+        await productService.deleteProductByID(productID);
+
+        return res.status(200).json({ message: "Product deleted successfully" });
+    }
+    catch (error) {
+        if (error.message === "Product not found") {
+            return res.status(404).json({ error: error.message });
+        }
+        else {
+            console.error("Unexpected error while deleting a product : ", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+};
+
 const metrics = async (req, res) => {
     const userType = req.decoded.type;
 
@@ -164,5 +194,6 @@ module.exports = {
     createAndAddProduct,
     findProduct,
     getProductsByIds,
+    deleteProduct,
     metrics
 };
