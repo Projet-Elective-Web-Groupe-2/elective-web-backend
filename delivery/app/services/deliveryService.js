@@ -69,7 +69,7 @@ const refuseDelivery = async (orderID, delivererID) => {
  */
 const getAllWithFilter = async (userID) => {
     try {
-        const orders = await Order.find({ status: "In preparation", refusedBy: { $nin: [userID] } });
+        const orders = await Order.find({ status: "In preparation", refusedBy: { $nin: [parseInt(userID)] } });
 
         if (!orders || orders.length === 0) {
             throw new Error("No orders found for this deliverer.");
