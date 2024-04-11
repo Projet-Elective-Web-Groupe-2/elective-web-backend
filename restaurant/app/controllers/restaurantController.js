@@ -268,8 +268,7 @@ const changeStatus = async (req, res) => {
         if (!restaurant) {
             throw new Error("Restaurant not found");
         }
-
-        if (restaurant.ownerID !== userID && userType != "SALES") {
+        else if (restaurant.ownerID !== userID && userType != "SALES") {
             throw new Error("Restaurant does not belong to user");
         }
 
@@ -569,6 +568,7 @@ module.exports = {
     editRestaurant,
     deleteRestaurant,
     getAllRestaurants,
+    changeStatus,
     addProduct,
     addMenu,
     addOrder,

@@ -176,6 +176,23 @@ const getAllRestaurants = async () => {
 };
 
 /**
+ * Fonction permettant de changer le statut d'un restaurant (ouvrir ou fermer).
+ * @param {String} restaurantID - L'ID du restaurant.
+ */
+const changeStatus = async (restaurantID) => {
+    try {
+        const restaurant = await findRestaurantByID(restaurantID);
+
+        restaurant.isOpen = !restaurant.isOpen;
+
+        await restaurant.save();
+    }
+    catch (error) {
+        throw new Error("Error while trying to change the status of a restaurant : " + error.message);
+    }
+};
+
+/**
  * Fonction permettant d'ajouter un produit à un restaurant.
  * @param {object} restaurantID - L'ID du restaurant auquel on veut ajouter un produit.
  * @param {object} product - Le produit à ajouter.
@@ -361,6 +378,7 @@ module.exports = {
     editRestaurant,
     deleteRestaurant,
     getAllRestaurants,
+    changeStatus,
     addProduct,
     addMenu,
     addOrder,
