@@ -122,7 +122,7 @@ const deleteRestaurant = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
-    if (userType != "RESTAURANT" || userType != "SALES") {
+    if (userType !== "RESTAURANT" && userType !== "SALES") {
         return res.status(403).json({ error: "Forbidden" });
     }
 
