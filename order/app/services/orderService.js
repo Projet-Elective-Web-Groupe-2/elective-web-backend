@@ -141,7 +141,7 @@ const getAllOrdersFromRestaurant = async (restaurantID) => {
  */
 const getAllCreatedOrdersFromRestaurant = async (restaurant) => {
     try {
-        const orders = restaurant.orders.filter(order => order.status === "Created");
+        const orders = restaurant.orders.filter(order => order.status !== "Delivered");
 
         for (let order of orders) {
             await Order.populate(order, { path: 'menus', model: 'Menu' });
