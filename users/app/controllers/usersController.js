@@ -6,6 +6,7 @@
 
 const axios = require('axios');
 const usersService = require('../services/usersService');
+const { response } = require('express');
 const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
 
 const getUser = async (req, res) => {
@@ -371,7 +372,7 @@ const deleteUser = async (req, res) => {
 
             url = `${RESTAURANT_URL}delete`;
             response = await axios.delete(url, {
-                params: { id: targetUserID },
+                params: { id: response.data.restaurant._id },
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
 
