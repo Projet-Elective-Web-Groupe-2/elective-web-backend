@@ -17,6 +17,7 @@ services:
       - order
       - delivery
       - monitoring
+      - components
     env_file:
       - .env
     stdin_open: true
@@ -175,6 +176,7 @@ services:
       - product
       - order
       - delivery
+      - components
     env_file:
       - .env
     stdin_open: true
@@ -216,7 +218,7 @@ services:
     depends_on:
       - traefik
     volumes:
-      - ./volumes/mongodb:/data/database
+      - ./volumes/mongodb:/data/db
     networks:
       backend_network:
         ipv4_address: 192.168.16.11

@@ -272,6 +272,115 @@ paths:
                     type: string
                     description: Error message indicating the issue
 
+  /getAllOrdersFromRestaurant:
+    get:
+      summary: Get all orders from a restaurant
+      description: |
+        This endpoint retrieves all orders associated with a restaurant. It requires authentication with a valid token.
+      tags:
+        - Orders
+      parameters:
+        - in: query
+          name: restaurantID
+          schema:
+            type: string
+          required: true
+          description: The ID of the restaurant to retrieve orders from
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                    description: List of orders associated with the restaurant
+        '403':
+          description: Forbidden, user does not have permission to retrieve orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '404':
+          description: Not found, restaurant not found or no orders found for the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+
+  /getAllCreatedOrders:
+    get:
+      summary: Get all created orders of a restaurant
+      description: |
+        This endpoint retrieves all orders that have been created. It requires authentication with a valid token as well as the ID of the restaurant.
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                    description: List of created orders
+        '403':
+          description: Forbidden, user does not have permission to retrieve orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '404':
+          description: Not found, no created orders found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the issue
+
   /getOrdersCountByDay:
     post:
       summary: Count orders by day
@@ -344,6 +453,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating the issue
+
   /metrics:
     get:
       tags:

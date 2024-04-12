@@ -26,7 +26,7 @@ const createAndAddMenu = async (name, products, image, drink, totalPrice) => {
             description: description,
             totalPrice: totalPrice,
             image: image,
-           // products: products.map(product => product._id),
+            products: products.map(product => product._id),
             drink: drink 
         });
 
@@ -92,14 +92,21 @@ const updateMenu = async (menuID, products) => {
             throw new Error("Menu not found");
         }
 
-        menu.products.push(...products);
+        for (const product of products) {
+            if (menu.products.includes(product._id)) {
+                throw new Error("Product already in the menu");
+            }
+            else {
+                menu.products.push(product._id);
+            }
+        }
 
         await menu.save();
 
         return menu; 
     }
     catch (error) {
-        throw new Error("Error while adding product to menu: " + error.message);
+        throw new Error("Error while adding product to menu : " + error.message);
     }
 };
 

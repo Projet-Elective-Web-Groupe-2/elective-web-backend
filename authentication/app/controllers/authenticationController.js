@@ -7,9 +7,9 @@
 const axios = require('axios');
 const authenticationService = require('../services/authenticationService');
 const decodeJWT = require('../utils/decodeToken');
+const e = require('express');
 
 const login = async (req, res) => {
-    console.log(req.body);
     if (!req.body) {
         return res.status(400).json({ error: "Required request body is missing" });
     }

@@ -67,17 +67,10 @@ const findOrderByID = async (id) => {
  * Fonction permettant de mettre à jour le statut d'une commande.
  * @param {String} id - L'ID de la commande.
  * @param {String} newStatus - Le nouveau statut de la commande.
- * @returns {object} La commande mise à jour.
 */ 
 const updateOrderStatus = async (id, newStatus) => {
     try {
-        const order = await findOrderByID(id);
-
-        order.status = newStatus;
-
-        await order.save();
-
-        return order;
+        await Order.findByIdAndUpdate(id, { status: newStatus }, { new: true });
     }
     catch (error) {
         throw new Error("Error while trying to update an order status : " + error.message);
@@ -92,10 +85,6 @@ const updateOrderStatus = async (id, newStatus) => {
 const getAllOrdersFromUser = async (userID) => {
     try {
         const orders = await Order.find({ clientID: userID });
-
-        if (!orders || orders.length === 0) {
-            throw new Error("No orders found for this user.");
-        }
 
         for (let order of orders) {
             await Order.populate(order, { path: 'menus', model: 'Menu' });
@@ -117,21 +106,54 @@ const getAllOrders = async () => {
     try {
         const orders = await Order.find();
 
-        if (!orders || orders.length === 0) {
-            throw new Error("Aucune commande trouvée.");
-        }
+        return orders;
+    }
+    catch (error) {
+        throw new Error("Error while trying to fetch all orders : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer toutes les commandes d'un restaurant.
+ * @param {String} restaurantID - L'ID du restaurant.
+ * @returns {Array} Les commandes du restaurant.
+ */
+const getAllOrdersFromRestaurant = async (restaurantID) => {
+    try {
+        const orders = await Order.find({ restaurantID: restaurantID });
 
         for (let order of orders) {
             await Order.populate(order, { path: 'menus', model: 'Menu' });
             await Order.populate(order, { path: 'products', model: 'Product' });
         }
+        
         return orders;
     }
     catch (error) {
-        throw new Error("Erreur lors de la récupération de toutes les commandes : " + error.message);
+        throw new Error("Error while trying to get all orders from a restaurant : " + error.message);
     }
 };
 
+/**
+ * Fonction permettant de récupérer toutes les commandes créées.
+ * @param {object} restaurant - Le restaurant dont il faut récupéré les commandes créées.
+ * @returns {Array} Les commandes créées.
+ */
+const getAllCreatedOrdersFromRestaurant = async (restaurant) => {
+    try {
+        const orders = restaurant.orders.filter(order => order.status === "Created");
+
+        for (let order of orders) {
+            await Order.populate(order, { path: 'menus', model: 'Menu' });
+            await Order.populate(order, { path: 'products', model: 'Product' });
+        }
+
+        return orders;
+    }
+    catch (error) {
+        throw new Error("Error while trying to get all created orders : " + error.message);
+    }
+};
 
 /**
  * Fonction permettant de compter le nombre de commandes par jour avec un tableau de commandes.
@@ -202,6 +224,8 @@ module.exports = {
     updateOrderStatus,
     getAllOrdersFromUser,
     getAllOrders,
+    getAllOrdersFromRestaurant,
+    getAllCreatedOrdersFromRestaurant,
     countOrdersByDay,
     getPerformanceMetrics
 };

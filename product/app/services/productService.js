@@ -55,22 +55,38 @@ const findProductByID = async (id) => {
 /**
  * Fonction permettant de récupérer les informations des produits à partir de leurs IDs.
  * @param {Array} productIds - Les IDs des produits.
- * @returns Les informations des produits.
+ * @returns {Array} Les produits en eux-mêmes.
 */
 const getProductsByIds = async (productIds) => {
     try {
-        const products = await Product.find({ _id: { $in: productIds } });
+        let products = []; 
+        let product;
+        
+        for (let i = 0; i < productIds.length; i++) {
+            product = await Product.findById(productIds[i]);
+            products.push(product);
+        }
 
-        const productsInfo = products.map(product => ({
-            name: product.name,
-            price: product.price,
-            //description: product.description
-        }));
-
-        return productsInfo;
+        return products;
     }
     catch (error) {
         throw new Error("Error while fetching products : " + error.message);
+    }
+};
+
+/**
+ * Fonction permettant de récupérer les boissons d'un restaurant.
+ * @param {object} restaurant - Le restaurant pour lequel on souhaite récupérer les boissons.
+ * @returns {Array} Les boissons du restaurant.
+*/
+const getDrinks = async (restaurant) => {
+    try {
+        const drinks = restaurant.products.filter(product => product.isDrink === true);
+
+        return drinks;
+    }
+    catch (error) {
+        throw new Error("Error while fetching drinks : " + error.message);
     }
 };
 
@@ -139,6 +155,7 @@ module.exports = {
     createProduct,
     findProductByID,
     getProductsByIds,
+    getDrinks,
     deleteProduct,
     getPerformanceMetrics
 };

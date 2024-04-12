@@ -171,7 +171,36 @@ paths:
                   error:
                     type: string
                     description: Error message indicating that an internal server error occurred.
-
+  /getDrinks:
+    get:
+      tags:
+        - Product
+      summary: Get all drinks
+      description: |
+        This endpoint retrieves all drinks.
+      responses:
+        '200':
+          description: Successful retrieval of drinks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  drinks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        '500':
+          description: An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating that an internal server error occurred.
+  
   /delete:
     delete:
       tags:
