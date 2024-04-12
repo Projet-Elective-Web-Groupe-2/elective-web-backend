@@ -69,12 +69,8 @@ const refuseDelivery = async (orderID, delivererID) => {
  */
 const getAllWithFilter = async (userID) => {
     try {
-        const orders = await Order.find({ status: "In preparation" });
-        console.log("NB commandes en préparation : " + orders.length);
-        if (!orders || orders.length === 0) {
-            throw new Error("No orders found for this deliverer.");
-        }
-
+        const orders = await Order.find({ status: { $in: ["In preparation", "Being delivered", "Delivery near client"] } });
+        
         for (let order of orders) {
             if (order.refusedBy.includes(userID)) {
                 orders.splice(orders.indexOf(order), 1);

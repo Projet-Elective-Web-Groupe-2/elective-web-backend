@@ -166,13 +166,17 @@ const getAllWithFilter = async (req, res) => {
 
         const orders = await deliveryService.getAllWithFilter(userID);
 
+        if (!orders || orders.length === 0) {
+            throw new Error("No orders found for this deliverer");
+        }
+
         return res.status(200).json({ orders });
     }
     catch (error) {
         if (error.message === "User not found") {
             return res.status(404).json({ error: error.message });
         }
-        else if (error.message.includes("No orders found for this deliverer")) {
+        else if (error.message === "No orders found for this deliverer") {
             return res.status(404).json({ error: error.message });
         }
         else {

@@ -14,7 +14,6 @@ const MENU_URL = `http://${process.env.MENU_HOST}:${process.env.MENU_PORT}/menu/
 
 const createAndAddOrder = async (req, res) => {
     if (!req.body) {
-        console.log("Required request body is missing")
         return res.status(400).json({ error: "Required request body is missing" });
     }
 
@@ -23,16 +22,13 @@ const createAndAddOrder = async (req, res) => {
     const userType = req.decoded.type;
     
     if (userType != "CLIENT") {
-        console.log("Pas le bon type d'utilisateur")
         return res.status(403).json({ error: "Forbidden" });
     }
 
     const items = req.body["items"];
     const restaurantID = req.body["restaurantID"];
-    console.log("restaurantID : ", restaurantID);
 
     if (!items || !restaurantID ) {
-        console.log("Missing mandatory data for order creation");
         return res.status(400).json({ error: "Missing mandatory data for order creation" });
     }
 
@@ -51,7 +47,6 @@ const createAndAddOrder = async (req, res) => {
         }
 
         const userAddress = response.data.user.address;
-        console.log("userAddress : ", userAddress);
 
         url = `${RESTAURANT_URL}find`;
         response = await axios.get(url, {
@@ -67,18 +62,14 @@ const createAndAddOrder = async (req, res) => {
         let i = 0;
         for (let item of items) {
             const itemID = item.idProduit;
-            console.log(`itemID n°${i} : ${itemID}`);
             const isMenu = item.isMenu;
-            console.log(`isMenu n°${i} : ${isMenu}`);
             const drinkID = item.drink;
-            console.log(`drinkID n°${i} : ${drinkID}`);
 
             if (!itemID || isMenu === undefined || drinkID === undefined) {
                 throw new Error("Missing mandatory data for item verification");
             }
 
             if (isMenu) {
-                console.log("C'est un menu");
                 url = `${MENU_URL}find`;
                 response = await axios.get(url, {
                     params: { id: itemID },
@@ -86,14 +77,12 @@ const createAndAddOrder = async (req, res) => {
                 });
                 
                 if (response.status != 200) {
-                    console.log("Menu not found");
                     throw new Error("Menu not found");
                 }
 
                 totalPrice += response.data.menu.totalPrice;
 
                 if (drinkID !== "") {
-                    console.log("Il y a une boisson");
                     url = `${PRODUCT_URL}find`;
                     response = await axios.get(url, {
                         params: { id: drinkID },
@@ -101,7 +90,6 @@ const createAndAddOrder = async (req, res) => {
                     });
                 
                     if (response.status != 200) {
-                        console.log("Drink not found");
                         throw new Error("Drink not found");
                     }
 
@@ -121,13 +109,11 @@ const createAndAddOrder = async (req, res) => {
                     });
 
                     if (response.status != 201) {
-                        console.log("Drink not added to menu");
                         throw new Error("Drink not added to menu");
                     }
                 }
             }
             else {
-                console.log("C'est un produit");
                 url = `${PRODUCT_URL}find`;
                 response = await axios.get(url, {
                     params: { id: itemID },
@@ -135,7 +121,6 @@ const createAndAddOrder = async (req, res) => {
                 });
                 
                 if (response.status != 200) {
-                    console.log("Product not found");
                     throw new Error("Product not found");
                 }
 
@@ -158,7 +143,6 @@ const createAndAddOrder = async (req, res) => {
         });
 
         if (response.status != 201) {
-            console.log("Order creation failed");
             throw new Error("Order creation failed");
         }
 

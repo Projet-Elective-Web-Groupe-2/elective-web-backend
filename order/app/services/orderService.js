@@ -70,7 +70,7 @@ const findOrderByID = async (id) => {
 */ 
 const updateOrderStatus = async (id, newStatus) => {
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(id, { status: newStatus }, { new: true });
+        await Order.findByIdAndUpdate(id, { status: newStatus }, { new: true });
     }
     catch (error) {
         throw new Error("Error while trying to update an order status : " + error.message);
