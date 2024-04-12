@@ -6,6 +6,7 @@
 
 const axios = require('axios');
 const usersService = require('../services/usersService');
+const { response } = require('express');
 const RESTAURANT_URL = `http://${process.env.RESTAURANT_HOST}:${process.env.RESTAURANT_PORT}/restaurant/`;
 
 const getUser = async (req, res) => {
@@ -221,6 +222,8 @@ const suspendUser = async (req, res) => {
         return res.status(400).json({ error: "Required request body is missing" });
     }
 
+    const token = req.headers.authorization.split(' ')[1];
+
     const targetUserID = req.body["userID"];
 
     if (!targetUserID) {
@@ -228,6 +231,9 @@ const suspendUser = async (req, res) => {
     }
 
     const userType = req.decoded.type;
+
+    let url;
+    let response;
 
     try {
         if (userType != "SALES") {
@@ -251,6 +257,34 @@ const suspendUser = async (req, res) => {
 
         await usersService.suspendUser(targetUserID);
 
+        if (userToSuspend.userType === "RESTAURANT") {
+            url = `${RESTAURANT_URL}findByOwner`;
+            response = await axios.get(url, {
+                params: { id: targetUserID },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!response.status === 200 || !response.data) {
+                throw new Error("Restaurant not found");
+            }
+
+            const restaurantID = response.data.restaurant._id;
+
+            url = `${RESTAURANT_URL}changeStatus`;
+            response = await axios.post(url, {
+                restaurantID: restaurantID
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.status !== 200) {
+                throw new Error("Restaurant couldn't be suspended");
+            }
+        }
+
         return res.status(200).json({ message: "User suspended" });
     }
     catch (error) {
@@ -268,6 +302,9 @@ const suspendUser = async (req, res) => {
         }
         else if (error.message === "User trying to suspend a technical service user") {
             res.status(403).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant couldn't be suspended") {
+            res.status(500).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while suspending user : ", error);
@@ -294,13 +331,41 @@ const unsuspendUser = async (req, res) => {
             throw new Error("Invalid user type");
         }
 
-        const userToSuspend = await usersService.getUser(targetUserID);
+        const userToUnsuspend = await usersService.getUser(targetUserID);
 
-        if (!userToSuspend) {
+        if (!userToUnsuspend) {
             throw new Error("User not found");
         }
 
         await usersService.unsuspendUser(targetUserID);
+
+        if (userToUnsuspend.userType === "RESTAURANT") {
+            url = `${RESTAURANT_URL}findByOwner`;
+            response = await axios.get(url, {
+                params: { id: targetUserID },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!response.status === 200 || !response.data) {
+                throw new Error("Restaurant not found");
+            }
+
+            const restaurantID = response.data.restaurant._id;
+
+            url = `${RESTAURANT_URL}changeStatus`;
+            response = await axios.post(url, {
+                restaurantID: restaurantID
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.status !== 200) {
+                throw new Error("Restaurant couldn't be suspended");
+            }
+        }
 
         return res.status(200).json({ message: "User unsuspended" });
     }
@@ -309,7 +374,13 @@ const unsuspendUser = async (req, res) => {
             res.status(403).json({ error: "Forbidden" });
         }
         else if (error.message === "User not found") {
-            res.status(404).json({ error: "User not found" });
+            res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant not found") {
+            res.status(404).json({ error: error.message });
+        }
+        else if (error.message === "Restaurant couldn't be suspended") {
+            res.status(500).json({ error: error.message });
         }
         else {
             console.error("Unexpected error while suspending user : ", error);
@@ -332,6 +403,9 @@ const deleteUser = async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const userID = req.decoded.id;
     const userType = req.decoded.type;
+
+    let url;
+    let response;
 
     try {
         if (userType === "TECHNICAL") {
@@ -369,9 +443,11 @@ const deleteUser = async (req, res) => {
                 throw new Error("Restaurant not found");
             }
 
+            const restaurantID = response.data.restaurant._id;
+
             url = `${RESTAURANT_URL}delete`;
             response = await axios.delete(url, {
-                params: { id: targetUserID },
+                params: { id: restaurantID },
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
 
