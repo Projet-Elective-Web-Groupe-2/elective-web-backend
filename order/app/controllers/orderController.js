@@ -310,21 +310,21 @@ const updateOrderStatus = async (req, res) => {
 
         await orderService.updateOrderStatus(orderID, newStatus);
 
-        url = `${RESTAURANT_URL}updateOrder`;
-        response = await axios.post(url, {
-            orderID: orderID,
-            restaurantID: restaurantID,
-            newStatus: newStatus
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        //url = `${RESTAURANT_URL}updateOrder`;
+        //response = await axios.post(url, {
+        //    orderID: orderID,
+        //    restaurantID: restaurantID,
+        //   newStatus: newStatus
+        //},
+        //{
+        //    headers: {
+        //        Authorization: `Bearer ${token}`
+        //    }
+        //});
 
-        if (response.status != 200) {
-            throw new Error("Order status update failed");
-        }
+        //if (response.status != 200) {
+        //   throw new Error("Order status update failed");
+        //}
 
         return res.status(200).json({ message: "Order status updated" });
     }

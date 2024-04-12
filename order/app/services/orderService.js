@@ -72,11 +72,11 @@ const findOrderByID = async (id) => {
 const updateOrderStatus = async (id, newStatus) => {
     try {
         const order = await findOrderByID(id);
-
+        console.log("Before update : " + order.status);
         order.status = newStatus;
-
+        console.log("After update : " + order.status);
         await order.save();
-
+        console.log("After save : " + order.status);
         return order;
     }
     catch (error) {

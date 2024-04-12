@@ -244,7 +244,7 @@ const addOrder = async (restaurantID, order) => {
 */
 const updateOrderStatus = async (restaurantID, orderID, newStatus) => {
     try {
-        const restaurant = await Restaurant.findById(restaurantID);
+        const restaurant = await findRestaurantByID(restaurantID);
         
         const index = restaurant.orders.findIndex((o) => o._id.toString() === orderID.toString());
         
