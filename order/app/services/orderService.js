@@ -67,11 +67,19 @@ const findOrderByID = async (id) => {
  * Fonction permettant de mettre à jour le statut d'une commande.
  * @param {String} id - L'ID de la commande.
  * @param {String} newStatus - Le nouveau statut de la commande.
- * @returns {object} La commande mise à jour.
 */ 
 const updateOrderStatus = async (id, newStatus) => {
     try {
-        await Order.updateOne({ _id: id }, { status: newStatus });
+        let order = await Order.findById(id);
+        console.log("Previous order status : " + order.status);
+        const updatedOrder = await Order.findByIdAndUpdate(id, { status: newStatus }, { new: true });
+        let order2 = await Order.findById(id);
+        console.log("Updated order status : " + order2.status);
+        if (!updatedOrder) {
+            throw new Error("Order not found");
+        }
+
+        return updatedOrder;
     }
     catch (error) {
         throw new Error("Error while trying to update an order status : " + error.message);
