@@ -1,0 +1,38 @@
+{
+  "name": "elective-web-backend",
+  "version": "0.0.0-development",
+  "description": "Partie backend du projet \"Élective Logiciel\"",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./app/app.js",
+    "semantic-release": "npx semantic-release --no-ci"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend.git"
+  },
+  "keywords": [],
+  "author": "AMARA A., GAURE W., JOURNEL N.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend/issues"
+  },
+  "homepage": "https://github.com/Projet-Elective-Web-Groupe-2/elective-web-backend#readme",
+  "dependencies": {
+    "express-mongo-sanitize": "^2.2.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^12.0.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.0.2",
+    "@semantic-release/npm": "^12.0.0",
+    "@semantic-release/release-notes-generator": "^13.0.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "nodemon": "^3.1.0",
+    "semantic-release": "^23.0.6"
+  }
+}

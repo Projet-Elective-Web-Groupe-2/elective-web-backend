@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: CESI EATS SWAGGER API
+  description: |
+    Project "Élective Logiciel" - Components microservice API documentation
+servers:
+  - url: 'http://localhost:3008'
+    description: Development server
+paths:
+  /writeLogs:
+    post:
+      summary: Write logs
+      description: Endpoint to write logs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The log message
+              required:
+                - message
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    description: The response data
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the invalid request
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the internal server error
+  /getLogs:
+    get:
+      summary: Get logs
+      description: Endpoint to get logs
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    description: The response data
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the internal server error
+  /metrics:
+    get:
+      tags:
+        - Performance Metrics
+      summary: Get performance metrics.
+      description: This endpoint is used to retrieve performance metrics.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Performance metrics retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metrics:
+                    type: object
+                    description: Performance metrics.
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating missing token.
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating invalid user type.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating unexpected server error.

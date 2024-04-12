@@ -1,0 +1,161 @@
+responses:
+  '200':
+    description: Success. Metrics for all microservices are returned.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            authentication:
+              type: object
+              description: Metrics for the authentication microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the authentication microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the authentication microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the authentication microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the authentication microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the authentication microservice
+            users:
+              type: object
+              description: Metrics for the user management microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the user management microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the user management microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the user management microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the user management microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the user management microservice
+            restaurant:
+              type: object
+              description: Metrics for the restaurant management microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the restaurant management microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the restaurant management microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the restaurant management microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the restaurant management microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the restaurant management microservice
+            product:
+              type: object
+              description: Metrics for the product management microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the product management microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the product management microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the product management microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the product management microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the product management microservice
+            order:
+              type: object
+              description: Metrics for the order management microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the order management microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the order management microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the order management microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the order management microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the order management microservice
+            delivery:
+              type: object
+              description: Metrics for the delivery management microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the delivery management microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the delivery management microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the delivery management microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the delivery management microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the delivery management microservice
+            monitoring:
+              type: object
+              description: Metrics for the monitoring microservice
+              properties:
+                cpuUsage:
+                  type: string
+                  description: CPU usage of the monitoring microservice
+                totalMemory:
+                  type: string
+                  description: Total memory of the monitoring microservice
+                freeMemory:
+                  type: string
+                  description: Free memory of the monitoring microservice
+                usedMemory:
+                  type: string
+                  description: Used memory of the monitoring microservice
+                elapsedTime:
+                  type: string
+                  description: Elapsed time of the monitoring microservice
+  '403':
+    description: Forbidden.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message indicating invalid user type.
+  '500':
+    description: Internal server error.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Error message indicating unexpected server error.

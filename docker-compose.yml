@@ -1,0 +1,287 @@
+version: '3'
+
+services:
+  authentication:
+    build:
+      context: ./authentication
+    hostname: ${AUTH_HOST}
+    container_name: ${AUTH_HOST}
+    ports:
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    depends_on:
+      - traefik
+      - mysql
+      - users
+      - restaurant
+      - product
+      - order
+      - delivery
+      - monitoring
+      - components
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentication-service.rule=Host(`authentication.localhost`)"
+      - "traefik.http.services.authentication-service.loadbalancer.server.port=${AUTH_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.2
+
+  users:
+    build:
+      context: ./users
+    hostname: ${USERS_HOST}
+    container_name: ${USERS_HOST}
+    ports:
+      - "${USERS_PORT}:${USERS_PORT}"
+    depends_on:
+      - traefik
+      - mysql
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users-service.rule=Host(`users.localhost`)"
+      - "traefik.http.services.users-service.loadbalancer.server.port=${USERS_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.3
+
+  restaurant:
+    build:
+      context: ./restaurant
+    hostname: ${RESTAURANT_HOST}
+    container_name: ${RESTAURANT_HOST}
+    ports:
+      - "${RESTAURANT_PORT}:${RESTAURANT_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.restaurant-service.rule=Host(`restaurant.localhost`)"
+      - "traefik.http.services.restaurant-service.loadbalancer.server.port=${RESTAURANT_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.4
+  
+  menu:
+    build:
+      context: ./menu
+    hostname: ${MENU_HOST}
+    container_name: ${MENU_HOST}
+    ports:
+      - "${MENU_PORT}:${MENU_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.menu-service.rule=Host(`menu.localhost`)"
+      - "traefik.http.services.menu-service.loadbalancer.server.port=${MENU_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.5
+
+  product:
+    build:
+      context: ./product
+    hostname: ${PRODUCT_HOST}
+    container_name: ${PRODUCT_HOST}
+    ports:
+      - "${PRODUCT_PORT}:${PRODUCT_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.product-service.rule=Host(`product.localhost`)"
+      - "traefik.http.services.product-service.loadbalancer.server.port=${PRODUCT_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.6
+  
+  order:
+    build:
+      context: ./order
+    hostname: ${ORDER_HOST}
+    container_name: ${ORDER_HOST}
+    ports:
+      - "${ORDER_PORT}:${ORDER_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.order-service.rule=Host(`order.localhost`)"
+      - "traefik.http.services.order-service.loadbalancer.server.port=${ORDER_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.7
+  
+  delivery:
+    build:
+      context: ./delivery
+    hostname: ${DELIVERY_HOST}
+    container_name: ${DELIVERY_HOST}
+    ports:
+      - "${DELIVERY_PORT}:${DELIVERY_PORT}"
+    depends_on:
+      - traefik
+      - mongoDB
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.delivery-service.rule=Host(`delivery.localhost`)"
+      - "traefik.http.services.delivery-service.loadbalancer.server.port=${DELIVERY_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.8
+
+  monitoring:
+    build:
+      context: ./monitoring
+    hostname: ${MONITORING_HOST}
+    container_name: ${MONITORING_HOST}
+    ports:
+      - "${MONITORING_PORT}:${MONITORING_PORT}"
+    depends_on:
+      - traefik
+      - users
+      - restaurant
+      - product
+      - order
+      - delivery
+      - components
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.monitoring-service.rule=Host(`monitoring.localhost`)"
+      - "traefik.http.services.monitoring-service.loadbalancer.server.port=${MONITORING_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.9
+
+  components:
+    build:
+      context: ./components
+    hostname: ${COMPONENTS_HOST}
+    container_name: ${COMPONENTS_HOST}
+    ports:
+      - "${COMPONENTS_PORT}:${COMPONENTS_PORT}"
+    depends_on:
+      - traefik
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.components-service.rule=Host(`components.localhost`)"
+      - "traefik.http.services.components-service.loadbalancer.server.port=${COMPONENTS_PORT}"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.10
+
+  mongoDB:
+    image: mongo
+    container_name: mongoDB
+    ports:
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
+    depends_on:
+      - traefik
+    volumes:
+      - ./volumes/mongodb:/data/db
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.11
+
+  mysql:
+    image: mysql:5.7
+    container_name: mySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    volumes:
+      - ./volumes/mysql-data:/var/lib/mysql
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.12
+
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command: 
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.network=backend_network
+      - --providers.file.filename=/etc/traefik/traefik.yml
+      - --providers.file.watch=true
+      - --log.level=DEBUG
+      - --accesslog=true
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: ./traefik.yml
+        target: /etc/traefik/traefik.yml
+    networks:
+      backend_network:
+        ipv4_address: 192.168.16.13
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+    ports:
+      - "8081:80"
+
+networks:
+  backend_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.16.0/20
+          gateway: 192.168.16.1
+          ip_range: 192.168.16.0/20
+
+volumes:
+  mongodb:
+  mysql-data:
