@@ -404,6 +404,9 @@ const deleteUser = async (req, res) => {
     const userID = req.decoded.id;
     const userType = req.decoded.type;
 
+    let url;
+    let response;
+
     try {
         if (userType === "TECHNICAL") {
             throw new Error("Invalid user type");
